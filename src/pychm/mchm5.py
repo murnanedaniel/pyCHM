@@ -101,3 +101,47 @@ def mass2_Z(P, sh):
       [-(f1**2*g20*grho*sh)/(2*r2), (f1**2*g10*grho*sh)/(2*r2), 0, 0, (f1**4*grho**2)/(2*(-f**2+f1**2)), 0, 0],
       [0, -(fX**2*g10*gX)/2., 0, 0, 0, (fX**2*gX**2)/2., 0],
       [0, 0, 0, 0, 0, 0, (f1**4*grho**2)/(2*(-f**2+f1**2))]])
+
+
+# --- fermion mass matrices (eigenvalue route; ported from arXiv:2606.18364 /
+#     the two-site M4DCHM_3G).  s_h-dependent up/down 11x11 matrices; the exotic-charge
+#     and lepton blocks are s_h-independent and drop out of gamma, beta, xi. -------------- #
+import math as _math
+_MU, _MC = 0.544573*0.00216, 0.480885*1.275      # SM u,c MSbar masses [GeV]
+_MD, _MS = 0.544573*0.00468, 0.544573*0.095      # SM d,s [GeV]
+
+
+def mass_U(P, sh):
+    """Up-type 11x11 mass matrix (lightest 3 eigenvalues = u,c,t). Masses in TeV."""
+    mU, mUt, mYu = P['mU'], P['mUt'], P['mYu']
+    mD, mDt, mYd = P['mD'], P['mDt'], P['mYd']
+    Yu = P['Yu']
+    duL, duR, ddL = P['Delta_uL'], P['Delta_uR'], P['Delta_dL']
+    r2 = _math.sqrt(2)
+    m = np.zeros((11, 11), dtype=complex)
+    m[0, 0] = _MU*1e-3; m[1, 1] = _MC*1e-3
+    m[2, 3] = -(duL*_c2h2(sh)); m[2, 5] = duL*_s2h2(sh); m[2, 7] = -ddL
+    m[2, 9] = (1j*sh*duL)/r2
+    m[4, 2] = (-1j*sh*duR)/r2; m[6, 2] = (-1j*sh*duR)/r2; m[10, 2] = -(_ch(sh)*duR)
+    m[3, 3] = mU; m[4, 4] = mUt; m[5, 5] = mU; m[6, 6] = mUt
+    m[7, 7] = mD; m[8, 8] = mDt; m[9, 9] = mU; m[10, 10] = mUt
+    m[3, 4] = mYu; m[5, 6] = mYu; m[7, 8] = mYd; m[9, 10] = mYu + Yu
+    return m
+
+
+def mass_D(P, sh):
+    """Down-type 11x11 mass matrix (lightest 3 = d,s,b). Masses in TeV."""
+    mD, mDt, mYd = P['mD'], P['mDt'], P['mYd']
+    mU, mUt, mYu = P['mU'], P['mUt'], P['mYu']
+    Yd = P['Yd']
+    ddL, ddR, duL = P['Delta_dL'], P['Delta_dR'], P['Delta_uL']
+    r2 = _math.sqrt(2)
+    m = np.zeros((11, 11), dtype=complex)
+    m[0, 0] = _MD*1e-3; m[1, 1] = _MS*1e-3
+    m[2, 3] = -(ddL*_c2h2(sh)); m[2, 5] = ddL*_s2h2(sh); m[2, 7] = -duL
+    m[2, 9] = (1j*sh*ddL)/r2
+    m[4, 2] = (-1j*sh*ddR)/r2; m[6, 2] = (-1j*sh*ddR)/r2; m[10, 2] = -(_ch(sh)*ddR)
+    m[3, 3] = mD; m[4, 4] = mDt; m[5, 5] = mD; m[6, 6] = mDt
+    m[7, 7] = mU; m[8, 8] = mUt; m[9, 9] = mD; m[10, 10] = mDt
+    m[3, 4] = mYd; m[5, 6] = mYd; m[7, 8] = mYu; m[9, 10] = mYd + Yd
+    return m

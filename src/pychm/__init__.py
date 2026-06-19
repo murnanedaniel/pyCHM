@@ -8,8 +8,9 @@ Dual route (form-factor / mass-eigenvalue), pure numpy+scipy, no private depende
     >>> t = m.tuning(point)                # {BG, HOT, I, KL}
     >>> g, b, d = m.potential_coeffs(point)
 
-`route='formfactor'` (default) or `route='eigenvalue'` selects the fermion method; the gauge
-sector uses the eigenvalue route in both.  See README for the validation status and roadmap.
+`route='eigenvalue'` (default, closed-form CW -- the precision route) or `route='momentum'`
+(divergence-subtracted momentum integral) selects the Coleman-Weinberg evaluation; both
+diagonalise the same mass matrices.  See README for the validation status and roadmap.
 """
 from . import mchm5, routes, potential, spectrum, tuning
 
@@ -26,11 +27,11 @@ class Model:
                 f"representation {representation!r} not implemented; available: {list(_MODELS)}")
         self.representation = representation
 
-    def spectrum(self, point, route="formfactor"):
+    def spectrum(self, point, route="eigenvalue"):
         return spectrum.spectrum(point, route=route)
 
-    def tuning(self, point, route="formfactor"):
+    def tuning(self, point, route="eigenvalue"):
         return tuning.tuning(point, route=route)
 
-    def potential_coeffs(self, point, route="formfactor"):
+    def potential_coeffs(self, point, route="eigenvalue"):
         return potential.potential_coeffs(point, route=route)
