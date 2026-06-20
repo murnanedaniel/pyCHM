@@ -138,19 +138,21 @@ four tuning measures — is already representation-agnostic and dispatches on a 
 **The assembler (`assemble.py`) closes the loop.** Given a declarative spec — the partner
 representation, the elementary embeddings, and the composite states (masses + SO(5) content) — it
 emits `mass_U`/`mass_D` with the Higgs dressing supplied by `ccwz`, for *any* representation. It is
-validated to reproduce the hand-coded **5-5-5** *and* **14-1-10** mass matrices entry-for-entry (to
-machine precision) — exercising the **5**, **10** and **14** of SO(5) — and the assembled models —
-registered as `pychm.Model('5-5-5-assembled')` and `pychm.Model('14-1-10-assembled')` — reproduce the
-full validated spectra and tuning end-to-end (to the precision the tuned vacuum permits):
+validated to reproduce **all three** hand-coded models — **5-5-5**, **14-1-10** and **14-14-10** —
+entry-for-entry to machine precision, exercising the **5**, **10** and **14** of SO(5). Each assembled
+model is registered (`pychm.Model('5-5-5-assembled')`, `'14-1-10-assembled'`, `'14-14-10-assembled'`)
+and reproduces the full validated spectrum and tuning end-to-end, to the precision the tuned vacuum
+permits:
 
 ```python
 import pychm
-pychm.Model('14-1-10-assembled').spectrum(point)   # built from 14/10 embeddings + ccwz, not hand-coded
+pychm.Model('14-14-10-assembled').spectrum(point)  # 19x19 up sector from 14/10 embeddings + ccwz
 ```
 
-So a composite-Higgs model is now specifiable by group-theoretic data. The remaining hand-coded model,
-14-14-10 (t_R also in the 14), is the same machinery with a larger embedding spec;
-`tests/test_assemble.py` is the regression harness.
+So a composite-Higgs model is now specifiable purely by group-theoretic data: choose the partner
+representations, write down where the elementary fermions embed, and `ccwz` + `assemble` build the
+Higgs-dependent mass matrices — no per-model transcription. `tests/test_assemble.py` is the regression
+harness (every model checked entry-for-entry and end-to-end against its hand-coded oracle).
 
 ## Status
 
@@ -163,8 +165,7 @@ So a composite-Higgs model is now specifiable by group-theoretic data. The remai
 | 14-14-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
-| generic mass-matrix assembler (`assemble.py`), reproduces 5-5-5 + 14-1-10 (reps 5/10/14) | ✅ |
-| bundled assembler spec for 14-14-10 (t_R in the 14) | 🔜 |
+| generic mass-matrix assembler (`assemble.py`), reproduces **all 3 models** (reps 5/10/14) | ✅ |
 | CI: all models + route-equivalence tested (24 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence

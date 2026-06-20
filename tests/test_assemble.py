@@ -69,3 +69,22 @@ def test_14_1_10_potential_and_vacuum():
     sa = pychm.Model('14-1-10-assembled').spectrum(REF_14_1_10)
     for k in ('xi', 'mt', 'mb', 'mh', 'f'):
         assert np.isclose(sh[k], sa[k], rtol=3e-2), (k, sh[k], sa[k])
+
+
+# ---- 14-14-10: q_L and t_R both in the 14, b_R in the 10 (the 19x19 up sector) ------- #
+def test_14_14_10_matches_handcoded():
+    from pychm import mchm14
+    from tests.test_mchm14 import REF14
+    asm = assemble.model_14_14_10
+    for sh in (0.05, 0.2, 0.4, 0.6, 0.85):
+        assert np.max(np.abs(asm.mass_U(REF14, sh) - mchm14.mass_U(REF14, sh))) < 1e-12
+        assert np.max(np.abs(asm.mass_D(REF14, sh) - mchm14.mass_D(REF14, sh))) < 1e-12
+    from pychm import routes
+    shs = np.linspace(0.0, 0.32, 13)
+    Vh = routes.potential_curve(REF14, shs, model='14-14-10')
+    Va = routes.potential_curve(REF14, shs, model='14-14-10-assembled')
+    assert np.allclose(Vh, Va, rtol=1e-6, atol=1e-12 * (abs(Vh).max() + 1e-30))
+    sh = pychm.Model('14-14-10').spectrum(REF14)
+    sa = pychm.Model('14-14-10-assembled').spectrum(REF14)
+    for k in ('xi', 'mt', 'mb', 'mh', 'f'):
+        assert np.isclose(sh[k], sa[k], rtol=3e-2), (k, sh[k], sa[k])

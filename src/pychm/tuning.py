@@ -44,13 +44,14 @@ TUNED_14_1_10 = ['mQ', 'mU', 'mD', 'Yu', 'Yd',
 
 _TUNED = {'5-5-5': TUNED, '14-14-10': TUNED_14, '14-1-10': TUNED_14_1_10,
           '5-5-5-assembled': TUNED,
-          '14-1-10-assembled': TUNED_14_1_10}
+          '14-1-10-assembled': TUNED_14_1_10,
+          '14-14-10-assembled': TUNED_14}
 
 
 def _perturb(P, key, fac, model='5-5-5'):
     """Scale fundamental parameter `key` by `fac`, in the (mY, mSY) basis."""
     q = dict(P)
-    if model == '14-14-10':
+    if model in ('14-14-10', '14-14-10-assembled'):
         # 14-14-10 (mYu, mSYu, mSYtu) basis: change Yu/Ytu so that whichever
         # combination is *not* being varied stays fixed.
         mYu, mSYu, mSYtu = P['mYu'], P['mYu'] + P['Yu']/2.0, P['mYu'] + 4.0*(P['Yu'] + P['Ytu'])/5.0

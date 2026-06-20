@@ -193,3 +193,81 @@ class _Assembled14_1_10:
 model_14_1_10 = _Assembled14_1_10()
 
 
+# --------------------------------------------------------------------------------------
+# Worked model: 14-14-10 -- t_R now also in the 14 (its SO(4)-singlet component), so the
+# up sector grows to 19x19.  Same q_L (14) and b_R (10) embeddings as 14-1-10; the new
+# piece is the t_R = 14-singlet dressing ((3+5cos2h)/8, sqrt5 sin2h/4, ...), which ccwz
+# already reproduces exactly.  Validated to reproduce mchm14.mass_U/mass_D entry-for-entry.
+# --------------------------------------------------------------------------------------
+def _c2(s):
+    return 1 - 2 * s * s            # cos(2h/f)
+
+
+def _s2(s):
+    return 2 * s * _ch(s)           # sin(2h/f)
+
+
+_E_TR_14 = ccwz.embedding('14', 'singlet')
+
+# up q_L: same six dressing functions as 14-1-10, at the 14-14-10 composite indices
+_F_QL_UP_1414 = {3: _F_QL_UP[3], 6: _F_QL_UP[6], 9: _F_QL_UP[8],
+                 11: _F_QL_UP[9], 13: _F_QL_UP[10], 15: _F_QL_UP[11]}
+# up t_R in the 14-singlet
+_F_TR_1414 = {4: lambda s: -(3 + 5 * _c2(s)) / 8, 7: lambda s: -_r5 * _s2(s) / 4,
+              10: lambda s: -1j * _r5 * _s2(s) / 4, 12: lambda s: -_r5 * (1 - _c2(s)) / 8,
+              14: lambda s: -_r5 * (1 - _c2(s)) / 8, 16: lambda s: _r5 * (1 - _c2(s)) / 8}
+_F_QL_DN_1414 = {4: _F_QL_DN[4], 6: _F_QL_DN[5], 8: _F_QL_DN[6]}
+_F_BR_1414 = {3: _F_BR[3], 10: _F_BR[7], 11: _F_BR[8]}
+
+_C_QL_UP_1414 = _solve_composites('14', _E_QL_UP, _F_QL_UP_1414)
+_C_TR_1414 = _solve_composites('14', _E_TR_14, _F_TR_1414)
+_C_QL_DN_1414 = _solve_composites('14', _E_QL_DN, _F_QL_DN_1414)
+_C_BR_1414 = _solve_composites('10', _E_BR, _F_BR_1414)
+
+
+class _Assembled14_14_10:
+    """Drop-in 14-14-10 model assembled by the generic machinery (q_L, t_R in the 14; b_R in
+    the 10).  Gauge sector reused from the hand-coded module."""
+    def mass_U(self, P, sh):
+        m = np.zeros((19, 19), dtype=complex)
+        m[0, 0], m[1, 1] = _MU * 1e-3, _MC * 1e-3
+        for k, ck in _C_QL_UP_1414.items():
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh)
+        for k, ck in _C_TR_1414.items():
+            m[k, 2] = np.conjugate(P['Delta_u']) * ccwz.overlap('14', ck, _E_TR_14, sh)
+        mQ, mU, mD, mYu, Yu, Yd, Ytu = (P['mQ'], P['mU'], P['mD'], P['mYu'], P['Yu'], P['Yd'], P['Ytu'])
+        for k in (3, 6, 9, 11, 13, 15):
+            m[k, k] = mQ
+        for k in (4, 7, 10, 12, 14, 16):
+            m[k, k] = mU
+        for k in (5, 8, 17, 18):
+            m[k, k] = mD
+        m[3, 4] = mYu + 4.0 * (Yu + Ytu) / 5.0
+        m[6, 5] = Yd / 2.0; m[6, 7] = mYu + Yu / 2.0
+        m[9, 8] = Yd / 2.0; m[9, 10] = mYu + Yu / 2.0
+        m[11, 12] = m[13, 14] = m[15, 16] = mYu
+        return m
+
+    def mass_D(self, P, sh):
+        m = np.zeros((12, 12), dtype=complex)
+        m[0, 0], m[1, 1] = _MD * 1e-3, _MS * 1e-3
+        for k, ck in _C_QL_DN_1414.items():
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh)
+        for k, ck in _C_BR_1414.items():
+            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh)
+        mQ, mU, mD, mYu, Yu, Yd = P['mQ'], P['mU'], P['mD'], P['mYu'], P['Yu'], P['Yd']
+        m[3, 3], m[10, 10], m[11, 11] = mD, mD, mD
+        m[4, 4], m[6, 6], m[8, 8] = mQ, mQ, mQ
+        m[5, 5], m[7, 7], m[9, 9] = mU, mU, mU
+        m[4, 3] = Yd / 2.0; m[4, 5] = mYu + Yu / 2.0
+        m[6, 7] = mYu; m[8, 9] = mYu
+        return m
+
+    def __getattr__(self, name):
+        from . import mchm14
+        return getattr(mchm14, name)
+
+
+model_14_14_10 = _Assembled14_14_10()
+
+
