@@ -18,7 +18,6 @@ is then a rotation by theta = h/f in the (hat,4) plane of the vector.  Higher ir
 obtained by lifting this vector rotation (S -> U S U^T on tensors).
 """
 import numpy as np
-from scipy.linalg import expm
 
 # ---- SO(5) in the vector (5) ------------------------------------------------------- #
 def gen_vector(A, B):
@@ -32,9 +31,15 @@ UNBROKEN = [(0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3)]   # SO(4)
 BROKEN = [(0, 4), (1, 4), (2, 4), (3, 4)]                     # SO(5)/SO(4)
 
 
-def U_vector(theta, hat=3):
-    """Goldstone matrix in the 5: rotation by theta = h/f in the (hat,4) plane."""
-    return expm(1j * theta * gen_vector(hat, 4)).real
+def U_vector(sh, hat=3):
+    """Goldstone matrix in the 5 as a function of sh = sin(h/f) (pyCHM's convention).
+    A vev along a single broken generator is a planar rotation by h/f; built in closed form
+    with c = sqrt(1-sh^2), exact and matching the rest of the library bit-for-bit
+    (equivalently expm(i*arcsin(sh)*T^{hat,4})).  Pass sh=sin(angle), not the angle."""
+    U = np.eye(5)
+    c, s = np.sqrt(max(0.0, 1.0 - sh * sh)), sh
+    U[hat, hat] = c; U[4, 4] = c; U[hat, 4] = s; U[4, hat] = -s
+    return U
 
 
 # ---- lifts to the 10 (adjoint) and 14 (symmetric traceless) ------------------------ #
@@ -57,9 +62,9 @@ def _antisym_basis():
     return B   # 10 orthonormal antisymmetric matrices
 
 
-def U_rep(rep, theta, hat=3):
-    """Goldstone matrix in irrep `rep` in {'5','10','14'}, in the orthonormal tensor basis."""
-    Uv = U_vector(theta, hat)
+def U_rep(rep, sh, hat=3):
+    """Goldstone matrix in irrep `rep` in {'5','10','14'} (sh = sin(h/f)), tensor basis."""
+    Uv = U_vector(sh, hat)
     if rep == '5':
         return Uv
     basis = _sym_traceless_basis() if rep == '14' else _antisym_basis()
@@ -88,9 +93,9 @@ def embedding(rep, kind):
     raise ValueError(rep)
 
 
-def overlap(rep, bra, ket, theta, hat=3):
-    """<bra| U_rep(theta) |ket>: the Higgs-dressed mixing factor between two embeddings."""
-    Uv = U_vector(theta, hat)
+def overlap(rep, bra, ket, sh, hat=3):
+    """<bra| U_rep |ket> (sh = sin(h/f)): the Higgs-dressed mixing factor between embeddings."""
+    Uv = U_vector(sh, hat)
     if rep == '5':
-        return float(bra @ Uv @ ket)
-    return float(np.sum(bra * (Uv @ ket @ Uv.T)))   # tensor inner product after S->USU^T
+        return complex(np.vdot(bra, Uv @ ket))
+    return complex(np.sum(np.conjugate(bra) * (Uv @ ket @ Uv.T)))

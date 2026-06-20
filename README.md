@@ -133,10 +133,23 @@ ccwz.overlap('14', ES, ES, h_over_f)        # == (3 + 5 cos(2 h/f)) / 8, exactly
 
 `tests/test_ccwz.py` checks these reproduce the hand-coded factors (the 14 singlet overlap to machine
 precision). Everything downstream — the Coleman–Weinberg potential, the vacuum, the spectrum and the
-four tuning measures (`routes.py`, `potential.py`, `spectrum.py`, `tuning.py`) — is already
-representation-agnostic and dispatches on a `model=` string. The remaining step to a fully generic
-generator is the per-model assembler: emit `mass_U`/`mass_D` from (rep choices, elementary embeddings,
-composite masses), validated against the hand-coded models.
+four tuning measures — is already representation-agnostic and dispatches on a `model=` string.
+
+**The assembler (`assemble.py`) closes the loop.** Given a declarative spec — the partner
+representation, the elementary embeddings, and the composite states (masses + SO(5) content) — it
+emits `mass_U`/`mass_D` with the Higgs dressing supplied by `ccwz`, for *any* representation. It is
+validated to reproduce the hand-coded **5-5-5** mass matrices entry-for-entry (to machine precision),
+and the assembled model — registered as `pychm.Model('5-5-5-assembled')` — reproduces the full
+validated 5-5-5 spectrum and tuning end-to-end (to the precision the tuned vacuum permits):
+
+```python
+import pychm
+pychm.Model('5-5-5-assembled').spectrum(point)   # built from embeddings + ccwz, not hand-coded
+```
+
+So a composite-Higgs model is now specifiable by group-theoretic data. Extending the bundled specs
+to the 14-plet models (the embeddings are larger but the machinery is identical) is the remaining
+bookkeeping; `tests/test_assemble.py` is the regression harness.
 
 ## Status
 
@@ -149,8 +162,9 @@ composite masses), validated against the hand-coded models.
 | 14-14-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
+| generic mass-matrix assembler (`assemble.py`), reproduces 5-5-5 end-to-end | ✅ |
+| bundled assembler specs for the 14-plet models | 🔜 |
 | CI matrix across models × routes | 🔜 |
-| generic mass-matrix assembler (any partner rep from embeddings) | 🔜 |
 
 ## Licence
 MIT.

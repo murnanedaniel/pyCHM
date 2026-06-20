@@ -12,12 +12,13 @@ Dual route (form-factor / mass-eigenvalue), pure numpy+scipy, no private depende
 (divergence-subtracted momentum integral) selects the Coleman-Weinberg evaluation; both
 diagonalise the same mass matrices.  See README for the validation status and roadmap.
 """
-from . import mchm5, mchm14, mchm14_1_10, routes, potential, spectrum, tuning
+from . import mchm5, mchm14, mchm14_1_10
+from . import assemble, routes, potential, spectrum, tuning
 
 __version__ = "0.1.0"
 __all__ = ["Model", "mchm5", "mchm14", "mchm14_1_10", "routes", "potential", "spectrum", "tuning"]
 
-_MODELS = {"5-5-5": mchm5, "14-14-10": mchm14, "14-1-10": mchm14_1_10}
+_MODELS = {"5-5-5": mchm5, "14-14-10": mchm14, "14-1-10": mchm14_1_10, '5-5-5-assembled': assemble.model_555}
 
 
 class Model:

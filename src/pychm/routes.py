@@ -28,8 +28,9 @@ and lepton sectors drop out of V(s_h)-V(0) and are omitted.
 import numpy as np
 from scipy import integrate
 from . import mchm5, mchm14, mchm14_1_10
+from . import assemble
 
-_MODELS = {'5-5-5': mchm5, '14-14-10': mchm14, '14-1-10': mchm14_1_10}
+_MODELS = {'5-5-5': mchm5, '14-14-10': mchm14, '14-1-10': mchm14_1_10, '5-5-5-assembled': assemble.model_555}
 
 _PI2 = np.pi**2
 # uniform Euclidean grid; the subtracted integrand decays as 1/pE^3 so a moderate cutoff
