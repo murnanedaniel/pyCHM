@@ -117,6 +117,27 @@ On this benchmark pyCHM reproduces the independent engine to **0.035% on `sh`, 0
 <0.01% on `m_h`** (matched scheme at the oracle `f`) and **0.038% on `Delta_BG`**
 (`tests/test_mchm14_1_10.py`).
 
+## Toward a generic spectrum generator (`ccwz.py`)
+
+The three models above hand-code their fermion mass matrices. Their *only* representation-specific
+content is the Higgs (Goldstone) dressing — the s_h factors `cos(h/f), sin(h/f), cos²(h/2f)` for the
+**5**; `(3+5cos2h/f)/8, √5 sin(2h/f)/4` for the **14** — which are just the matrix elements of the
+Goldstone matrix `U(h)` in the chosen SO(5) irrep. `pychm.ccwz` builds `U_R(h)` for the 5, 10 and 14
+from group theory, so this dressing follows from one construction for any partner representation:
+
+```python
+import numpy as np, pychm.ccwz as ccwz
+ES = ccwz.embedding('14', 'singlet')
+ccwz.overlap('14', ES, ES, h_over_f)        # == (3 + 5 cos(2 h/f)) / 8, exactly
+```
+
+`tests/test_ccwz.py` checks these reproduce the hand-coded factors (the 14 singlet overlap to machine
+precision). Everything downstream — the Coleman–Weinberg potential, the vacuum, the spectrum and the
+four tuning measures (`routes.py`, `potential.py`, `spectrum.py`, `tuning.py`) — is already
+representation-agnostic and dispatches on a `model=` string. The remaining step to a fully generic
+generator is the per-model assembler: emit `mass_U`/`mass_D` from (rep choices, elementary embeddings,
+composite masses), validated against the hand-coded models.
+
 ## Status
 
 | | state |
@@ -127,7 +148,9 @@ On this benchmark pyCHM reproduces the independent engine to **0.035% on `sh`, 0
 | CI route-equivalence on random points | ✅ |
 | 14-14-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
+| generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
 | CI matrix across models × routes | 🔜 |
+| generic mass-matrix assembler (any partner rep from embeddings) | 🔜 |
 
 ## Licence
 MIT.
