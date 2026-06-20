@@ -164,7 +164,7 @@ bookkeeping; `tests/test_assemble.py` is the regression harness.
 | generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
 | generic mass-matrix assembler (`assemble.py`), reproduces 5-5-5 end-to-end | ✅ |
 | bundled assembler specs for the 14-plet models | 🔜 |
-| CI matrix across models × routes | 🔜 |
+| CI: all models + route-equivalence tested (24 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence
 MIT.
