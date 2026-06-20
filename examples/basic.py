@@ -37,3 +37,22 @@ t14 = m14.tuning(point14)
 if t14:
     print("14-14-10 tuning:  Delta_BG=%.1f  HOT=%.1f  I=%.2f nats"
           % (t14['BG'], t14['HOT'], t14['I']))
+
+
+# The 14-1-10 representation (q_L in the symmetric 14 of SO(5); t_R an SO(4) singlet;
+# b_R in the 10).  With a singlet t_R partner the up Y-sector collapses to a single
+# (mU, Yu) -- no mYu/Ytu -- so the fundamental basis is {mQ, mU, mD, Yu, Yd, Delta_*}.
+m1410 = pychm.Model('14-1-10')
+point1410 = dict(
+    mQ=1.5774575432442343, mU=0.053295037861913734, mD=3.9639579843374463,
+    Yu=3.213522953043455, Yd=1.5033041681268544,
+    Delta_q=0.8229454568382461, Delta_u=3.843401100178204, Delta_d=0.19968869968780683,
+    f=1.1329813572955627, f1=1.5049448725076554, fX=1.4519742141888066,
+    g=0.6709494105248374, gp=0.3581380846874656, grho=3.3254933316652062, gX=9.7650801141742978)
+
+s1410 = m1410.spectrum(point1410)
+print("\n14-1-10 spectrum:", {k: round(v, 4) for k, v in s1410.items()} if s1410 else "no EWSB")
+t1410 = m1410.tuning(point1410)
+if t1410:
+    print("14-1-10 tuning:  Delta_BG=%.1f  HOT=%.1f  I=%.2f nats"
+          % (t1410['BG'], t1410['HOT'], t1410['I']))

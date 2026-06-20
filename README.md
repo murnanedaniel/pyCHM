@@ -94,6 +94,29 @@ differentiated in the 14-14-10 Lagrangian-mass basis `{mQ, mU, mD, mYu, mSYu, mS
 with the two singlet-Y combinations `mSYu = mYu + Yu/2` and `mSYtu = mYu + 4(Yu+Ytu)/5` held
 independent of `mYu`.
 
+### 14-1-10
+
+The **14-1-10** representation (`q_L` partner in the symmetric **14** of SO(5), `t_R` partner an
+SO(4) **singlet**, `b_R` in the **10**) is the simpler cousin: with a singlet `t_R` partner the
+up Y-sector collapses to a single `(mU, Yu)` — no `mYu`/`Ytu` — so the fundamental massive basis is
+just `{mQ, mU, mD, Yu, Yd, Δq, Δu, Δd}`, each mapping directly onto a mass-matrix entry.
+
+```python
+m = pychm.Model('14-1-10')
+point = dict(
+    mQ=1.5774575432442343, mU=0.053295037861913734, mD=3.9639579843374463,
+    Yu=3.213522953043455, Yd=1.5033041681268544,
+    Delta_q=0.8229454568382461, Delta_u=3.843401100178204, Delta_d=0.19968869968780683,
+    f=1.1329813572955627, f1=1.5049448725076554, fX=1.4519742141888066,
+    g=0.6709494105248374, gp=0.3581380846874656, grho=3.3254933316652062, gX=9.7650801141742978)
+m.spectrum(point)   # xi ~ 0.0485, m_t ~ 0.154 TeV
+m.tuning(point)     # Delta_BG ~ 7.3 (argmax Delta_q)
+```
+
+On this benchmark pyCHM reproduces the independent engine to **0.035% on `sh`, 0.034% on `m_t`,
+<0.01% on `m_h`** (matched scheme at the oracle `f`) and **0.038% on `Delta_BG`**
+(`tests/test_mchm14_1_10.py`).
+
 ## Status
 
 | | state |
@@ -103,7 +126,7 @@ independent of `mYu`.
 | four fine-tuning measures (BG/HOT/I/KL), validated to <0.5% | ✅ |
 | CI route-equivalence on random points | ✅ |
 | 14-14-10 representation (eigenvalue route), validated to <0.1% | ✅ |
-| 14-1-10 representation | 🔜 |
+| 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | CI matrix across models × routes | 🔜 |
 
 ## Licence

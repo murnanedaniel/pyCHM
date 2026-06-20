@@ -35,7 +35,14 @@ TUNED = ['mU', 'mUt', 'mYu', 'mSYu', 'mD', 'mDt', 'mYd', 'mSYd',
 TUNED_14 = ['mQ', 'mU', 'mD', 'mYu', 'mSYu', 'mSYtu', 'Yd',
             'Delta_q', 'Delta_u', 'Delta_d']
 
-_TUNED = {'5-5-5': TUNED, '14-14-10': TUNED_14}
+# 14-1-10 fundamental massive params.  The t_R partner is an SO(4) singlet, so the
+# up Y-sector collapses to a single (mU, Yu): the matrix-entry params ARE the
+# Lagrangian-mass params (functions_14_1_10_log maps each x = exp(log_x) directly),
+# so every parameter is differentiated by plain log-scaling -- no (mY, mSY) basis.
+TUNED_14_1_10 = ['mQ', 'mU', 'mD', 'Yu', 'Yd',
+                 'Delta_q', 'Delta_u', 'Delta_d']
+
+_TUNED = {'5-5-5': TUNED, '14-14-10': TUNED_14, '14-1-10': TUNED_14_1_10}
 
 
 def _perturb(P, key, fac, model='5-5-5'):
