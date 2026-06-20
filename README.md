@@ -166,7 +166,7 @@ harness (every model checked entry-for-entry and end-to-end against its hand-cod
 | 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
 | generic mass-matrix assembler (`assemble.py`), reproduces **all 3 models** (reps 5/10/14) | ✅ |
-| CI: all models + route-equivalence tested (24 tests, 3.9/3.11/3.12) | ✅ |
+| CI: all models (hand-coded + assembled) + route-equivalence (27 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence
 MIT.
