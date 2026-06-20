@@ -38,3 +38,34 @@ def test_assembled_vacuum_is_consistent():
     sa = pychm.Model('5-5-5-assembled').spectrum(REF)
     for k in ('xi', 'mt', 'mb', 'mh', 'f'):
         assert np.isclose(sh[k], sa[k], rtol=3e-2), (k, sh[k], sa[k])
+
+
+# ---- 14-1-10: q_L in the 14, b_R in the 10, t_R an SO(4) singlet --------------------- #
+REF_14_1_10 = dict(
+    mQ=1.5774575432442343, mU=0.053295037861913734, mD=3.9639579843374463,
+    Yu=3.213522953043455, Yd=1.5033041681268544, Delta_q=0.8229454568382461,
+    Delta_u=3.843401100178204, Delta_d=0.19968869968780683, f=1.1329813572955627,
+    f1=1.5049448725076554, fX=1.4519742141888066, g=0.6709494105248374,
+    gp=0.3581380846874656, grho=3.3254933316652062, gX=2.6398012309529406)
+
+
+def test_14_1_10_matrices_match_handcoded():
+    """Assembled from embeddings in the 14 (q_L) and 10 (b_R) -- two more SO(5) irreps --
+    with the dressing from ccwz; reproduces the hand-coded 14x14/9x9 matrices entry-for-entry."""
+    from pychm import mchm14_1_10
+    asm = assemble.model_14_1_10
+    for sh in (0.05, 0.2, 0.4, 0.6, 0.85):
+        assert np.max(np.abs(asm.mass_U(REF_14_1_10, sh) - mchm14_1_10.mass_U(REF_14_1_10, sh))) < 1e-12
+        assert np.max(np.abs(asm.mass_D(REF_14_1_10, sh) - mchm14_1_10.mass_D(REF_14_1_10, sh))) < 1e-12
+
+
+def test_14_1_10_potential_and_vacuum():
+    from pychm import routes
+    shs = np.linspace(0.0, 0.32, 13)
+    Vh = routes.potential_curve(REF_14_1_10, shs, model='14-1-10')
+    Va = routes.potential_curve(REF_14_1_10, shs, model='14-1-10-assembled')
+    assert np.allclose(Vh, Va, rtol=1e-6, atol=1e-12 * (abs(Vh).max() + 1e-30))
+    sh = pychm.Model('14-1-10').spectrum(REF_14_1_10)
+    sa = pychm.Model('14-1-10-assembled').spectrum(REF_14_1_10)
+    for k in ('xi', 'mt', 'mb', 'mh', 'f'):
+        assert np.isclose(sh[k], sa[k], rtol=3e-2), (k, sh[k], sa[k])

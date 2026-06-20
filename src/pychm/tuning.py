@@ -43,7 +43,8 @@ TUNED_14_1_10 = ['mQ', 'mU', 'mD', 'Yu', 'Yd',
                  'Delta_q', 'Delta_u', 'Delta_d']
 
 _TUNED = {'5-5-5': TUNED, '14-14-10': TUNED_14, '14-1-10': TUNED_14_1_10,
-          '5-5-5-assembled': TUNED}
+          '5-5-5-assembled': TUNED,
+          '14-1-10-assembled': TUNED_14_1_10}
 
 
 def _perturb(P, key, fac, model='5-5-5'):

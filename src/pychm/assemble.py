@@ -102,3 +102,94 @@ class _Assembled555:
 
 model_555 = _Assembled555()
 
+
+# --------------------------------------------------------------------------------------
+# Worked model: 14-1-10, assembled from embeddings in the 14 (q_L) and 10 (b_R), the t_R
+# an SO(4) singlet (h-independent mixing).  The composite-partner spectrum (masses,
+# proto-Yukawas) is declared; only the Higgs dressing of the elementary-composite mixings
+# is computed by ccwz.  Validated to reproduce mchm14_1_10.mass_U/mass_D entry-for-entry.
+# --------------------------------------------------------------------------------------
+_r5 = np.sqrt(5.0)
+
+
+def _ch(s):
+    return np.sqrt(max(0.0, 1.0 - s * s))
+
+
+def _tensor(rep, entries):
+    """Build a 5x5 (anti)symmetric tensor from {(i,j): value} (j>i); rep '14' symmetric, '10' antisymmetric."""
+    M = np.zeros((5, 5), dtype=complex)
+    for (i, j), v in entries.items():
+        M[i, j] = v
+        M[j, i] = v if rep == '14' else -v
+    return M
+
+
+# q_L in the 14: up-component sym(e3 (x) (e0+e4)); down-component (e0 e3); b_R in the 10: (e0^e1 + e0^e4)
+_E_QL_UP = _tensor('14', {(0, 3): 0.5, (3, 4): 0.5})
+_E_QL_DN = _tensor('14', {(0, 3): 1 / _R2})
+_E_BR = _tensor('10', {(0, 1): 0.5, (0, 4): 0.5})
+
+
+def _solve_composites(rep, E, factor_fns):
+    """The composite states the elementary couples to, as tensors in `rep`, obtained from the
+    declared Higgs-dressing functions f_k(sh) = <c_k|U_rep|E>.  The 1-parameter Goldstone orbit
+    of E spans a small subspace, so c_k is the minimal-norm tensor reproducing f_k (lstsq)."""
+    basis = ccwz._sym_traceless_basis() if rep == '14' else ccwz._antisym_basis()
+    shs = np.linspace(0.05, 0.98, 40)
+    G = np.array([[np.sum(b * (ccwz.U_vector(s) @ E @ ccwz.U_vector(s).T)) for b in basis] for s in shs])
+    out = {}
+    for idx, fn in factor_fns.items():
+        x, *_ = np.linalg.lstsq(G, np.array([fn(s) for s in shs], dtype=complex), rcond=None)
+        out[idx] = sum(np.conjugate(xi) * b for xi, b in zip(x, basis))
+    return out
+
+
+# Higgs-dressing functions (functions of sh = sin(h/f)); double-angle for the 14, half-angle for the 10
+_F_QL_UP = {3: lambda s: _r5 * 2 * s * _ch(s) / 4, 6: lambda s: -(_ch(s) + (1 - 2 * s * s)) / 2,
+            8: lambda s: -1j * (_ch(s) - (1 - 2 * s * s)) / 2, 9: lambda s: (2 * s - 2 * s * _ch(s)) / 4,
+            10: lambda s: -2 * s * _ch(s) / 4, 11: lambda s: (2 * s + 2 * s * _ch(s)) / 4}
+_F_QL_DN = {4: lambda s: -_ch(s), 5: lambda s: -s / _R2, 6: lambda s: 1j * s / _R2}
+_F_BR = {3: lambda s: -1j * s / _R2, 7: lambda s: -(1 - _ch(s)) / 2, 8: lambda s: -(1 + _ch(s)) / 2}
+
+_C_QL_UP = _solve_composites('14', _E_QL_UP, _F_QL_UP)
+_C_QL_DN = _solve_composites('14', _E_QL_DN, _F_QL_DN)
+_C_BR = _solve_composites('10', _E_BR, _F_BR)
+
+
+class _Assembled14_1_10:
+    """Drop-in 14-1-10 model assembled by the generic machinery; gauge sector reused from
+    the hand-coded module (representation-independent two-site structure)."""
+    def mass_U(self, P, sh):
+        m = np.zeros((14, 14), dtype=complex)
+        m[0, 0], m[1, 1] = _MU * 1e-3, _MC * 1e-3
+        for k, ck in _C_QL_UP.items():
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh)
+        m[4, 2] = -np.conjugate(P['Delta_u'])                      # t_R singlet: no Goldstone dressing
+        mQ, mU, mD, Yu, Yd = P['mQ'], P['mU'], P['mD'], P['Yu'], P['Yd']
+        m[3, 3], m[3, 4], m[4, 4], m[5, 5] = mQ, 2 * Yu / _r5, mU, mD
+        m[6, 5], m[6, 6], m[7, 7], m[8, 7], m[8, 8] = Yd / 2, mQ, mD, Yd / 2, mQ
+        m[9, 9] = m[10, 10] = m[11, 11] = mQ
+        m[12, 12] = m[13, 13] = mD
+        return m
+
+    def mass_D(self, P, sh):
+        m = np.zeros((9, 9), dtype=complex)
+        m[0, 0], m[1, 1] = _MD * 1e-3, _MS * 1e-3
+        for k, ck in _C_QL_DN.items():
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh)
+        for k, ck in _C_BR.items():
+            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh)
+        mQ, mD, Yd = P['mQ'], P['mD'], P['Yd']
+        m[3, 3], m[4, 3], m[4, 4], m[5, 5] = mD, Yd / 2, mQ, mQ
+        m[6, 6], m[7, 7], m[8, 8] = mQ, mD, mD
+        return m
+
+    def __getattr__(self, name):
+        from . import mchm14_1_10
+        return getattr(mchm14_1_10, name)
+
+
+model_14_1_10 = _Assembled14_1_10()
+
+

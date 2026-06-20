@@ -138,18 +138,19 @@ four tuning measures — is already representation-agnostic and dispatches on a 
 **The assembler (`assemble.py`) closes the loop.** Given a declarative spec — the partner
 representation, the elementary embeddings, and the composite states (masses + SO(5) content) — it
 emits `mass_U`/`mass_D` with the Higgs dressing supplied by `ccwz`, for *any* representation. It is
-validated to reproduce the hand-coded **5-5-5** mass matrices entry-for-entry (to machine precision),
-and the assembled model — registered as `pychm.Model('5-5-5-assembled')` — reproduces the full
-validated 5-5-5 spectrum and tuning end-to-end (to the precision the tuned vacuum permits):
+validated to reproduce the hand-coded **5-5-5** *and* **14-1-10** mass matrices entry-for-entry (to
+machine precision) — exercising the **5**, **10** and **14** of SO(5) — and the assembled models —
+registered as `pychm.Model('5-5-5-assembled')` and `pychm.Model('14-1-10-assembled')` — reproduce the
+full validated spectra and tuning end-to-end (to the precision the tuned vacuum permits):
 
 ```python
 import pychm
-pychm.Model('5-5-5-assembled').spectrum(point)   # built from embeddings + ccwz, not hand-coded
+pychm.Model('14-1-10-assembled').spectrum(point)   # built from 14/10 embeddings + ccwz, not hand-coded
 ```
 
-So a composite-Higgs model is now specifiable by group-theoretic data. Extending the bundled specs
-to the 14-plet models (the embeddings are larger but the machinery is identical) is the remaining
-bookkeeping; `tests/test_assemble.py` is the regression harness.
+So a composite-Higgs model is now specifiable by group-theoretic data. The remaining hand-coded model,
+14-14-10 (t_R also in the 14), is the same machinery with a larger embedding spec;
+`tests/test_assemble.py` is the regression harness.
 
 ## Status
 
@@ -162,8 +163,8 @@ bookkeeping; `tests/test_assemble.py` is the regression harness.
 | 14-14-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
-| generic mass-matrix assembler (`assemble.py`), reproduces 5-5-5 end-to-end | ✅ |
-| bundled assembler specs for the 14-plet models | 🔜 |
+| generic mass-matrix assembler (`assemble.py`), reproduces 5-5-5 + 14-1-10 (reps 5/10/14) | ✅ |
+| bundled assembler spec for 14-14-10 (t_R in the 14) | 🔜 |
 | CI: all models + route-equivalence tested (24 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence

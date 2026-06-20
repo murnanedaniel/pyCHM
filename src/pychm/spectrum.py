@@ -6,7 +6,7 @@ from .potential import V_EW
 
 G2, GP = 0.6483, 0.3585   # SU(2)_L, U(1)_Y couplings (for m_W, m_Z)
 
-_MODELS = {'5-5-5': mchm5, '14-14-10': mchm14, '14-1-10': mchm14_1_10, '5-5-5-assembled': assemble.model_555}
+_MODELS = {'5-5-5': mchm5, '14-14-10': mchm14, '14-1-10': mchm14_1_10, '5-5-5-assembled': assemble.model_555, '14-1-10-assembled': assemble.model_14_1_10}
 
 
 def _higgs_mass2(P, xi, route, f, model='5-5-5'):
