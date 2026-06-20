@@ -27,7 +27,9 @@ and lepton sectors drop out of V(s_h)-V(0) and are omitted.
 """
 import numpy as np
 from scipy import integrate
-from . import mchm5
+from . import mchm5, mchm14
+
+_MODELS = {'5-5-5': mchm5, '14-14-10': mchm14}
 
 _PI2 = np.pi**2
 # uniform Euclidean grid; the subtracted integrand decays as 1/pE^3 so a moderate cutoff
@@ -56,23 +58,24 @@ def _K_mom(m2):
 _KERNEL = {'eigenvalue': _K_closed, 'momentum': _K_mom}
 
 
-def _sector_masses(P, sh):
+def _sector_masses(P, sh, model='5-5-5'):
     """All s_h-dependent mass-squared eigenvalues with their CW coefficients."""
+    mod = _MODELS[model]
     out = []
-    for M in (mchm5.mass_U(P, sh), mchm5.mass_D(P, sh)):
+    for M in (mod.mass_U(P, sh), mod.mass_D(P, sh)):
         sv = np.linalg.svd(M, compute_uv=False)
         out.append((sv**2, 3.0*_CF))
-    out.append((np.abs(np.linalg.eigvalsh(mchm5.mass2_W(P, sh))), 2.0*_CV))
-    eZ = np.sort(np.abs(np.linalg.eigvalsh(mchm5.mass2_Z(P, sh))))
+    out.append((np.abs(np.linalg.eigvalsh(mod.mass2_W(P, sh))), 2.0*_CV))
+    eZ = np.sort(np.abs(np.linalg.eigvalsh(mod.mass2_Z(P, sh))))
     out.append((eZ[1:], _CV))
     return out
 
 
-def potential_curve(P, shs, route='eigenvalue'):
+def potential_curve(P, shs, route='eigenvalue', model='5-5-5'):
     """Total V(s_h) over the given s_h values, offset to V(0)=0."""
     K = _KERNEL[route]
     V = np.zeros(len(shs))
     for j, sh in enumerate(shs):
-        for m2, c in _sector_masses(P, max(sh, 1e-9)):
+        for m2, c in _sector_masses(P, max(sh, 1e-9), model=model):
             V[j] += c * np.sum(K(m2))
     return V - V[0]

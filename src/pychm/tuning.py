@@ -27,10 +27,37 @@ from . import spectrum
 TUNED = ['mU', 'mUt', 'mYu', 'mSYu', 'mD', 'mDt', 'mYd', 'mSYd',
          'Delta_uL', 'Delta_uR', 'Delta_dL', 'Delta_dR']
 
+# 14-14-10 fundamental massive params.  The two singlet-Y combinations are
+#   mSYu  = mYu + Yu/2    (the (6,7)/(9,8) matrix entries)
+#   mSYtu = mYu + 4(Yu+Ytu)/5    (the (3,4) entry, top-partner Y)
+# both held independent of mYu in the BG basis; differentiating Yu/Ytu directly
+# would mix these into mYu, not the Lagrangian-mass basis pypngb defines tuning over.
+TUNED_14 = ['mQ', 'mU', 'mD', 'mYu', 'mSYu', 'mSYtu', 'Yd',
+            'Delta_q', 'Delta_u', 'Delta_d']
 
-def _perturb(P, key, fac):
+_TUNED = {'5-5-5': TUNED, '14-14-10': TUNED_14}
+
+
+def _perturb(P, key, fac, model='5-5-5'):
     """Scale fundamental parameter `key` by `fac`, in the (mY, mSY) basis."""
     q = dict(P)
+    if model == '14-14-10':
+        # 14-14-10 (mYu, mSYu, mSYtu) basis: change Yu/Ytu so that whichever
+        # combination is *not* being varied stays fixed.
+        mYu, mSYu, mSYtu = P['mYu'], P['mYu'] + P['Yu']/2.0, P['mYu'] + 4.0*(P['Yu'] + P['Ytu'])/5.0
+        if key == 'mSYu':
+            mSYu *= fac
+        elif key == 'mSYtu':
+            mSYtu *= fac
+        elif key == 'mYu':
+            mYu *= fac
+        else:
+            q[key] = P[key]*fac
+            return q
+        q['mYu'] = mYu
+        q['Yu'] = 2.0*(mSYu - mYu)
+        q['Ytu'] = 5.0*(mSYtu - mYu)/4.0 - q['Yu']
+        return q
     if key == 'mSYu':
         q['Yu'] = (P['mYu'] + P['Yu'])*fac - P['mYu']
     elif key == 'mYu':
@@ -44,23 +71,25 @@ def _perturb(P, key, fac):
     return q
 
 
-def sensitivity_vector(P, route='eigenvalue', pars=TUNED, h=1e-3):
+def sensitivity_vector(P, route='eigenvalue', pars=None, h=1e-3, model='5-5-5'):
     """J_i = d ln f / d ln x_i by central log-difference, or None if no EWSB at the point."""
-    if spectrum.spectrum(P, route=route) is None:
+    if pars is None:
+        pars = _TUNED[model]
+    if spectrum.spectrum(P, route=route, model=model) is None:
         return None
     J = []
     for k in pars:
-        sp = spectrum.spectrum(_perturb(P, k, math.exp(h)), route=route)
-        sm = spectrum.spectrum(_perturb(P, k, math.exp(-h)), route=route)
+        sp = spectrum.spectrum(_perturb(P, k, math.exp(h), model=model), route=route, model=model)
+        sm = spectrum.spectrum(_perturb(P, k, math.exp(-h), model=model), route=route, model=model)
         if sp is None or sm is None:
             J.append(0.0); continue
         J.append((math.log(sp['f']) - math.log(sm['f']))/(2*h))
     return np.array(J)
 
 
-def tuning(P, route='eigenvalue', pars=TUNED):
+def tuning(P, route='eigenvalue', pars=None, model='5-5-5'):
     """Return {BG, HOT, I, KL} (and the sensitivity vector J), or None if no EWSB."""
-    J = sensitivity_vector(P, route=route, pars=pars)
+    J = sensitivity_vector(P, route=route, pars=pars, model=model)
     if J is None:
         return None
     g2 = float(J @ J)

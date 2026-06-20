@@ -18,3 +18,22 @@ t = m.tuning(point)
 if t:
     print("tuning:  Delta_BG=%.1f  HOT=%.1f  I=%.2f nats  KL=%.2f nats"
           % (t['BG'], t['HOT'], t['I'], t['KL']))
+
+
+# The 14-14-10 representation (q_L, t_R in the symmetric 14 of SO(5); b_R in the 10)
+# uses the same eigenvalue-route pipeline.  Its Y sector carries an extra top-partner
+# Yukawa shift Ytu, and the mixings are the SO(5) (Delta_q, Delta_u, Delta_d).
+m14 = pychm.Model('14-14-10')
+point14 = dict(
+    mQ=3.965100934, mU=2.397190093, mD=1.482462237,
+    mYu=0.1478991938, Yu=0.4989142322, Ytu=2.538912347, Yd=0.5293788277,
+    Delta_q=2.850102384, Delta_u=1.915943759, Delta_d=0.2222079908,
+    f=1.4396717743254574, f1=1.8934618718580186, fX=2.2076564878795057,
+    g=0.6709494105248374, gp=0.3581380846874656, grho=5.525258191589697, gX=4.696070132753916)
+
+s14 = m14.spectrum(point14)
+print("\n14-14-10 spectrum:", {k: round(v, 4) for k, v in s14.items()} if s14 else "no EWSB")
+t14 = m14.tuning(point14)
+if t14:
+    print("14-14-10 tuning:  Delta_BG=%.1f  HOT=%.1f  I=%.2f nats"
+          % (t14['BG'], t14['HOT'], t14['I']))

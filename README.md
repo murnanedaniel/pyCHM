@@ -71,6 +71,29 @@ i.e. **0.03% on `xi` and <0.5% on `Delta_BG`**. The fine-tuning is differentiate
 fundamental Lagrangian-mass basis `{mU, mUt, mY, mSY, mD, mDt, …, Δ}`, which is the basis the BG
 number is defined over.
 
+### 14-14-10
+
+The **14-14-10** representation (`q_L` and `t_R` partners in the symmetric **14** of SO(5),
+`b_R` in the **10**) is wired into the same eigenvalue-route pipeline:
+
+```python
+m = pychm.Model('14-14-10')
+point = dict(
+    mQ=3.965100934, mU=2.397190093, mD=1.482462237,
+    mYu=0.1478991938, Yu=0.4989142322, Ytu=2.538912347, Yd=0.5293788277,
+    Delta_q=2.850102384, Delta_u=1.915943759, Delta_d=0.2222079908,
+    f=1.4396717743254574, f1=1.8934618718580186, fX=2.2076564878795057,
+    g=0.6709494105248374, gp=0.3581380846874656, grho=5.525258191589697, gX=4.696070132753916)
+m.spectrum(point)   # xi ~ 0.0268, m_t ~ 0.128 TeV
+m.tuning(point)     # Delta_BG ~ 16.2
+```
+
+On this benchmark pyCHM reproduces the independent engine to **0.0002% on `sh`, <0.01% on `m_t`,
+0.06% on `m_h`** and **~0.1% on `Delta_BG`** (`tests/test_mchm14.py`).  The BG measure is
+differentiated in the 14-14-10 Lagrangian-mass basis `{mQ, mU, mD, mYu, mSYu, mSYtu, Yd, Δq, Δu, Δd}`,
+with the two singlet-Y combinations `mSYu = mYu + Yu/2` and `mSYtu = mYu + 4(Yu+Ytu)/5` held
+independent of `mYu`.
+
 ## Status
 
 | | state |
@@ -79,7 +102,8 @@ number is defined over.
 | electroweak vacuum, spectrum (`xi, f, mt, mb, mh, mW, mZ`) | ✅ |
 | four fine-tuning measures (BG/HOT/I/KL), validated to <0.5% | ✅ |
 | CI route-equivalence on random points | ✅ |
-| 14-14-10, 14-1-10 representations | 🔜 |
+| 14-14-10 representation (eigenvalue route), validated to <0.1% | ✅ |
+| 14-1-10 representation | 🔜 |
 | CI matrix across models × routes | 🔜 |
 
 ## Licence
