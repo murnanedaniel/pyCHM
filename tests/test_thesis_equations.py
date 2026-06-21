@@ -197,9 +197,14 @@ def test_coeffs_14_14_10_structure():
 def test_14_channel_weights_derive_thesis_prefactors():
     """The thesis 14 form factors are the three SO(4)-invariant spurion contractions
     Pi^0/Pi^1/Pi^2 = (1,1)/(2,2)/doubly-projected channels (6-LCHM eq.401).  The squared
-    SO(4)-channel projections of the Goldstone-dressed t_R-singlet are EXACT closed forms, and
-    every thesis Pi_uR / M_u prefactor is one of these Clebsch weights times a single overall
-    coupling constant (4/5).  This upgrades the structure-only check to a derivation."""
+    SO(4)-channel projections of the Goldstone-dressed t_R-singlet are EXACT closed forms (the
+    W11/W22/W33 below, summing to 1) -- this part is genuinely DERIVED from group theory.
+
+    HONESTY (see docs/VALIDATION_AUDIT.md 2.2): the overall magnitude `4/5` is NOT derived here --
+    it is MATCHED to the thesis.  The assertion `(4c^2-s^2)^2/20 == (4/5)*W11` with W11=(...)^2/16
+    holds for ANY constant since (4/5)*(1/16)=1/20, so it reads `4/5` off the thesis prefactor 1/20
+    rather than deriving it.  What is derived: the trig structure and the RATIOS of the channels;
+    what is thesis-input: their absolute scale."""
     from pychm.symbolic import decompose
     W = decompose.channel_weights_sym('14', M.E_TR_14)
     W11, W22, W33 = W[(0.0, 0.0)], W[(0.5, 0.5)], W[(1.0, 1.0)]
@@ -235,7 +240,12 @@ def test_coeffs_14_1_10_tR_singlet_constant():
 # =====================================================================================
 def test_A7_building_blocks_verbatim():
     """App. A7 (eq:formulas): A_L, A_R, A_M, B in mchm5 match the thesis term-for-term.
-    Code uses p2 = -pE2 = Minkowski p^2, so p2**2=p^4, p2**3=p^6."""
+    Code uses p2 = -pE2 = Minkowski p^2, so p2**2=p^4, p2**3=p^6.
+
+    SCOPE: this proves FAITHFUL TRANSCRIPTION (code == thesis), NOT physical correctness -- it
+    cannot detect a thesis error, and the form-factor route these blocks feed is orphaned from the
+    pipeline.  The independent check lives in tests/test_formfactor_route.py (currently xfail).
+    See docs/VALIDATION_AUDIT.md 2.1."""
     m1, m2, m3, m4, m5, Lam, L1, L2, p2 = sp.symbols('m1 m2 m3 m4 m5 Lam L1 L2 p2')
     AL = Lam**2 * (m1**2*m2**2 + m1**2*m4**2 + m2**2*m3**2 - p2*(m1**2+m2**2+m3**2+m4**2) + p2**2)
     AR = Lam**2 * (m1**2*m2**2 + m2**2*m3**2 - p2*(m1**2+m2**2+m3**2+m4**2) + p2**2)
