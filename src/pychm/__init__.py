@@ -16,7 +16,7 @@ diagonalise the same mass matrices.  See README for the validation status and ro
 from . import mchm5, mchm14, mchm14_1_10
 from . import assemble, routes, potential, spectrum, tuning
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
 __all__ = ["Model", "mchm5", "mchm14", "mchm14_1_10", "routes", "potential", "spectrum", "tuning"]
 
 _MODELS = {"5-5-5": mchm5, "14-14-10": mchm14, "14-1-10": mchm14_1_10, '5-5-5-assembled': assemble.model_555, '14-1-10-assembled': assemble.model_14_1_10, '14-14-10-assembled': assemble.model_14_14_10}
