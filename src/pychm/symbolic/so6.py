@@ -278,3 +278,43 @@ def channel_weights6(EqL, th, ts, hat=3):
     out[('1_5',)] = float(abs(dressed[4])**2)                       # e4 singlet
     out[('1_6',)] = float(abs(dressed[5])**2)                       # e5 singlet
     return out
+
+
+# --------------------------------------------------------------------------------------- #
+#  Closed-form (symbolic) dressing in the 6 -- the NMCHM analogue of symbolic.core/decompose:
+#  every overlap is a closed trigonometric function of (theta_h, theta_s), derived not fitted.
+# --------------------------------------------------------------------------------------- #
+def _trig(expr):
+    return sp.simplify(sp.trigsimp(sp.expand_trig(sp.expand(expr))))
+
+
+def _U6_clean_sym(th, ts, hat):
+    """Guard-free closed-form vector Goldstone (Theta = sqrt(th^2+ts^2) > 0) for the symbolic
+    derivations -- no Piecewise, so the closed trig forms simplify (e.g. the weights sum to 1)."""
+    Th = sp.sqrt(th**2 + ts**2)
+    G = th * _gen_vector_sym(hat, COSET) + ts * _gen_vector_sym(4, COSET)
+    return sp.eye(N) + sp.sin(Th) / Th * G + (1 - sp.cos(Th)) / Th**2 * (G * G)
+
+
+def overlap6_sym(bra, ket, th, ts, hat=3):
+    """<bra| U6(th,ts) |ket> in closed trigonometric form (sympy), bra/ket length-6 vectors."""
+    U = _U6_clean_sym(th, ts, hat)
+    bra = sp.Matrix(bra)
+    ket = sp.Matrix(ket)
+    expr = sum(sp.conjugate(bra[i]) * (U * ket)[i] for i in range(N))
+    return _trig(expr)
+
+
+def channel_weights6_sym(EqL, th, ts, hat=3):
+    """Closed-form squared SO(4)-channel weights of the (h,s)-dressed q_L embedding in the 6
+    (symbolic counterpart of channel_weights6): {channel: trig_expr_in(th,ts)}, summing to |E|^2.
+
+    Pure group theory -- the NMCHM analogue of decompose.channel_weights_sym.  At ts=0 the
+    singlet-6 (coset) channel reduces to the MCHM5 vector weight sin^2(theta_h) * |E_coset|^2."""
+    U = _U6_clean_sym(th, ts, hat)
+    d = U * sp.Matrix(EqL)
+    return {
+        ('2,2',): _trig(sum(sp.conjugate(d[i]) * d[i] for i in range(4))),   # bidoublet (0..3)
+        ('1_5',): _trig(sp.conjugate(d[4]) * d[4]),                          # e4 singlet
+        ('1_6',): _trig(sp.conjugate(d[5]) * d[5]),                          # e5 singlet (coset)
+    }

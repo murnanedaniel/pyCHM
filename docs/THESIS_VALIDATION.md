@@ -72,6 +72,12 @@ Closed-form thesis identities (`sp.simplify(...) == 0` or exact numeric):
   (`test_fundamental_embedding_6_is_4_plus_1_plus_1`).
 - the thesis statement that the **4 has no `SU(2)_L×SU(2)_R` bidoublet** (so it cannot host the SM
   `q_L`, the reason the NM4DCHM uses the 6) — `test_spinor_branchings_match_thesis`.
+- the **(h,s) Higgs/singlet dressing is derived in closed form**, not fitted: `so6.channel_weights6_sym`
+  gives the exact closed-trig SO(4)-channel weights of the dressed `q_L` in the 6, which sum to 1
+  (unitarity) and reduce to the MCHM5 `sin²(θ_h)/2` vector weight at `s=0` — the SO(6) analogue of
+  the SO(5) `decompose.channel_weights_sym`, and the symbolic Goldstone lambdifies to the numeric
+  one bit-for-bit (`test_closed_form_channel_weights_derive_unity_and_mchm_limit`,
+  `test_symbolic_goldstone_matches_numeric_bit_for_bit`).
 
 What is *derived* vs *input* vs *anchored* — the honest boundary, identical in spirit to the
 MCHM accounting above:

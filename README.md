@@ -250,7 +250,7 @@ pages.
 | symbolic CCWZ engine (`symbolic/`): dressing derived in closed form, curve-fitting removed | ✅ |
 | arbitrary tensor irreps + SO(4) decomposition (5/10/14/30/…); spinor reps **4**, **16** | ✅ |
 | NMCHM **SO(6)/SO(5)**: reps **6/15/20'/10/4**, closed-form Goldstone + branchings; NM4DCHM6 model + singlet pNGB | ✅ |
-| CI: all models (hand-coded + assembled + symbolic + NMCHM) + route-equivalence (110 tests, 3.9/3.11/3.12) | ✅ |
+| CI: all models (hand-coded + assembled + symbolic + NMCHM) + route-equivalence (113 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence
 MIT.

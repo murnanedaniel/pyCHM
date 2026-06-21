@@ -176,6 +176,42 @@ def test_fundamental_embedding_6_is_4_plus_1_plus_1():
     assert np.argmax(np.abs(s5)) == 4 and np.argmax(np.abs(s6)) == 5
 
 
+def test_symbolic_goldstone_matches_numeric_bit_for_bit():
+    """The symbolic vector Goldstone lambdifies to the numeric U6 to machine precision -- the
+    'symbolic engine reproduces numeric' hallmark of pychm.symbolic, now for SO(6)."""
+    th, ts = sp.symbols('theta_h theta_s', real=True)
+    Usym = so6.U6_vector_sym(th, ts)
+    f = sp.lambdify((th, ts), Usym, modules='numpy')
+    for a, b in [(0.3, 0.2), (0.8, -0.5), (1.1, 0.9), (0.05, 0.01)]:   # origin tested elsewhere
+        assert np.allclose(np.array(f(a, b), dtype=float), so6.U6_vector(a, b), atol=1e-12)
+
+
+def test_closed_form_channel_weights_derive_unity_and_mchm_limit():
+    """The (h,s) channel weights of the 6 are exact closed trig forms (derived, not fitted):
+    they sum to 1 symbolically, and at ts=0 the coset channel is the MCHM5 sin^2(theta_h)/2
+    weight (the SO(6) analogue of decompose.channel_weights_sym)."""
+    th, ts = sp.symbols('theta_h theta_s', real=True, positive=True)
+    EqL = sp.Matrix([1, 0, 0, 1, 0, 0]) / sp.sqrt(2)
+    W = so6.channel_weights6_sym(EqL, th, ts)
+    assert sp.simplify(sum(W.values()) - 1) == 0                       # unitarity, closed form
+    assert sp.simplify(W[('1_6',)].subs(ts, 0) - sp.sin(th)**2 / 2) == 0   # MCHM5 vector weight
+    assert sp.simplify(W[('1_5',)].subs(ts, 0)) == 0
+    # closed-form overlap: <e5|U6|e5> = cos(sqrt(th^2+ts^2)) (the t_R self-overlap)
+    e5 = sp.Matrix([0, 0, 0, 0, 0, 1])
+    assert sp.simplify(so6.overlap6_sym(e5, e5, th, ts) - sp.cos(sp.sqrt(th**2 + ts**2))) == 0
+
+
+def test_symbolic_overlap_matches_numeric():
+    """overlap6_sym (closed form) agrees with the numeric overlap at sample angles."""
+    th, ts = sp.symbols('theta_h theta_s', real=True)
+    bra = so6.embedding('6', 'singlet6')
+    ket = (so6.embedding('6', 'fourplet_0') + so6.embedding('6', 'fourplet_3')) / np.sqrt(2)
+    expr = so6.overlap6_sym(sp.Matrix(bra), sp.Matrix(ket), th, ts)
+    f = sp.lambdify((th, ts), expr, modules='numpy')
+    for a, b in [(0.3, 0.2), (0.7, -0.4)]:
+        assert np.isclose(complex(f(a, b)), so6.overlap('6', bra, ket, a, b), atol=1e-12)
+
+
 def test_channel_weights_sum_to_unity_and_reduce_to_mchm():
     """The (h,s)-dressed q_L embedding splits into the 6's SO(4) channels with weights summing
     to |E|^2=1 (unitarity).  At ts=0 it reduces to the MCHM5 vector split: the q_L (2,2) stays
