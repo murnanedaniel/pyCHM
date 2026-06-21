@@ -5,9 +5,10 @@ import pytest
 
 sp = pytest.importorskip("sympy")
 
-from pychm import ccwz, assemble
-from pychm.symbolic import core, derive
-from pychm.symbolic import models as M
+from pychm.groups import so5 as ccwz
+from pychm import assemble
+from pychm.groups import so5 as core, derive
+from pychm.groups import models as M
 
 
 def test_worked_example_14_singlet():

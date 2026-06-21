@@ -9,8 +9,8 @@ import numpy as np
 from scipy.linalg import expm
 
 from . import so6, branch
-from ..symbolic import decompose as _D
-from ..symbolic.spinors import GAMMA as _G5            # five 4x4 Euclidean SO(5) gammas
+from . import decompose as _D
+from .spinors import GAMMA as _G5            # five 4x4 Euclidean SO(5) gammas
 
 _s1 = np.array([[0, 1], [1, 0]], dtype=complex)
 _s2 = np.array([[0, -1j], [1j, 0]], dtype=complex)

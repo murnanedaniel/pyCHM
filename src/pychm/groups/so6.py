@@ -9,7 +9,7 @@ closed-form (h,s) dressing/channel weights (thesis Ch.7, eq. 474).
 import numpy as np
 import sympy as sp
 
-from ..symbolic import tensors, decompose as _D
+from . import tensors, decompose as _D
 from . import lie, reps, branch
 
 N = 6                       # SO(6) acts on 6-dimensional indices

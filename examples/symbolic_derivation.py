@@ -3,7 +3,7 @@ Run: python examples/symbolic_derivation.py
 """
 import sympy as sp
 
-from pychm.symbolic import core, derive, tensors, decompose, spinors
+from pychm.groups import so5 as core, derive, tensors, decompose, spinors
 
 print("1. The dressing factors are DERIVED in closed form (no curve-fitting):\n")
 ES = core.embedding_sym('14', 'singlet')
@@ -12,7 +12,7 @@ qL = (core.embedding_sym('5', 'fourplet_0') + core.embedding_sym('5', 'fourplet_
 print("   <q_L|U_5|q_L>       =", core.overlap_sym('5', qL, qL), "         (= cos^2(h/2f))")
 
 print("\n2. Each benchmark dressing is PROVEN to be a Goldstone matrix element <c|U_R|E>:\n")
-from pychm.symbolic import models as M
+from pychm.groups import models as M
 for F, rep, E in M.BLOCKS:
     ok = all(derive.is_matrix_element(rep, E, t) for t in F.values())
     print(f"   rep {rep:>2}:  {len(F)} factors, all realisable as <c|U_R|E>: {ok}")

@@ -21,9 +21,9 @@ The assembler builds, in the basis [light..., elementary, (c4,c1) per multiplet]
   M[c4_k,c4_k]=m4_k,  M[c1_k,c1_k]=m1_k,  M[c4_k,c1_k]=mY_k
 """
 import numpy as np
-from . import ccwz
-from .symbolic import models as _sym_models
-from .symbolic.core import lambdify_sh
+from .groups import so5 as ccwz
+from .groups import models as _sym_models
+from .groups.so5 import lambdify_sh
 
 
 def assemble(sector, sh):

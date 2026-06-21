@@ -11,7 +11,7 @@ the same dressing *values* at shifted columns (see assemble.py).
 """
 import sympy as sp
 
-from .core import theta as _t
+from .so5 import theta as _t
 
 _c, _s = sp.cos(_t), sp.sin(_t)
 _c2, _s2 = sp.cos(2 * _t), sp.sin(2 * _t)

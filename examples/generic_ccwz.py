@@ -1,7 +1,8 @@
 """The rep-generic Higgs dressing, and a model assembled from it.  Convention: sh = sin(h/f).
 Run: python examples/generic_ccwz.py
 """
-import numpy as np, pychm, pychm.ccwz as ccwz
+import numpy as np, pychm
+from pychm.groups import so5 as ccwz
 
 sh = 0.48
 ch = np.sqrt(1 - sh**2)

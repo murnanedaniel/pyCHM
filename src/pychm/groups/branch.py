@@ -10,8 +10,8 @@ import math
 
 import numpy as np
 
-from ..symbolic import decompose as _D
-from ..symbolic import tensors as _T
+from . import decompose as _D
+from . import tensors as _T
 
 
 # Casimir-eigenvalue -> (irrep name, dim) tables, in the normalisation

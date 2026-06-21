@@ -10,8 +10,8 @@ import pytest
 
 pytest.importorskip("sympy")
 
-from pychm import ccwz
-from pychm.symbolic import tensors as T, decompose as D
+from pychm.groups import so5 as ccwz
+from pychm.groups import tensors as T, decompose as D
 
 # (name, symmetry, rank, dim, expected SO(4) content as {(jL,jR): mult})
 REPS = [

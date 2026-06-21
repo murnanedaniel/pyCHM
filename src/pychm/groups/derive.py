@@ -9,7 +9,7 @@ closed form is a matrix element of U_R -- the "derive from scratch" check).
 """
 import sympy as sp
 
-from .core import theta, rep_basis_sym, overlap_sym
+from .so5 import theta, rep_basis_sym, overlap_sym
 
 _z = sp.symbols('z')
 

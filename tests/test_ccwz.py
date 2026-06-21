@@ -1,7 +1,7 @@
 """The generic CCWZ Goldstone machinery reproduces the rep-specific s_h-factors that are
 hand-coded in mchm5 / mchm14, computed from group theory alone.  Convention: sh = sin(h/f)."""
 import numpy as np
-import pychm.ccwz as ccwz
+from pychm.groups import so5 as ccwz
 
 
 def test_so5_vector_is_a_rotation():

@@ -8,7 +8,7 @@ gives the 6 (= the SO(6) vector under the local isomorphism); for SO(n) it repro
 import numpy as np
 
 from . import coset as _coset
-from ..symbolic import tensors as _T
+from . import tensors as _T
 
 
 def _lift_generator(basis, G):

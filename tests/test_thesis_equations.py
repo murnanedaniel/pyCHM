@@ -25,9 +25,10 @@ import pytest
 sp = pytest.importorskip("sympy")
 from scipy.linalg import expm
 
-from pychm import ccwz, mchm5, routes, potential, spectrum, tuning
-from pychm.symbolic import core, decompose, spinors
-from pychm.symbolic import models as M
+from pychm.groups import so5 as ccwz
+from pychm import mchm5, routes, potential, spectrum, tuning
+from pychm.groups import so5 as core, decompose, spinors
+from pychm.groups import models as M
 
 t = core.theta
 c, s = sp.cos(t), sp.sin(t)
@@ -117,7 +118,7 @@ def test_10_basis_antisymmetric_orthonormal():
 def test_branchings_match_thesis():
     """Thesis SO(4) branchings: 5=(2,2)+(1,1); 10=(3,1)+(1,3)+(2,2); 14=(3,3)+(2,2)+(1,1);
     spinor 4=(2,1)+(1,2)."""
-    from pychm.symbolic import tensors as T
+    from pychm.groups import tensors as T
     assert decompose.so4_content(T.tensor_basis('sym', 1, 5)) == {(0.5, 0.5): 1, (0.0, 0.0): 1}
     assert decompose.so4_content(T.tensor_basis('antisym', 2, 5)) == {(0.5, 0.5): 1, (1.0, 0.0): 1, (0.0, 1.0): 1}
     assert decompose.so4_content(T.tensor_basis('sym', 2, 5)) == {(1.0, 1.0): 1, (0.5, 0.5): 1, (0.0, 0.0): 1}
@@ -204,8 +205,8 @@ def test_14_channel_weights_derive_thesis_prefactors():
     test_4_5_is_derived_from_the_embedding, which computes |S[4,4]|^2 = 4/5 independently of the
     thesis prefactor and confirms (4c^2-s^2)^2/20 == |S[4,4]|^2 * W11.  Taken together: the trig
     structure, the channel RATIOS, AND the absolute scale are all group theory."""
-    from pychm.symbolic import decompose
-    W = decompose.channel_weights_sym('14', M.E_TR_14)
+    from pychm.groups import decompose
+    W = core.channel_weights_sym('14', M.E_TR_14)
     W11, W22, W33 = W[(0.0, 0.0)], W[(0.5, 0.5)], W[(1.0, 1.0)]
     # the exact group-theoretic channel weights (sum to 1 by unitarity)
     assert sp.simplify(W11 - (4 * ch2 - sh2)**2 / 16) == 0       # = |<S|U_14|S>|^2
@@ -238,7 +239,7 @@ def test_4_5_is_derived_from_the_embedding():
     assert dR2 == sp.Rational(4, 5)                        # DERIVED from the embedding, not thesis
     # the thesis App. A7 singlet-channel prefactor now follows from the derived dR2 and the
     # group-theoretic channel weight W11 -- thesis is checked AGAINST the derivation, not assumed
-    W11 = decompose.channel_weights_sym('14', S)[(0.0, 0.0)]
+    W11 = core.channel_weights_sym('14', S)[(0.0, 0.0)]
     assert sp.simplify((4 * ch2 - sh2)**2 / 20 - dR2 * W11) == 0
     # sanity: the 5-rep singlet has index-4 weight 1 (the unenhanced reference), so the 14's 4/5
     # is a genuine representation-dependent enhancement, not a trivial normalization
@@ -282,7 +283,7 @@ def test_A7_building_blocks_verbatim():
 def test_dressings_are_matrix_elements():
     """Every benchmark dressing factor is a genuine Goldstone matrix element <c|U_R|E>
     (derive.solve_composite raises otherwise) -- the from-scratch guarantee."""
-    from pychm.symbolic import derive
+    from pychm.groups import derive
     for F, rep, E in M.BLOCKS:
         for k, target in F.items():
             assert derive.is_matrix_element(rep, E, target)
@@ -320,7 +321,7 @@ def test_14_formfactor_structure_ties_to_channel_weights():
     singlet-channel factor (1/5)(4-5 s_h^2)^2 and the 4-plet factor 2(4/5 - 3/4 s_h^2), and the
     coupling combinations Y_T*sqrt(4/5), (Y_T+Yt_T)*4/5 -- i.e. the '4/5' is in the thesis source.
     Here we tie the thesis s_h-factors to the group-theoretic channel weights of Stage A1."""
-    W = decompose.channel_weights_sym('14', M.E_TR_14)
+    W = core.channel_weights_sym('14', M.E_TR_14)
     W11 = W[(0.0, 0.0)]                                  # singlet (1,1) channel = (4c^2-s^2)^2/16
     ovSS = core.overlap_sym('14', M.E_TR_14, M.E_TR_14)  # = (4c^2-s^2)/4
     # thesis pure-singlet s_h-factor (coeff of Pi^(1)) is (4 - 5 s_h^2)^2 = 16 * W11

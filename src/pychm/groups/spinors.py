@@ -13,7 +13,7 @@ import numpy as np
 from scipy.linalg import expm
 
 from . import decompose as _D
-from .. import ccwz as _ccwz
+from . import so5 as _ccwz
 
 # Pauli matrices
 _s0 = np.eye(2, dtype=complex)

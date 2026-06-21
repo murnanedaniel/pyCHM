@@ -9,7 +9,7 @@ import pytest
 
 pytest.importorskip("scipy")
 
-from pychm.symbolic import spinors as S
+from pychm.groups import spinors as S
 
 
 def test_clifford_algebra():
@@ -55,7 +55,7 @@ def test_U16_unitary_identity():
 
 def test_spinor_compatible_with_qL_and_tR():
     """The 4 hosts q_L = (2,1) and t_R/b_R = (1,2): the MCHM4 embedding."""
-    from pychm.symbolic import decompose as D
+    from pychm.groups import decompose as D
     M4 = S.so4_generators_spinor()
     content = D.so4_content_gen(M4)
     assert (0.5, 0.0) in content and (0.0, 0.5) in content
