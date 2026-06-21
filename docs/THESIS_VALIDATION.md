@@ -11,8 +11,10 @@ Honest summary up front:
   partner spectrum, mass placements) is input taken from the thesis, not derived.
 - The fermion-sector and convention equations are validated **exactly** in closed form
   (`tests/test_thesis_equations.py`). The higher-rep form-factor prefactors are derived as exact
-  SO(4) Clebsch weights up to a **single** overall coupling constant (`4/5`), which the thesis
-  itself writes explicitly (`Y_T√(4/5)`, App. A7 `eq:broken14-14-10`).
+  SO(4) Clebsch weights, with the overall `4/5` itself derived from the 14-singlet embedding
+  (`|S₄₄|²=4/5`) — group theory end to end. (The earlier text said this constant was matched to the
+  thesis; it is now derived — see `VALIDATION_AUDIT.md §2.2`.) The thesis writes the same constant
+  explicitly (`Y_T√(4/5)`, App. A7 `eq:broken14-14-10`).
 - The thesis contains **no per-point numerical benchmark tables**; it tabulates parameter domains
   and scan-level results. "Numerical validation" therefore means the closed-form physical
   relations, plus the existing anchor tests (`tests/test_anchors.py`, `test_mchm14*.py`) that pin
@@ -30,7 +32,7 @@ Legend: ✅ validated in closed form (test named) · 🔵 validated numerically/
 | A1 | 14/10 basis tensors `T̂^0,T̂^{ab},X̂^a`; SO(4) branchings 5/10/14/4 | `symbolic/core`, `symbolic/decompose` | ✅ `test_14_basis_matches_thesis`, `test_10_basis_antisymmetric_orthonormal`, `test_branchings_match_thesis` |
 | A7 (`eq:formulas`) | form-factor building blocks `A_L,A_R,A_M,B`; the 5-5-5 form-factor route | `mchm5._AL/_AR/_AM/_B`, `formfactor_pieces`, `fermion_mass` | ✅ `test_A7_building_blocks_verbatim` (transcription) **+ now independently validated**: at a custodial point the form-factor top mass equals the pypngb-anchored eigenvalue top mass as `s_h→0` (ratio→1 to ~1e-6), confirming the A7 form factors are the correct leading-order 2-point functions — not just transcribed (`test_formfactor_route.py`, `VALIDATION_AUDIT.md §2.1`). The finite-`s_h` gap is the understood custodial + O(`s_h²`) truncation, not a thesis error. |
 | Ch.6 / A7 (`eq:broken5-5-5`) | 5-5-5 `s_h`-coefficients (`s_h²/2`, `c_h²`, `½s_h²c_h²`) | `mchm5.formfactor_pieces` | ✅ `test_coeffs_5_5_5`, `test_coeffs_5_5_5_formfactor_wiring` |
-| Ch.6 / A7 (`eq:broken14-14-10`) | 14 form-factor `s_h`-prefactors (`(4c²−s²)²/20`, `4c²/5+s²/20`, `3/(4√5)`, `1/(2√5)`) | `symbolic/decompose.channel_weights_sym` | ◐ **trig structure derived** (exact SO(4) Clebsch weights `W₁₁+W₂₂+W₃₃=1`, `test_14_channel_weights_derive_thesis_prefactors`); the **overall magnitude `4/5` is matched to the thesis, not independently derived** — the test `(4c²−s²)²/20 == (4/5)·W₁₁` holds for any constant since `(4/5)(1/16)=1/20` (see `VALIDATION_AUDIT.md §2.2`). |
+| Ch.6 / A7 (`eq:broken14-14-10`) | 14 form-factor `s_h`-prefactors (`(4c²−s²)²/20`, `4c²/5+s²/20`, `3/(4√5)`, `1/(2√5)`) | `symbolic/decompose.channel_weights_sym`, `core.embedding_sym` | ✅ **fully derived**: the trig structure + channel ratios are exact SO(4) Clebsch weights (`W₁₁+W₂₂+W₃₃=1`), and the overall `4/5` is **derived from the embedding** — `\|S₄₄\|²=4/5` for `S=diag(1,1,1,1,−4)/√20` (`test_4_5_is_derived_from_the_embedding`), so `(4c²−s²)²/20 = \|S₄₄\|²·W₁₁` is a genuine prediction, not a thesis read-off (`VALIDATION_AUDIT.md §2.2`). |
 | Ch.6 / A7 (`eq:broken14-1-10`) | 14-1-10 t_R-singlet: no up-right dressing, constant `M_u` | `assemble`, `mchm14_1_10` | ✅ `test_coeffs_14_1_10_tR_singlet_constant` |
 | Ch.5 (`5-M4DCHM.tex:459`) | CW kernel `V=Σ c_i/(64π²) m_i⁴ log m_i²`, `c_i={3,6,−12}` | `routes._K_closed`, `_CF/_CV` | ✅ `test_cw_kernel_and_coefficients` |
 | Ch.5 (`5-M4DCHM.tex:518`) | pole mass `m=M(0,v)/√(Π_LΠ_R)` | `mchm5.fermion_mass` | ✅ `test_pole_mass_eq518` |
@@ -101,13 +103,13 @@ MCHM accounting above:
 
 - **Closed-form (✅):** a symbolic identity `sp.simplify(pyCHM_expr − thesis_expr) == 0`, or an
   exact numeric identity between two pyCHM quantities that encode a thesis equation.
-- **Derivation, not transcription (with one honest caveat):** the 14 form-factor prefactors'
-  *trig structure* is produced by `channel_weights_sym` (SO(4) projection of the Goldstone-dressed
-  embedding) as exact Clebsch factors summing to 1 — genuinely derived. The single overall `4/5`,
-  however, is **matched to the thesis, not independently derived**: the thesis writes it explicitly
-  (`Y_T√(4/5)`, App. A7), and the test that "checks" it is algebraically satisfied for any constant
-  (`(4/5)·(1/16)=1/20`). So the *ratios* of the prefactors are derived; their *absolute scale* is a
-  thesis input (`VALIDATION_AUDIT.md §2.2`).
+- **Derivation, not transcription (now complete).** The 14 form-factor prefactors are derived end
+  to end: the *trig structure* + channel *ratios* are exact Clebsch weights from `channel_weights_sym`
+  (summing to 1), and the overall `4/5` is the **index-4 component of the canonical 14-singlet
+  embedding** `S=diag(1,1,1,1,−4)/√20`, `|S₄₄|²=4/5` (`test_4_5_is_derived_from_the_embedding`).
+  The thesis prefactor `(4c²−s²)²/20` then equals the *derived* `|S₄₄|²·W₁₁` — a prediction that would
+  fail if the thesis number were inconsistent, no longer a read-off of the thesis `1/20`. The thesis
+  writes the same constant as `Y_T√(4/5)` (App. A7); it is no longer an unverified input.
 - **Oracle honesty — the form-factor route (resolved).** The App. A7 building blocks `A_L,A_R,A_M,B`
   and the 5-5-5 form-factor route (`mchm5.formfactor_pieces`, `fermion_mass`) are **transcribed** from
   the thesis and used by *no* pipeline code (spectrum/tuning/routes run the eigenvalue route). They

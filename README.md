@@ -222,7 +222,8 @@ Goldstone matrix and SO(5) generators, the SO(4) bases and branchings, the App. 
 building blocks (verbatim), the per-representation Higgs dressing, the Coleman–Weinberg kernel
 and pole mass, the vacuum / Higgs-mass / gauge relations, and the Barbieri–Giudice tuning. The
 14-rep prefactors are **derived** as exact SO(4) Clebsch weights (`symbolic.decompose.
-channel_weights_sym`) up to one coupling constant that the thesis writes explicitly.
+channel_weights_sym`); the overall `4/5` normalization is itself derived from the 14-singlet
+embedding (`|S₄₄|²=4/5`), so the prefactors are group theory end to end, not a thesis read-off.
 
 **Scope is stated precisely** in [`docs/THESIS_VALIDATION.md`](docs/THESIS_VALIDATION.md): the
 Goldstone dressing is derived from group theory, the model structure is thesis input, and the

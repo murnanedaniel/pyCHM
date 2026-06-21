@@ -11,12 +11,12 @@ trustworthy reference is the independent **pypngb** engine.
 
 **One-line verdict.** The *numbers that physicists read off this library* (xi, m_t, m_b, m_h,
 m_W/m_Z, Delta_BG) come from the **eigenvalue route** (mass matrices) and are genuinely anchored
-to pypngb with no shared code — that part does **not** depend on the thesis being right. The
-**App. A7 form-factor layer** was the one thesis-as-oracle risk; it has now been **independently
-validated** against the pypngb-anchored eigenvalue route (§2.1 — they agree as `s_h→0` at a
-custodial point), so it is no longer unverified. The **only** residual thesis-matched-not-derived
-quantity is the overall `4/5` normalization of the 14 prefactors (§2.2): its *trig structure* is
-derived from group theory, its *magnitude* is taken from the thesis (a single, documented constant).
+to pypngb with no shared code — that part does **not** depend on the thesis being right. The two
+identified risks are both now closed: the **App. A7 form-factor layer** is independently validated
+against the pypngb-anchored eigenvalue route (§2.1, agree as `s_h→0` at a custodial point), and the
+**`4/5`** 14-prefactor normalization is now **derived from the embedding** (`|S₄₄|²=4/5`, §2.2), not
+matched to the thesis. After this round **no observable-feeding quantity is a thesis read-off**;
+correctness rests entirely on pypngb + group theory.
 
 ---
 
@@ -124,25 +124,23 @@ load-bearing *unverified* oracle — it is confirmed against pypngb + the eigenv
 calculable limit. (A full finite-`s_h` form-factor route would require carrying the non-polynomial
 dressing; that is a feature extension, not a correctness gap.)
 
-### 2.2 [LOW — documented input] The `4/5` normalization is matched to the thesis, not independently derived
+### 2.2 [RESOLVED — was the last thesis-matched constant] The `4/5` is now derived from the embedding
 **Files:** `test_thesis_equations.py:185, 197-219, 287-301`; `THESIS_VALIDATION.md:32,103-105`.
 
-The claim "the 14 prefactors are *derived* up to a single constant `4/5` that the thesis writes
-explicitly" is half true and worth stating precisely:
-- The **trig structure** `(4c²−s²)²`, `s²c²`, `s⁴` *is* derived (group-theoretic channel weights
-  `W11,W22,W33`, `test_…:205-210`, summing to 1 — genuine **C**).
-- The **magnitude** is not. `test_…:212` asserts `(4c²−s²)²/20 == (4/5)·W11` with
-  `W11=(4c²−s²)²/16`. Since `(4/5)·(1/16)=1/20`, this is an **algebraic identity for any constant**
-  — it tests that `4/5 = (1/20)/(1/16)`, i.e. it *reads the ratio off the thesis prefactor* `1/20`.
-  `_ratio_is_constant` only certifies the ratio is θ-independent; it does **not** derive its value.
-- So if the thesis's `1/20` (its `4/5` coupling/d-factor) were wrong, every one of these tests
-  would still pass, because the thesis number appears on *both* sides of the comparison.
+Originally the `4/5` was the one remaining thesis-matched magnitude: the trig structure `(4c²−s²)²`,
+`s²c²`, `s⁴` was derived (channel weights `W11,W22,W33` summing to 1), but the overall `4/5` was
+read off the thesis prefactor `1/20` (since `(4/5)·(1/16)=1/20`, the old assertion held for any
+constant).
 
-**Recommended check.** Pin `4/5` from an independent source: either (i) derive the t_R-in-14
-coupling/d-factor from the embedding normalization in the symbolic engine and show it equals `4/5`
-*without* reading App. A7, or (ii) anchor a 14-14-10 form-factor observable (e.g. a Π ratio at two
-s_h values) to pypngb. Until then, `4/5` is an **input matched to the thesis**, and
-`THESIS_VALIDATION.md` should not call the prefactors "derived."
+**Now derived (recommendation (i) executed).** `4/5` is the squared index-4 component of the
+canonical 14-singlet embedding `S=diag(1,1,1,1,−4)/√20`: `|S₄₄|² = (−4/√20)² = 4/5`, computed from
+the embedding **without** reading App. A7 (`test_4_5_is_derived_from_the_embedding`). The thesis
+singlet-channel prefactor `(4c²−s²)²/20` then equals the *derived* `|S₄₄|²·W₁₁` — a genuine
+prediction (it would fail for an inconsistent thesis number), and the `5`-rep singlet's index-4
+weight is `1`, so the `4/5` is a real representation-dependent enhancement, not a trivial
+normalization. The thesis writes the same constant as `Y_T√(4/5)` (`√(4/5)=|S₄₄|`). **All 14
+prefactors — structure, ratios, and absolute scale — are now group theory; nothing in this sector
+is a thesis read-off.**
 
 ### 2.3 [MED] 14-14-10 / 14-1-10 mass matrices are transcribed from pypngb — but verbatim-style
 **Files:** `src/pychm/mchm14.py:11`, `mchm14_1_10.py:14` ("transcription of the validated
@@ -192,10 +190,10 @@ public NMCHM engine exists. This is an inherent limitation, not an open work ite
 | # | Shortcut / quick fix | Where | Status |
 |---|---|---|---|
 | S1 | **`_solve_composites` lstsq reverse-fit** of dressing functions to 40 `s_h` samples (a literal curve-fit) | old `assemble.py` | **FIXED** — replaced by exact symbolic `derive.solve_composite` (residual exactly 0); `assemble.py:137` now reads "No curve-fitting". Transcript: *"the old lstsq reverse-fit … is deleted."* |
-| S2 | **14 prefactors "absorbed into θ-independent convention constants"** without confirming they equal the thesis numbers | earlier MCHM work | **PARTIALLY FIXED** — upgraded to the Clebsch-weight derivation, but the residual `4/5` is still *matched to the thesis*, not independently derived (§2.2). The honest admission is in the transcript: *"I did not confirm those prefactors equal your thesis's numbers."* |
+| S2 | **14 prefactors "absorbed into θ-independent convention constants"** without confirming they equal the thesis numbers | earlier MCHM work | **FIXED** — the Clebsch-weight derivation gives the structure + ratios, and the overall `4/5` is now derived from the embedding (`|S₄₄|²=4/5`, §2.2/S5). All 14 prefactors are group theory; none is matched to the thesis. |
 | S3 | **Full numeric 14 form-factor route + route-equivalence skipped** | `formfactor_pieces_14` never built | **FEATURE GAP (not a correctness gap)** — the 5-5-5 form factors are now validated (S4); the 14 form-factor *route* is simply not implemented (the 14 spectrum uses the eigenvalue route, anchored to pypngb <0.1%). Building it is a feature, not a fix. |
 | S4 | **5-5-5 form-factor route orphaned** — verified only against itself | `mchm5.py:39-67` | **RESOLVED** — now cross-checked against the pypngb-anchored eigenvalue route: they agree as `s_h→0` at a custodial point (ratio→1 to ~1e-6), the finite-`s_h` gap being the understood O(`s_h²`) truncation (§2.1, `test_formfactor_route.py`). The route stays orphaned-from-the-pipeline by design, but is no longer unverified. |
-| S5 | **`4/5` constant** — value taken from thesis App. A7 (`Y_T√(4/5)`) | `test_thesis_equations.py:185` | **DOCUMENTED INPUT (not a defect)** — the channel-weight *ratios* are derived from group theory; the single overall `4/5` is one physical coupling/d-factor normalization the thesis writes explicitly, labelled as input throughout (◐ in `THESIS_VALIDATION.md`). Deriving it from the t_R d-factor is an optional nicety, not a correctness gap. |
+| S5 | **`4/5` constant** — was matched to thesis App. A7 (`Y_T√(4/5)`) | `test_thesis_equations.py` | **RESOLVED** — now derived from the embedding: `|S₄₄|²=4/5` for the canonical 14-singlet `S=diag(1,1,1,1,−4)/√20` (`test_4_5_is_derived_from_the_embedding`), independent of the thesis prefactor. No longer a thesis read-off. |
 | S6 | **Tolerance loosened** after a tuned-vacuum near-cancellation tripped an over-tight atol | transcript: *"my atol formula was just too tight … fix the tolerance"* | **FIXED/ACCEPTED** — route-equivalence now checks the **curve** at 2–3% of depth, not xi at the tuned point (`test_routes_equivalence.py:20,33`). Documented honestly as a quadrature-amplification effect, not hidden. |
 | S7 | **Route-equivalence vs pypngb lives outside the test suite** (needs private engine) | `validation/two_routes_equivalence.py` | **INHERENT (cannot be in-repo)** — pypngb is not redistributable, so its cross-check cannot ship in the public suite. The public substitutes are the eigenvalue-vs-momentum route-equivalence (`test_routes_equivalence.py`) and the new form-factor-vs-eigenvalue check (S4). Not closable without redistributing the engine. |
 | S8 | **Single pypngb anchor point per model** | `test_anchors.py`, `test_mchm14*.py` | **MITIGATED** — external pypngb anchors are one point per model (more would need the engine), but correctness away from REF is now covered by *internal* multi-point checks: form-factor↔eigenvalue agreement over a grid and several random points (`test_formfactor_route.py`), route-equivalence on random points (`test_routes_equivalence.py`), and the assembler↔hand-coded entry-for-entry match. |
@@ -221,17 +219,16 @@ rule appears respected. The shortcuts above are scoping/coverage gaps, not data 
   form factors.
 
 - **Dependent on the thesis being right (a thesis error would pass undetected):** after the §2.1
-  resolution, just **one** quantity remains thesis-matched rather than independently pinned:
-  1. the **14-14-10 form-factor prefactors'** absolute normalization via the `4/5` constant
-     (§2.2, S5) — the trig is derived, the magnitude is matched to the thesis;
-  2. (low risk) the **CW coefficients / SM gauge relations** typed from thesis equations — standard
-     textbook physics, §2.6.
-  The App. A7 form-factor route (formerly the main risk) is now **independently validated** against
-  the pypngb-anchored eigenvalue route (§2.1).
+  and §2.2 resolutions, **no observable-feeding quantity is a thesis read-off**. The App. A7
+  form-factor route is independently validated against the pypngb-anchored eigenvalue route (§2.1),
+  and the `4/5` 14-prefactor normalization is derived from the embedding (§2.2). The only residual
+  thesis-typed items are the **CW coefficients / SM gauge relations** (§2.6) — textbook physics
+  (`c_i={3,6,−12}`, `m_W=gv/2`), not thesis-specific, low risk.
 
 **Bottom line.** The library's *predictive* correctness rests on **pypngb + group theory**, not on
-the thesis — the desired posture. After this round the form-factor sector is confirmed against
-pypngb in the calculable limit, so the thesis is no longer a load-bearing *unverified* oracle
-anywhere that feeds an observable. The single remaining thesis-input is the documented `4/5`
-overall normalization of the 14 prefactors (whose *ratios* are derived). Independently deriving
-`4/5` (from the t_R embedding/d-factor without reading App. A7) is the one remaining nicety.
+the thesis — the desired posture, now achieved end to end. Both originally-flagged risks are closed:
+the form-factor sector is confirmed against pypngb in the calculable limit, and the last
+thesis-matched constant (`4/5`) is derived from group theory. If the thesis form factors contained
+an error, the library's observables would be unaffected (they use the pypngb-anchored eigenvalue
+route), and the now-independent form-factor and `4/5` checks would catch an inconsistency rather
+than silently inherit it.

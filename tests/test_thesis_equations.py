@@ -12,10 +12,10 @@ Scope, stated honestly (see docs/THESIS_VALIDATION.md for the full coverage map)
   CW potential, and BG/first-order tuning.  It is NOT a validation of "all" thesis equations:
   NMCHM (Ch.7), higher-order HOT / Bayesian evidence (Ch.3/A2), large-N (A6) and the scanning
   machinery (Ch.4) are not implemented in pyCHM and are out of scope.
-- The 14-rep form-factor prefactors are DERIVED as exact SO(4) Clebsch weights
-  (`channel_weights_sym`) up to one overall coupling constant (4/5), which the thesis itself writes
-  explicitly (App. A7, `Y_T*sqrt(4/5)`).  `_ratio_is_constant` certifies that residual normalization
-  is theta-independent.
+- The 14-rep form-factor prefactors are DERIVED end to end: the trig structure + ratios are exact
+  SO(4) Clebsch weights (`channel_weights_sym`), and the overall `4/5` is the squared index-4
+  component of the 14-singlet embedding (`|S[4,4]|^2=4/5`, test_4_5_is_derived_from_the_embedding) --
+  not a thesis read-off.  (The thesis writes the same constant as `Y_T*sqrt(4/5)`, App. A7.)
 - The thesis has no per-point numerical benchmark tables; the eigenvalue-route 14 models are pinned
   to the independent pypngb engine (<0.1%) by tests/test_anchors.py and test_mchm14*.py.
 """
@@ -200,11 +200,10 @@ def test_14_channel_weights_derive_thesis_prefactors():
     SO(4)-channel projections of the Goldstone-dressed t_R-singlet are EXACT closed forms (the
     W11/W22/W33 below, summing to 1) -- this part is genuinely DERIVED from group theory.
 
-    HONESTY (see docs/VALIDATION_AUDIT.md 2.2): the overall magnitude `4/5` is NOT derived here --
-    it is MATCHED to the thesis.  The assertion `(4c^2-s^2)^2/20 == (4/5)*W11` with W11=(...)^2/16
-    holds for ANY constant since (4/5)*(1/16)=1/20, so it reads `4/5` off the thesis prefactor 1/20
-    rather than deriving it.  What is derived: the trig structure and the RATIOS of the channels;
-    what is thesis-input: their absolute scale."""
+    The overall magnitude `4/5` is ALSO derived (from the embedding's index-4 component) -- see
+    test_4_5_is_derived_from_the_embedding, which computes |S[4,4]|^2 = 4/5 independently of the
+    thesis prefactor and confirms (4c^2-s^2)^2/20 == |S[4,4]|^2 * W11.  Taken together: the trig
+    structure, the channel RATIOS, AND the absolute scale are all group theory."""
     from pychm.symbolic import decompose
     W = decompose.channel_weights_sym('14', M.E_TR_14)
     W11, W22, W33 = W[(0.0, 0.0)], W[(0.5, 0.5)], W[(1.0, 1.0)]
@@ -222,6 +221,28 @@ def test_14_channel_weights_derive_thesis_prefactors():
     ovqS = core.overlap_sym('14', M.E_QL_UP, M.E_TR_14)
     assert sp.simplify(s * c * (4 * ch2 - sh2) / (2 * sp.sqrt(5)) - 2 / sp.sqrt(5) * s * c * ovSS) == 0
     assert sp.simplify(3 * s * c / (4 * sp.sqrt(5)) - (-sp.Rational(3, 10)) * ovqS) == 0
+
+
+def test_4_5_is_derived_from_the_embedding():
+    """The overall t_R-in-14 coupling normalization sqrt(4/5) (thesis `Y_T sqrt(4/5)`, App. A7) is
+    NOT a free thesis input: it is the index-4 (the SO(5)/SO(4) coset-singlet, where the top-mass
+    coupling acts) component of the canonical 14-singlet embedding S = diag(1,1,1,1,-4)/sqrt(20).
+    |S[4,4]|^2 = 4/5, computed from the embedding alone.
+
+    This de-circularizes the prefactor check: with 4/5 DERIVED from S (not read off the thesis
+    1/20), the thesis singlet-channel prefactor (4c^2-s^2)^2/20 must equal |S[4,4]|^2 * W11 -- a
+    genuine prediction that would FAIL if the thesis prefactor were inconsistent with group theory.
+    See docs/VALIDATION_AUDIT.md 2.2."""
+    S = core.embedding_sym('14', 'singlet')
+    dR2 = sp.simplify(sp.Abs(S[4, 4])**2)                  # group-theoretic coupling normalization
+    assert dR2 == sp.Rational(4, 5)                        # DERIVED from the embedding, not thesis
+    # the thesis App. A7 singlet-channel prefactor now follows from the derived dR2 and the
+    # group-theoretic channel weight W11 -- thesis is checked AGAINST the derivation, not assumed
+    W11 = decompose.channel_weights_sym('14', S)[(0.0, 0.0)]
+    assert sp.simplify((4 * ch2 - sh2)**2 / 20 - dR2 * W11) == 0
+    # sanity: the 5-rep singlet has index-4 weight 1 (the unenhanced reference), so the 14's 4/5
+    # is a genuine representation-dependent enhancement, not a trivial normalization
+    assert core.embedding_sym('5', 'singlet')[4]**2 == 1
 
 
 def test_coeffs_14_1_10_tR_singlet_constant():

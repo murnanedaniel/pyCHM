@@ -51,9 +51,11 @@ least-squares reverse-fit is gone and must not return. Channel weights are **exa
 State which bucket each claim is in. This is the honest boundary that the user demanded; respect it.
 - **Derived (group theory):** the Goldstone/CCWZ dressing — the `s_h`-dependence of every fermion
   mixing — the SO(5)/SO(6) generators and coset split, every irrep and its `U_R` dressing, the
-  branchings. For the 14 prefactors the *trig structure/ratios* are derived (Clebsch weights summing
-  to 1); the single overall `4/5` is **matched to the thesis** (`Y_T√(4/5)`, App. A7), **not**
-  independently derived — see `docs/VALIDATION_AUDIT.md §2.2`. Don't call it "derived".
+  branchings. The 14 prefactors are derived *end to end*: the trig structure/ratios are Clebsch
+  weights summing to 1, and the overall `4/5` is the squared index-4 component of the canonical
+  14-singlet embedding (`|S₄₄|²=4/5`, `test_4_5_is_derived_from_the_embedding`) — not a thesis
+  read-off. When you meet a thesis "convention constant", check whether it's an embedding component
+  before calling it an input.
 - **Thesis-as-oracle (the former risk surface, now resolved):** the App. A7 form-factor route
   (`mchm5.formfactor_pieces`, `fermion_mass`, `_AL/_AR/_AM/_B`) is *transcribed* and used by no
   pipeline code, but is now **independently validated** against the pypngb-anchored eigenvalue route
@@ -61,8 +63,9 @@ State which bucket each claim is in. This is the honest boundary that the user d
   form factor assumes) the form-factor top mass equals the eigenvalue top mass as `s_h→0` (ratio→1
   to ~1e-6); the finite-`s_h` gap is the known O(`s_h²`) leading-order truncation, not a thesis
   error. Lesson: when two routes disagree, suspect the *parametrisation* (custodiality) and the
-  *truncation order* before the thesis. The only remaining thesis-matched constant is the `4/5`
-  overall 14-prefactor normalization (its ratios are derived; its magnitude is a documented input).
+  *truncation order* before the thesis. After this round **no observable-feeding quantity is a
+  thesis read-off** — the form-factor sector is validated against pypngb and the `4/5` is derived
+  from the embedding; correctness rests on pypngb + group theory.
 - **Input (model structure):** the partner content (embeddings, which SO(4) multiplets exist,
   partner masses `mQ,mU,mY,…`, mass-matrix placements). Taken from the thesis / pypngb, not derived.
 - **Anchored:** the full mass matrices and physical observables, validated numerically against
