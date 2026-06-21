@@ -159,6 +159,9 @@ def test_three_form_splits_into_10_and_10bar():
         assert U.shape == (10, 10)
         assert np.allclose(U @ U.conj().T, np.eye(10), atol=1e-9)
         assert np.allclose(so6.U6_rep(rep, 0.0, 0.0), np.eye(10), atol=1e-12)
+        a, b = 0.21, 0.33                            # one-parameter homomorphism (ts=0)
+        assert np.allclose(so6.U6_rep(rep, a, 0) @ so6.U6_rep(rep, b, 0),
+                           so6.U6_rep(rep, a + b, 0), atol=1e-9)
 
 
 # =====================================================================================
