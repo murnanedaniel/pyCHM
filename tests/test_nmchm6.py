@@ -73,6 +73,26 @@ def test_singlet_pNGB_has_positive_calculable_mass():
     assert 0.1 < ms < 5.0                                  # a heavy-ish but sub-cutoff pNGB
 
 
+def test_singlet_mass_is_robust_and_method_independent():
+    """The singlet mass is not a stencil artefact: it is (a) converged in the finite-difference
+    step, and (b) consistent with an independent parabolic fit of V(ts) near the vacuum.  With no
+    public NMCHM engine to anchor to, this internal cross-validation is what makes the number
+    trustworthy (the curvature of the same eigenvalue-route potential, computed two ways)."""
+    s6 = pychm.Model('6-6-6').spectrum(REF)
+    thv = np.arcsin(np.sqrt(s6['xi']))
+    f = s6['f']
+    # (a) stencil convergence: m_s^2 stable across a 5x range of step sizes
+    vals = [N.singlet_mass2(REF, thv, 0.0, f=f, h=h) for h in (4e-3, 2e-3, 1e-3)]
+    assert max(vals) / min(vals) - 1 < 1e-3
+    # (b) independent method: fit V(ts) = V0 + 1/2 ms^2 f^2 ts^2 over a grid (even potential)
+    tss = np.linspace(-0.05, 0.05, 11)
+    V = np.array([N.potential(REF, thv, b) for b in tss])
+    a2 = np.polyfit(tss, V, 2)[0]                          # coefficient of ts^2
+    ms2_fit = 2.0 * a2 / f**2
+    ms2_fd = N.singlet_mass2(REF, thv, 0.0, f=f)
+    assert np.isclose(ms2_fit, ms2_fd, rtol=2e-2)         # two independent computations agree
+
+
 def test_beta_generates_singlet_tadpole():
     """Turning on beta (t_R picks up an e4 component) breaks the s -> -s symmetry: V acquires an
     odd-in-ts piece (a singlet tadpole), so <s> is driven off zero."""

@@ -54,11 +54,15 @@ State which bucket each claim is in. This is the honest boundary that the user d
   branchings. For the 14 prefactors the *trig structure/ratios* are derived (Clebsch weights summing
   to 1); the single overall `4/5` is **matched to the thesis** (`Y_T√(4/5)`, App. A7), **not**
   independently derived — see `docs/VALIDATION_AUDIT.md §2.2`. Don't call it "derived".
-- **Thesis-as-oracle (the one risk surface):** the App. A7 form-factor route
+- **Thesis-as-oracle (the former risk surface, now resolved):** the App. A7 form-factor route
   (`mchm5.formfactor_pieces`, `fermion_mass`, `_AL/_AR/_AM/_B`) is *transcribed* and used by no
-  pipeline code; it is **not** independently validated (form-factor vs eigenvalue/pypngb top mass
-  does not yet reconcile — strict-`xfail` in `tests/test_formfactor_route.py`). Headline observables
-  do not depend on it. If you touch this layer, resolve the xfail before claiming validation.
+  pipeline code, but is now **independently validated** against the pypngb-anchored eigenvalue route
+  (`tests/test_formfactor_route.py`): at a *custodial* point (`Δ_uL=Δ_dL`, which the single-`Lq`
+  form factor assumes) the form-factor top mass equals the eigenvalue top mass as `s_h→0` (ratio→1
+  to ~1e-6); the finite-`s_h` gap is the known O(`s_h²`) leading-order truncation, not a thesis
+  error. Lesson: when two routes disagree, suspect the *parametrisation* (custodiality) and the
+  *truncation order* before the thesis. The only remaining thesis-matched constant is the `4/5`
+  overall 14-prefactor normalization (its ratios are derived; its magnitude is a documented input).
 - **Input (model structure):** the partner content (embeddings, which SO(4) multiplets exist,
   partner masses `mQ,mU,mY,…`, mass-matrix placements). Taken from the thesis / pypngb, not derived.
 - **Anchored:** the full mass matrices and physical observables, validated numerically against

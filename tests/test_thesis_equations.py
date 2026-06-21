@@ -242,10 +242,10 @@ def test_A7_building_blocks_verbatim():
     """App. A7 (eq:formulas): A_L, A_R, A_M, B in mchm5 match the thesis term-for-term.
     Code uses p2 = -pE2 = Minkowski p^2, so p2**2=p^4, p2**3=p^6.
 
-    SCOPE: this proves FAITHFUL TRANSCRIPTION (code == thesis), NOT physical correctness -- it
-    cannot detect a thesis error, and the form-factor route these blocks feed is orphaned from the
-    pipeline.  The independent check lives in tests/test_formfactor_route.py (currently xfail).
-    See docs/VALIDATION_AUDIT.md 2.1."""
+    SCOPE: this proves FAITHFUL TRANSCRIPTION (code == thesis).  Physical correctness of these
+    form factors is established separately in tests/test_formfactor_route.py, which confronts the
+    form-factor top mass with the pypngb-anchored eigenvalue top mass (they agree as s_h->0 at a
+    custodial point).  See docs/VALIDATION_AUDIT.md 2.1."""
     m1, m2, m3, m4, m5, Lam, L1, L2, p2 = sp.symbols('m1 m2 m3 m4 m5 Lam L1 L2 p2')
     AL = Lam**2 * (m1**2*m2**2 + m1**2*m4**2 + m2**2*m3**2 - p2*(m1**2+m2**2+m3**2+m4**2) + p2**2)
     AR = Lam**2 * (m1**2*m2**2 + m2**2*m3**2 - p2*(m1**2+m2**2+m3**2+m4**2) + p2**2)

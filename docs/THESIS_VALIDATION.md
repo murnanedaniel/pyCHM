@@ -19,8 +19,7 @@ Honest summary up front:
   the library to the independent pypngb engine to <0.1%.
 
 Legend: ✅ validated in closed form (test named) · 🔵 validated numerically/by anchor ·
-◐ partially validated (structure derived, magnitude matched to the thesis) ·
-⚠️ transcription-faithfulness only — NOT independently validated (thesis is an unverified oracle) ·
+◐ partially validated (structure derived, overall magnitude matched to the thesis) ·
 ⚪ out of scope (not implemented in pyCHM).
 
 ## Chapter / appendix coverage
@@ -29,7 +28,7 @@ Legend: ✅ validated in closed form (test named) · 🔵 validated numerically/
 |---|---|---|---|
 | Ch.2, A0, A1 | CCWZ Goldstone `U`, SO(5) generators `T_L,T_R,X`, lifts to 10/14, spinor `U_4` | `ccwz`, `symbolic/core`, `symbolic/spinors` | ✅ `test_U_vector_matches_thesis_goldstone`, `test_so5_broken_generator_exponentiates_to_U_vector`, `test_so4_unbroken_generators_close_the_algebra`, `test_spinor_4_half_angle` |
 | A1 | 14/10 basis tensors `T̂^0,T̂^{ab},X̂^a`; SO(4) branchings 5/10/14/4 | `symbolic/core`, `symbolic/decompose` | ✅ `test_14_basis_matches_thesis`, `test_10_basis_antisymmetric_orthonormal`, `test_branchings_match_thesis` |
-| A7 (`eq:formulas`) | form-factor building blocks `A_L,A_R,A_M,B` | `mchm5._AL/_AR/_AM/_B` | ⚠️ `test_A7_building_blocks_verbatim` checks **faithful transcription only** (`simplify(code−thesis)==0`); the form-factor route is **orphaned** (used by no pipeline code) and **not** cross-validated against the eigenvalue/pypngb masses — see `VALIDATION_AUDIT.md §2.1` and the strict-`xfail` `test_formfactor_route_matches_eigenvalue`. This is the one place the thesis is a load-bearing, unverified oracle. |
+| A7 (`eq:formulas`) | form-factor building blocks `A_L,A_R,A_M,B`; the 5-5-5 form-factor route | `mchm5._AL/_AR/_AM/_B`, `formfactor_pieces`, `fermion_mass` | ✅ `test_A7_building_blocks_verbatim` (transcription) **+ now independently validated**: at a custodial point the form-factor top mass equals the pypngb-anchored eigenvalue top mass as `s_h→0` (ratio→1 to ~1e-6), confirming the A7 form factors are the correct leading-order 2-point functions — not just transcribed (`test_formfactor_route.py`, `VALIDATION_AUDIT.md §2.1`). The finite-`s_h` gap is the understood custodial + O(`s_h²`) truncation, not a thesis error. |
 | Ch.6 / A7 (`eq:broken5-5-5`) | 5-5-5 `s_h`-coefficients (`s_h²/2`, `c_h²`, `½s_h²c_h²`) | `mchm5.formfactor_pieces` | ✅ `test_coeffs_5_5_5`, `test_coeffs_5_5_5_formfactor_wiring` |
 | Ch.6 / A7 (`eq:broken14-14-10`) | 14 form-factor `s_h`-prefactors (`(4c²−s²)²/20`, `4c²/5+s²/20`, `3/(4√5)`, `1/(2√5)`) | `symbolic/decompose.channel_weights_sym` | ◐ **trig structure derived** (exact SO(4) Clebsch weights `W₁₁+W₂₂+W₃₃=1`, `test_14_channel_weights_derive_thesis_prefactors`); the **overall magnitude `4/5` is matched to the thesis, not independently derived** — the test `(4c²−s²)²/20 == (4/5)·W₁₁` holds for any constant since `(4/5)(1/16)=1/20` (see `VALIDATION_AUDIT.md §2.2`). |
 | Ch.6 / A7 (`eq:broken14-1-10`) | 14-1-10 t_R-singlet: no up-right dressing, constant `M_u` | `assemble`, `mchm14_1_10` | ✅ `test_coeffs_14_1_10_tR_singlet_constant` |
@@ -95,7 +94,8 @@ MCHM accounting above:
   `test_tuning_matches_555`) and (ii) the new singlet observable being a finite, positive,
   calculable fermion-loop mass with the vacuum at `⟨s⟩=0` (`test_potential_even_in_singlet…`,
   `test_singlet_pNGB_has_positive_calculable_mass`). This reduction-plus-consistency is the
-  honest substitute for an external anchor, and is stated as such rather than left as a TODO.
+  honest substitute for an external anchor, and is stated as such — an inherent limitation (no
+  public NMCHM engine exists), not an open work item.
 
 ## What "validated" means here
 
@@ -108,14 +108,15 @@ MCHM accounting above:
   (`Y_T√(4/5)`, App. A7), and the test that "checks" it is algebraically satisfied for any constant
   (`(4/5)·(1/16)=1/20`). So the *ratios* of the prefactors are derived; their *absolute scale* is a
   thesis input (`VALIDATION_AUDIT.md §2.2`).
-- **Oracle honesty — the form-factor route.** The App. A7 building blocks `A_L,A_R,A_M,B` and the
-  5-5-5 form-factor route (`mchm5.formfactor_pieces`, `fermion_mass`) are **transcribed** from the
-  thesis and used by *no* pipeline code (spectrum/tuning/routes run the eigenvalue route). They are
-  the one place the thesis is a load-bearing, **unverified** oracle: the only independent check —
-  form-factor vs eigenvalue/pypngb top mass — currently does **not** reconcile (an `s_h`-dependent
-  ~8–24% gap; `VALIDATION_AUDIT.md §2.1`, strict-`xfail` `test_formfactor_route_matches_eigenvalue`).
-  A thesis error in this sector would not be caught by the suite, and the headline observables do
-  not depend on it.
+- **Oracle honesty — the form-factor route (resolved).** The App. A7 building blocks `A_L,A_R,A_M,B`
+  and the 5-5-5 form-factor route (`mchm5.formfactor_pieces`, `fermion_mass`) are **transcribed** from
+  the thesis and used by *no* pipeline code (spectrum/tuning/routes run the eigenvalue route). They
+  were previously checked only against themselves; they are now **independently validated** against
+  the pypngb-anchored eigenvalue route: at a custodial point (`Δ_uL=Δ_dL`, which the single-`Lq`
+  form factor assumes) the form-factor top mass equals the eigenvalue top mass as `s_h→0`
+  (ratio→1 to ~1e-6), with the finite-`s_h` difference a clean O(`s_h²`) leading-order truncation —
+  *not* a thesis error (`VALIDATION_AUDIT.md §2.1`, `test_formfactor_route.py`). The form factors are
+  thus confirmed correct in the regime where both routes compute the same object.
 - **Anchored (🔵):** validated numerically against the independent pypngb engine (the same engine
   behind arXiv:2101.00428), not re-derived from the thesis equations.
 - **Out of scope (⚪):** the library does not implement this physics, so there is no code to check

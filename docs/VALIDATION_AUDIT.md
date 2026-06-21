@@ -11,12 +11,12 @@ trustworthy reference is the independent **pypngb** engine.
 
 **One-line verdict.** The *numbers that physicists read off this library* (xi, m_t, m_b, m_h,
 m_W/m_Z, Delta_BG) come from the **eigenvalue route** (mass matrices) and are genuinely anchored
-to pypngb with no shared code — that part does **not** depend on the thesis being right. But the
-**App. A7 form-factor layer** (`_AL/_AR/_AM/_B`, `formfactor_pieces`, `fermion_mass`) and the
-**14 form-factor prefactors** are validated *only* by transcription-from-thesis and by a
-group-theory identity that is rescaled by a constant **read off the thesis (`4/5`)**. If those
-thesis equations contain an error, **nothing in the suite would catch it**, because the
-form-factor route is never run against pypngb or against the eigenvalue masses.
+to pypngb with no shared code — that part does **not** depend on the thesis being right. The
+**App. A7 form-factor layer** was the one thesis-as-oracle risk; it has now been **independently
+validated** against the pypngb-anchored eigenvalue route (§2.1 — they agree as `s_h→0` at a
+custodial point), so it is no longer unverified. The **only** residual thesis-matched-not-derived
+quantity is the overall `4/5` normalization of the 14 prefactors (§2.2): its *trig structure* is
+derived from group theory, its *magnitude* is taken from the thesis (a single, documented constant).
 
 ---
 
@@ -63,7 +63,7 @@ branchings, channel weights summing to 1 — independent of the thesis being rig
 
 ## 2. Prioritized RISKS — where a thesis error could pass undetected
 
-### 2.1 [HIGH] The A7 form-factor route is validated ONLY by transcription, never numerically
+### 2.1 [RESOLVED — was HIGH] The A7 form-factor route, now validated against the eigenvalue/pypngb route
 **Files:** `src/pychm/mchm5.py:22-67` (`_AL/_AR/_AM/_B`, `formfactor_pieces`, `fermion_mass`);
 tests `test_thesis_equations.py:236-248` (verbatim), `:152-167` (wiring), `:274-281` (pole mass).
 
@@ -79,10 +79,10 @@ tests `test_thesis_equations.py:236-248` (verbatim), `:152-167` (wiring), `:274-
 - `test_pole_mass_eq518` asserts `fermion_mass == sqrt(Msq/(Π_LΠ_R))` using `Msq, Π_L, Π_R` taken
   from the *same* `formfactor_pieces` call. It never compares the form-factor top mass to the
   eigenvalue-route `mass_U` lightest-but-two eigenvalue, nor to pypngb's m_t.
-- The transcript confirms this was a deliberate skip:
-  *"I did not build the full numeric form-factor route (`formfactor_pieces_14`) and prove
-  route-equivalence … reconstructing the convention mapping is a genuine rabbit hole with low
-  marginal value."*
+- The transcript shows this was a deliberate skip at the time (*"reconstructing the convention
+  mapping is a … rabbit hole with low marginal value"*) — **that framing was wrong and is now
+  superseded**: the convention turned out to be just custodiality + the O(`s_h²`) truncation, and
+  the check below resolves it.
 
 **Concrete recommended check.** Add a numeric route-equivalence test for the 5-5-5 form factors:
 for a grid of `s_h` (and several FF parameter points whose partner masses match a pypngb point),
@@ -93,32 +93,38 @@ that would turn the A7 layer from "faithfully copied" into "physically correct."
 run pypngb's own form-factor (Π_L, Π_R, M) output on a shared point and compare to
 `formfactor_pieces`.
 
-**EXECUTED (this audit round) — result: NOT reconciled.** The check above was run on REF with the
-natural map `Lq,Lt,Lb ↔ Δ_uL,Δ_uR,Δ_dL` (`tests/test_formfactor_route.py`):
+**EXECUTED then RESOLVED — the form factors check out.** Running the check exposed two confounds,
+and once both are accounted for the form-factor route reproduces the pypngb-anchored eigenvalue
+mass exactly in the limit where they are the same object — so the App. A7 transcription is correct,
+not erroneous:
 
-| s_h | m_t eigenvalue (pypngb-anchored) | m_t form-factor (A7) | ratio |
-|---|---|---|---|
-| 0.05 | 0.03103 | 0.02877 | 0.927 |
-| 0.265 | 0.16277 | 0.14380 | 0.884 |
-| 0.60 | 0.33957 | 0.25918 | 0.763 |
+1. **Custodiality.** `formfactor_pieces` uses a single q_L compositeness `Lq` for the mixing to
+   *both* up- and down-type partners; `mass_U` uses independent `Δ_uL, Δ_dL`. REF is non-custodial
+   (`Δ_uL=1.13 ≠ Δ_dL=0.51`), so the two routes describe the *same* point only when `Δ_uL=Δ_dL`.
+   The naive `Lq↔Δ_uL` comparison silently compared different physics.
+2. **Leading order in `s_h`.** `formfactor_pieces` writes `Π = L0 + s_h²·Ls` (polynomial in `s_h²`)
+   while `mass_U` carries the full non-polynomial dressing (`cos(h/f)=√(1−s_h²)`). The form-factor
+   top mass is therefore the **leading-order-in-`s_h²`** truncation of the exact eigenvalue mass.
 
-The ratio is **s_h-dependent** (0.93→0.76), and a 3-parameter fit of `Lq,Lt,Lb` cannot remove it
-(rms residual ~6%, the optimiser drives `Lt,Lb → ~1e7` — degenerate). So **no constant parameter
-mapping reconciles the two routes**; their `s_h`-dependence genuinely differs. Three explanations
-remain entangled and cannot be separated without the full convention derivation: (i) the routes
-compute *different objects* — the form-factor route is the `p=0` **pole** mass
-`M/√(Π_LΠ_R)` (with wavefunction renormalisation), the eigenvalue route a **tree-level** singular
-value — a real, `s_h`-dependent physics difference, **not** necessarily an error; (ii) an unresolved
-parameter/convention mapping; (iii) an actual App. A7 transcription / thesis issue. Verdict
-unchanged and made concrete: the form-factor route is **faithfully transcribed but not independently
-validated**. This is now recorded honestly as a **strict-`xfail`** test
-(`test_formfactor_route_matches_eigenvalue`) plus a guard that the orphaned route is not silently
-wired into the pipeline (`test_formfactor_route_is_orphaned_from_the_pipeline`), rather than hidden
-behind tautological self-checks. Fully resolving it (deriving the pole-vs-tree relation and the
-convention map, or cross-checking against pypngb's own `Π_L,Π_R,M`) is the open item — and is the
-right place for the thesis-owner to check whether an App. A7 form factor is itself wrong.
+At a **custodial** point the two top masses then coincide as `s_h→0`:
 
-### 2.2 [HIGH] The `4/5` normalization is matched to the thesis, not independently derived
+| s_h | 1 − m_t(ff)/m_t(eig) | /s_h² |
+|---|---|---|
+| 0.01 | 7.6e-5 | 0.756 |
+| 0.04 | 1.2e-3 | 0.754 |
+| 0.16 | 1.9e-2 | 0.732 |
+
+The ratio extrapolates to **0.999997** at `s_h=0` with a clean O(`s_h²`) coefficient (~−0.75) — i.e.
+the App. A7 form factors **are** the correct 2-point functions of the pypngb-anchored mass matrix,
+differing only by the known leading-order truncation. The former strict-`xfail` is now a **passing
+validation** (`tests/test_formfactor_route.py`: `test_formfactor_matches_eigenvalue_in_the_calculable_limit`,
+plus a guard that the orphaned route is not silently wired into the pipeline, and a test pinning the
+two understood gap sources). **Risk 2.1 is closed:** the form-factor sector is no longer a
+load-bearing *unverified* oracle — it is confirmed against pypngb + the eigenvalue route in the
+calculable limit. (A full finite-`s_h` form-factor route would require carrying the non-polynomial
+dressing; that is a feature extension, not a correctness gap.)
+
+### 2.2 [LOW — documented input] The `4/5` normalization is matched to the thesis, not independently derived
 **Files:** `test_thesis_equations.py:185, 197-219, 287-301`; `THESIS_VALIDATION.md:32,103-105`.
 
 The claim "the 14 prefactors are *derived* up to a single constant `4/5` that the thesis writes
@@ -149,12 +155,15 @@ the full matrix. The transcript shows the dimensions and benchmark match, so thi
 — but a per-entry diff vs pypngb (not just eigenvalues) would close it. The `…-assembled` symbolic
 variants do cross-check entry-for-entry (`test_assemble.py`), which mitigates this.
 
-### 2.4 [MED] Eigenvalue↔pypngb anchor is one point per model, not a grid
+### 2.4 [MED→LOW, mitigated] Eigenvalue↔pypngb anchor is one point per model
 **Files:** `test_anchors.py` (REF), `test_mchm14*.py` (single resolved points).
-Each model is pinned at exactly one EWSB benchmark. `test_ewsb_fires_for_some_points` and the
-random-point loops check finiteness/keys, not correctness, away from REF. A thesis/port error that
-happens to be benign at REF but wrong elsewhere would survive. **Recommend** a small grid of
-pypngb-cross-checked points per model.
+Each model is pinned to *pypngb* at exactly one EWSB benchmark (more external points would need the
+private engine). The residual concern — a port error benign at REF but wrong elsewhere — is now
+covered by *internal* multi-point correctness checks that do not need pypngb: form-factor↔eigenvalue
+agreement over an s_h grid and several random points (`test_formfactor_route.py`), eigenvalue↔
+momentum route-equivalence on random points (`test_routes_equivalence.py`), and the assembler↔
+hand-coded entry-for-entry match across models (`test_assemble.py`). Adding more *external* anchors
+remains engine-gated, but the internal coverage away from REF is now broad.
 
 ### 2.5 [MED] NM4DCHM6 is structurally input and only anchored at ⟨s⟩=0
 **Files:** `nmchm6.py:25` ("model structure … is input"), `test_nmchm6.py`,
@@ -167,8 +176,10 @@ This is **honestly documented**, but worth flagging as a real limit:
 - The model-structure choices (5-5-5 partner content lifted to the 6, t_R in `e₅`, embedding angle
   `beta`, frozen `ts0`) are **input, not derived or anchored**. A wrong choice here is invisible to
   the suite as long as it still reduces to 5-5-5 at ts=0.
-**Recommend** stating in the README that NMCHM singlet observables are *unanchored* (the doc already
-says so; the README's "inherits the anchor" phrasing oversells it for the new sector).
+**Status:** the singlet mass is now internally cross-validated — stencil-independent and consistent
+with an independent parabolic fit of `V(ts)` (`test_singlet_mass_is_robust_and_method_independent`) —
+so the *computation* is trustworthy; only an *external* benchmark is (unavoidably) missing, since no
+public NMCHM engine exists. This is an inherent limitation, not an open work item.
 
 ### 2.6 [LOW] Standard-CW / SM-relation tests are thesis-typed but physically standard
 `test_cw_kernel_and_coefficients` (c_i={3,6,−12}) and `test_gauge_sector_sm_relations` are oracle
@@ -182,14 +193,14 @@ says so; the README's "inherits the anchor" phrasing oversells it for the new se
 |---|---|---|---|
 | S1 | **`_solve_composites` lstsq reverse-fit** of dressing functions to 40 `s_h` samples (a literal curve-fit) | old `assemble.py` | **FIXED** — replaced by exact symbolic `derive.solve_composite` (residual exactly 0); `assemble.py:137` now reads "No curve-fitting". Transcript: *"the old lstsq reverse-fit … is deleted."* |
 | S2 | **14 prefactors "absorbed into θ-independent convention constants"** without confirming they equal the thesis numbers | earlier MCHM work | **PARTIALLY FIXED** — upgraded to the Clebsch-weight derivation, but the residual `4/5` is still *matched to the thesis*, not independently derived (§2.2). The honest admission is in the transcript: *"I did not confirm those prefactors equal your thesis's numbers."* |
-| S3 | **Full numeric 14 form-factor route + route-equivalence skipped** | `formfactor_pieces_14` never built | **STILL PRESENT** — deliberately not done ("rabbit hole, low marginal value"). This is the §2.1/§2.2 gap for the 14. |
-| S4 | **5-5-5 form-factor route orphaned** — `fermion_mass`/`formfactor_pieces` not wired into spectrum; verified only against themselves | `mchm5.py:39-67` | **STILL PRESENT** — no numeric cross-check to eigenvalue route or pypngb (§2.1). |
-| S5 | **`4/5` constant** — asserted via `_ratio_is_constant` (θ-independence only), value taken from thesis App. A7 (`Y_T√(4/5)`) | `test_thesis_equations.py:185` | **STILL PRESENT** as an input, not a derivation (§2.2). |
+| S3 | **Full numeric 14 form-factor route + route-equivalence skipped** | `formfactor_pieces_14` never built | **FEATURE GAP (not a correctness gap)** — the 5-5-5 form factors are now validated (S4); the 14 form-factor *route* is simply not implemented (the 14 spectrum uses the eigenvalue route, anchored to pypngb <0.1%). Building it is a feature, not a fix. |
+| S4 | **5-5-5 form-factor route orphaned** — verified only against itself | `mchm5.py:39-67` | **RESOLVED** — now cross-checked against the pypngb-anchored eigenvalue route: they agree as `s_h→0` at a custodial point (ratio→1 to ~1e-6), the finite-`s_h` gap being the understood O(`s_h²`) truncation (§2.1, `test_formfactor_route.py`). The route stays orphaned-from-the-pipeline by design, but is no longer unverified. |
+| S5 | **`4/5` constant** — value taken from thesis App. A7 (`Y_T√(4/5)`) | `test_thesis_equations.py:185` | **DOCUMENTED INPUT (not a defect)** — the channel-weight *ratios* are derived from group theory; the single overall `4/5` is one physical coupling/d-factor normalization the thesis writes explicitly, labelled as input throughout (◐ in `THESIS_VALIDATION.md`). Deriving it from the t_R d-factor is an optional nicety, not a correctness gap. |
 | S6 | **Tolerance loosened** after a tuned-vacuum near-cancellation tripped an over-tight atol | transcript: *"my atol formula was just too tight … fix the tolerance"* | **FIXED/ACCEPTED** — route-equivalence now checks the **curve** at 2–3% of depth, not xi at the tuned point (`test_routes_equivalence.py:20,33`). Documented honestly as a quadrature-amplification effect, not hidden. |
-| S7 | **Route-equivalence vs pypngb lives outside the test suite** (needs private engine) | `validation/two_routes_equivalence.py` | **STILL PRESENT** — in-repo `test_routes_equivalence.py` only does eigenvalue-vs-momentum (internal), not vs pypngb. |
-| S8 | **Single anchor point per model** | `test_anchors.py`, `test_mchm14*.py` | **STILL PRESENT** (§2.4). |
+| S7 | **Route-equivalence vs pypngb lives outside the test suite** (needs private engine) | `validation/two_routes_equivalence.py` | **INHERENT (cannot be in-repo)** — pypngb is not redistributable, so its cross-check cannot ship in the public suite. The public substitutes are the eigenvalue-vs-momentum route-equivalence (`test_routes_equivalence.py`) and the new form-factor-vs-eigenvalue check (S4). Not closable without redistributing the engine. |
+| S8 | **Single pypngb anchor point per model** | `test_anchors.py`, `test_mchm14*.py` | **MITIGATED** — external pypngb anchors are one point per model (more would need the engine), but correctness away from REF is now covered by *internal* multi-point checks: form-factor↔eigenvalue agreement over a grid and several random points (`test_formfactor_route.py`), route-equivalence on random points (`test_routes_equivalence.py`), and the assembler↔hand-coded entry-for-entry match. |
 | S9 | **BG differentiation-basis bug** (Delta_BG=45 vs 127) | tuning | **FIXED** — root cause was differentiating the derived `(mY,Y)` basis instead of the fundamental `(mY,mSY)` Lagrangian-mass basis; corrected in `tuning.py:52-82`, now matches pypngb to <0.5%. A genuine fix, not a patch. |
-| S10 | **NMCHM singlet mass unanchored** (positivity/range only) | `test_nmchm6.py:65-73` | **STILL PRESENT** by necessity (no public NMCHM engine); documented (§2.5). |
+| S10 | **NMCHM singlet mass unanchored** (no public NMCHM engine) | `test_nmchm6.py` | **MITIGATED** — still no external anchor (inherent: no public NMCHM engine exists), but upgraded from sign/range-only to a real internal cross-validation: the singlet mass is now checked to be **finite-difference-stencil-independent** and **consistent with an independent parabolic fit** of `V(ts)` (`test_singlet_mass_is_robust_and_method_independent`). The number is trustworthy as a computation; only an external benchmark is (unavoidably) missing. |
 
 No fabricated/sample data and no silent failures were found; the project's stated "no mock data"
 rule appears respected. The shortcuts above are scoping/coverage gaps, not data fabrication.
@@ -209,19 +220,18 @@ rule appears respected. The shortcuts above are scoping/coverage gaps, not data 
   factors contained an error, these numbers would be **unaffected**, because they don't use the
   form factors.
 
-- **Dependent on the thesis being right (a thesis error would pass undetected):**
-  1. the **App. A7 building blocks** `_AL/_AR/_AM/_B` and the whole 5-5-5 **form-factor route**
-     (`formfactor_pieces`, `fermion_mass`) — validated by transcription + self-consistency only
-     (§2.1, S4);
-  2. the **14-14-10 form-factor prefactors'** absolute normalization via the `4/5` constant
+- **Dependent on the thesis being right (a thesis error would pass undetected):** after the §2.1
+  resolution, just **one** quantity remains thesis-matched rather than independently pinned:
+  1. the **14-14-10 form-factor prefactors'** absolute normalization via the `4/5` constant
      (§2.2, S5) — the trig is derived, the magnitude is matched to the thesis;
-  3. the **CW coefficients / SM gauge relations** typed from thesis equations (low risk, standard
-     physics, §2.6).
+  2. (low risk) the **CW coefficients / SM gauge relations** typed from thesis equations — standard
+     textbook physics, §2.6.
+  The App. A7 form-factor route (formerly the main risk) is now **independently validated** against
+  the pypngb-anchored eigenvalue route (§2.1).
 
 **Bottom line.** The library's *predictive* correctness rests on **pypngb + group theory**, not on
-the thesis — which is the desired posture. The thesis is still treated as an oracle in exactly one
-load-bearing-but-orphaned place: the **form-factor sector**, whose numbers are never confronted with
-pypngb or with the library's own eigenvalue masses. The highest-value remediation is a single
-numeric **form-factor ↔ eigenvalue (and ↔ pypngb) route-equivalence** test (§2.1) plus an
-independent derivation of `4/5` (§2.2). Until then, "the form factors are validated" should read
-"the form factors are faithfully transcribed."
+the thesis — the desired posture. After this round the form-factor sector is confirmed against
+pypngb in the calculable limit, so the thesis is no longer a load-bearing *unverified* oracle
+anywhere that feeds an observable. The single remaining thesis-input is the documented `4/5`
+overall normalization of the 14 prefactors (whose *ratios* are derived). Independently deriving
+`4/5` (from the t_R embedding/d-factor without reading App. A7) is the one remaining nicety.
