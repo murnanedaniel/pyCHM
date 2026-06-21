@@ -20,10 +20,7 @@ __version__ = "0.5.0"
 __all__ = ["Model", "mchm5", "mchm14", "mchm14_1_10", "nmchm6",
            "routes", "potential", "spectrum", "tuning"]
 
-_MODELS = {"5-5-5": mchm5, "14-14-10": mchm14, "14-1-10": mchm14_1_10,
-           '5-5-5-assembled': assemble.model_555, '14-1-10-assembled': assemble.model_14_1_10,
-           '14-14-10-assembled': assemble.model_14_14_10,
-           '6-6-6': nmchm6}                       # NMCHM: SO(6)/SO(5), partners in the 6
+from .registry import MODELS as _MODELS
 
 
 class Model:

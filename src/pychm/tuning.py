@@ -22,31 +22,11 @@ import math
 import numpy as np
 from . import spectrum
 
-# fundamental log-parameters differentiated for the tuning.  'mSYu'/'mSYd' are the
-# singlet-Y masses (mY + Y), held independent of mY in the BG basis.
-TUNED = ['mU', 'mUt', 'mYu', 'mSYu', 'mD', 'mDt', 'mYd', 'mSYd',
-         'Delta_uL', 'Delta_uR', 'Delta_dL', 'Delta_dR']
-
-# 14-14-10 fundamental massive params.  The two singlet-Y combinations are
-#   mSYu  = mYu + Yu/2    (the (6,7)/(9,8) matrix entries)
-#   mSYtu = mYu + 4(Yu+Ytu)/5    (the (3,4) entry, top-partner Y)
-# both held independent of mYu in the BG basis; differentiating Yu/Ytu directly
-# would mix these into mYu, not the Lagrangian-mass basis pypngb defines tuning over.
-TUNED_14 = ['mQ', 'mU', 'mD', 'mYu', 'mSYu', 'mSYtu', 'Yd',
-            'Delta_q', 'Delta_u', 'Delta_d']
-
-# 14-1-10 fundamental massive params.  The t_R partner is an SO(4) singlet, so the
-# up Y-sector collapses to a single (mU, Yu): the matrix-entry params ARE the
-# Lagrangian-mass params (functions_14_1_10_log maps each x = exp(log_x) directly),
-# so every parameter is differentiated by plain log-scaling -- no (mY, mSY) basis.
-TUNED_14_1_10 = ['mQ', 'mU', 'mD', 'Yu', 'Yd',
-                 'Delta_q', 'Delta_u', 'Delta_d']
-
-_TUNED = {'5-5-5': TUNED, '14-14-10': TUNED_14, '14-1-10': TUNED_14_1_10,
-          '5-5-5-assembled': TUNED,
-          '14-1-10-assembled': TUNED_14_1_10,
-          '14-14-10-assembled': TUNED_14,
-          '6-6-6': TUNED}            # NMCHM6 shares the 5-5-5 Lagrangian-mass basis (ts=0)
+# the fundamental Lagrangian-mass tuning bases live in registry.py (single source of truth).
+# '5-5-5': {mU,mUt,mYu,mSYu,...,Delta_*}; '14-14-10': {mQ,mU,mD,mYu,mSYu,mSYtu,Yd,Delta_*} with the
+# singlet-Y combinations mSYu=mYu+Yu/2, mSYtu=mYu+4(Yu+Ytu)/5 held independent of mYu; '14-1-10':
+# the matrix-entry params ARE the Lagrangian masses (no (mY,mSY) basis).  See registry.TUNED_*.
+from .registry import TUNED as _TUNED
 
 
 def _perturb(P, key, fac, model='5-5-5'):
