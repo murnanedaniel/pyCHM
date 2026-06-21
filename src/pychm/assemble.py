@@ -22,6 +22,8 @@ The assembler builds, in the basis [light..., elementary, (c4,c1) per multiplet]
 """
 import numpy as np
 from . import ccwz
+from .symbolic import models as _sym_models
+from .symbolic.core import lambdify_sh
 
 
 def assemble(sector, sh):
@@ -131,30 +133,12 @@ _E_QL_DN = _tensor('14', {(0, 3): 1 / _R2})
 _E_BR = _tensor('10', {(0, 1): 0.5, (0, 4): 0.5})
 
 
-def _solve_composites(rep, E, factor_fns):
-    """The composite states the elementary couples to, as tensors in `rep`, obtained from the
-    declared Higgs-dressing functions f_k(sh) = <c_k|U_rep|E>.  The 1-parameter Goldstone orbit
-    of E spans a small subspace, so c_k is the minimal-norm tensor reproducing f_k (lstsq)."""
-    basis = ccwz._sym_traceless_basis() if rep == '14' else ccwz._antisym_basis()
-    shs = np.linspace(0.05, 0.98, 40)
-    G = np.array([[np.sum(b * (ccwz.U_vector(s) @ E @ ccwz.U_vector(s).T)) for b in basis] for s in shs])
-    out = {}
-    for idx, fn in factor_fns.items():
-        x, *_ = np.linalg.lstsq(G, np.array([fn(s) for s in shs], dtype=complex), rcond=None)
-        out[idx] = sum(np.conjugate(xi) * b for xi, b in zip(x, basis))
-    return out
-
-
-# Higgs-dressing functions (functions of sh = sin(h/f)); double-angle for the 14, half-angle for the 10
-_F_QL_UP = {3: lambda s: _r5 * 2 * s * _ch(s) / 4, 6: lambda s: -(_ch(s) + (1 - 2 * s * s)) / 2,
-            8: lambda s: -1j * (_ch(s) - (1 - 2 * s * s)) / 2, 9: lambda s: (2 * s - 2 * s * _ch(s)) / 4,
-            10: lambda s: -2 * s * _ch(s) / 4, 11: lambda s: (2 * s + 2 * s * _ch(s)) / 4}
-_F_QL_DN = {4: lambda s: -_ch(s), 5: lambda s: -s / _R2, 6: lambda s: 1j * s / _R2}
-_F_BR = {3: lambda s: -1j * s / _R2, 7: lambda s: -(1 - _ch(s)) / 2, 8: lambda s: -(1 + _ch(s)) / 2}
-
-_C_QL_UP = _solve_composites('14', _E_QL_UP, _F_QL_UP)
-_C_QL_DN = _solve_composites('14', _E_QL_DN, _F_QL_DN)
-_C_BR = _solve_composites('10', _E_BR, _F_BR)
+# Higgs-dressing factors, derived in closed form by the symbolic CCWZ engine (symbolic.models)
+# and lambdified to numpy callables of sh = sin(h/f).  No curve-fitting: each factor is proven
+# to be a Goldstone matrix element <c|U_R|E> by symbolic.derive (see tests/test_symbolic.py).
+_f_QL_UP = {k: lambdify_sh(v) for k, v in _sym_models.F_QL_UP.items()}
+_f_QL_DN = {k: lambdify_sh(v) for k, v in _sym_models.F_QL_DN.items()}
+_f_BR = {k: lambdify_sh(v) for k, v in _sym_models.F_BR.items()}
 
 
 class _Assembled14_1_10:
@@ -163,9 +147,8 @@ class _Assembled14_1_10:
     def mass_U(self, P, sh):
         m = np.zeros((14, 14), dtype=complex)
         m[0, 0], m[1, 1] = _MU * 1e-3, _MC * 1e-3
-        Uv = ccwz.U_vector(sh)
-        for k, ck in _C_QL_UP.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh, Uv=Uv)
+        for k, fk in _f_QL_UP.items():
+            m[2, k] = P['Delta_q'] * fk(sh)
         m[4, 2] = -np.conjugate(P['Delta_u'])                      # t_R singlet: no Goldstone dressing
         mQ, mU, mD, Yu, Yd = P['mQ'], P['mU'], P['mD'], P['Yu'], P['Yd']
         m[3, 3], m[3, 4], m[4, 4], m[5, 5] = mQ, 2 * Yu / _r5, mU, mD
@@ -177,11 +160,10 @@ class _Assembled14_1_10:
     def mass_D(self, P, sh):
         m = np.zeros((9, 9), dtype=complex)
         m[0, 0], m[1, 1] = _MD * 1e-3, _MS * 1e-3
-        Uv = ccwz.U_vector(sh)
-        for k, ck in _C_QL_DN.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh, Uv=Uv)
-        for k, ck in _C_BR.items():
-            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh, Uv=Uv)
+        for k, fk in _f_QL_DN.items():
+            m[2, k] = P['Delta_q'] * fk(sh)
+        for k, fk in _f_BR.items():
+            m[k, 2] = np.conjugate(P['Delta_d']) * fk(sh)
         mQ, mD, Yd = P['mQ'], P['mD'], P['Yd']
         m[3, 3], m[4, 3], m[4, 4], m[5, 5] = mD, Yd / 2, mQ, mQ
         m[6, 6], m[7, 7], m[8, 8] = mQ, mD, mD
@@ -201,30 +183,16 @@ model_14_1_10 = _Assembled14_1_10()
 # piece is the t_R = 14-singlet dressing ((3+5cos2h)/8, sqrt5 sin2h/4, ...), which ccwz
 # already reproduces exactly.  Validated to reproduce mchm14.mass_U/mass_D entry-for-entry.
 # --------------------------------------------------------------------------------------
-def _c2(s):
-    return 1 - 2 * s * s            # cos(2h/f)
-
-
-def _s2(s):
-    return 2 * s * _ch(s)           # sin(2h/f)
-
-
 _E_TR_14 = ccwz.embedding('14', 'singlet')
 
-# up q_L: same six dressing functions as 14-1-10, at the 14-14-10 composite indices
-_F_QL_UP_1414 = {3: _F_QL_UP[3], 6: _F_QL_UP[6], 9: _F_QL_UP[8],
-                 11: _F_QL_UP[9], 13: _F_QL_UP[10], 15: _F_QL_UP[11]}
-# up t_R in the 14-singlet
-_F_TR_1414 = {4: lambda s: -(3 + 5 * _c2(s)) / 8, 7: lambda s: -_r5 * _s2(s) / 4,
-              10: lambda s: -1j * _r5 * _s2(s) / 4, 12: lambda s: -_r5 * (1 - _c2(s)) / 8,
-              14: lambda s: -_r5 * (1 - _c2(s)) / 8, 16: lambda s: _r5 * (1 - _c2(s)) / 8}
-_F_QL_DN_1414 = {4: _F_QL_DN[4], 6: _F_QL_DN[5], 8: _F_QL_DN[6]}
-_F_BR_1414 = {3: _F_BR[3], 10: _F_BR[7], 11: _F_BR[8]}
-
-_C_QL_UP_1414 = _solve_composites('14', _E_QL_UP, _F_QL_UP_1414)
-_C_TR_1414 = _solve_composites('14', _E_TR_14, _F_TR_1414)
-_C_QL_DN_1414 = _solve_composites('14', _E_QL_DN, _F_QL_DN_1414)
-_C_BR_1414 = _solve_composites('10', _E_BR, _F_BR_1414)
+# Same closed-form dressing factors as 14-1-10, placed at the 14-14-10 composite columns, plus
+# the t_R = 14-singlet dressing ((3+5cos2h)/8, sqrt5 sin2h/4, ...).  All lambdified from
+# symbolic.models; the t_R-singlet keys already match the 14-14-10 columns.
+_f_QL_UP_1414 = {3: _f_QL_UP[3], 6: _f_QL_UP[6], 9: _f_QL_UP[8],
+                 11: _f_QL_UP[9], 13: _f_QL_UP[10], 15: _f_QL_UP[11]}
+_f_TR_1414 = {k: lambdify_sh(v) for k, v in _sym_models.F_TR_14.items()}
+_f_QL_DN_1414 = {4: _f_QL_DN[4], 6: _f_QL_DN[5], 8: _f_QL_DN[6]}
+_f_BR_1414 = {3: _f_BR[3], 10: _f_BR[7], 11: _f_BR[8]}
 
 
 class _Assembled14_14_10:
@@ -233,11 +201,10 @@ class _Assembled14_14_10:
     def mass_U(self, P, sh):
         m = np.zeros((19, 19), dtype=complex)
         m[0, 0], m[1, 1] = _MU * 1e-3, _MC * 1e-3
-        Uv = ccwz.U_vector(sh)
-        for k, ck in _C_QL_UP_1414.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh, Uv=Uv)
-        for k, ck in _C_TR_1414.items():
-            m[k, 2] = np.conjugate(P['Delta_u']) * ccwz.overlap('14', ck, _E_TR_14, sh, Uv=Uv)
+        for k, fk in _f_QL_UP_1414.items():
+            m[2, k] = P['Delta_q'] * fk(sh)
+        for k, fk in _f_TR_1414.items():
+            m[k, 2] = np.conjugate(P['Delta_u']) * fk(sh)
         mQ, mU, mD, mYu, Yu, Yd, Ytu = (P['mQ'], P['mU'], P['mD'], P['mYu'], P['Yu'], P['Yd'], P['Ytu'])
         for k in (3, 6, 9, 11, 13, 15):
             m[k, k] = mQ
@@ -254,11 +221,10 @@ class _Assembled14_14_10:
     def mass_D(self, P, sh):
         m = np.zeros((12, 12), dtype=complex)
         m[0, 0], m[1, 1] = _MD * 1e-3, _MS * 1e-3
-        Uv = ccwz.U_vector(sh)
-        for k, ck in _C_QL_DN_1414.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh, Uv=Uv)
-        for k, ck in _C_BR_1414.items():
-            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh, Uv=Uv)
+        for k, fk in _f_QL_DN_1414.items():
+            m[2, k] = P['Delta_q'] * fk(sh)
+        for k, fk in _f_BR_1414.items():
+            m[k, 2] = np.conjugate(P['Delta_d']) * fk(sh)
         mQ, mU, mD, mYu, Yu, Yd = P['mQ'], P['mU'], P['mD'], P['mYu'], P['Yu'], P['Yd']
         m[3, 3], m[10, 10], m[11, 11] = mD, mD, mD
         m[4, 4], m[6, 6], m[8, 8] = mQ, mQ, mQ
