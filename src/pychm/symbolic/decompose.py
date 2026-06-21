@@ -42,10 +42,14 @@ def _gen_rep(basis, a, b):
     return G
 
 
-def _su2_casimirs(basis):
-    """Return (C_L, C_R), the SU(2)_L and SU(2)_R Casimir matrices in the irrep."""
-    M = {(mu, nu): _gen_rep(basis, mu, nu) for mu in range(4) for nu in range(mu + 1, 4)}
+def so4_generators(basis):
+    """The six SO(4) generators (indices 0..3) lifted to the tensor irrep spanned by `basis`."""
+    return {(mu, nu): _gen_rep(basis, mu, nu) for mu in range(4) for nu in range(mu + 1, 4)}
 
+
+def _su2_casimirs(M):
+    """Return (C_L, C_R), the SU(2)_L and SU(2)_R Casimir matrices, from the six SO(4)
+    generators M[(mu,nu)] (mu<nu in 0..3) of any representation (tensor or spinor)."""
     def Msym(a, b):
         return M[(a, b)] if a < b else -M[(b, a)]
 
@@ -69,12 +73,10 @@ def _round_j(casimir_eig):
     return round(2 * j) / 2
 
 
-def so4_decompose(basis, tol=1e-6):
-    """List the SO(4) sub-multiplets of the irrep as [((jL, jR), projector_columns), ...].
-
-    projector_columns is an (n x d) matrix whose columns are an orthonormal basis of that
-    (jL, jR) subspace (n = dim irrep, d = (2jL+1)(2jR+1))."""
-    CL, CR = _su2_casimirs(basis)
+def so4_decompose_gen(M, tol=1e-6):
+    """SO(4) sub-multiplets [((jL, jR), projector_columns), ...] from the six SO(4) generators
+    M[(mu,nu)] of any representation (tensor or spinor)."""
+    CL, CR = _su2_casimirs(M)
     # CL and CR commute and are Hermitian -> simultaneously diagonalise.
     wL, VL = np.linalg.eigh(CL)
     # rotate CR into the CL eigenbasis and diagonalise block-wise by grouping equal wL
@@ -102,12 +104,26 @@ def so4_decompose(basis, tol=1e-6):
     return out
 
 
-def so4_content(basis, tol=1e-6):
-    """Multiplicity table {(jL, jR): count} of the SO(4) branching of the irrep."""
+def so4_decompose(basis, tol=1e-6):
+    """SO(4) sub-multiplets of the tensor irrep spanned by `basis`.  See so4_decompose_gen."""
+    return so4_decompose_gen(so4_generators(basis), tol)
+
+
+def _content(decomp):
     table = {}
-    for (jL, jR), cols in so4_decompose(basis, tol):
+    for (jL, jR), cols in decomp:
         table[(jL, jR)] = table.get((jL, jR), 0) + 1
     return table
+
+
+def so4_content(basis, tol=1e-6):
+    """Multiplicity table {(jL, jR): count} of the SO(4) branching of the tensor irrep."""
+    return _content(so4_decompose(basis, tol))
+
+
+def so4_content_gen(M, tol=1e-6):
+    """Multiplicity table {(jL, jR): count} from the six SO(4) generators of any rep."""
+    return _content(so4_decompose_gen(M, tol))
 
 
 def compatible(basis, jL, jR, tol=1e-6):
