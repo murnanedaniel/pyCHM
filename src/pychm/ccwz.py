@@ -63,18 +63,26 @@ def _antisym_basis():
 
 
 def U_rep(rep, sh, hat=3):
-    """Goldstone matrix in irrep `rep` in {'5','10','14'} (sh = sin(h/f)), tensor basis."""
+    """Goldstone matrix in an SO(5) irrep (sh = sin(h/f)), tensor basis.
+
+    `rep` is '5', '10', '14' (the benchmarks), or a tensor-rep descriptor ('sym', k) /
+    ('antisym', k) for an arbitrary rank-k symmetric-traceless / antisymmetric irrep -- the
+    general path delegates to `symbolic.tensors` (e.g. ('sym', 3) is the 30)."""
     Uv = U_vector(sh, hat)
     if rep == '5':
         return Uv
-    basis = _sym_traceless_basis() if rep == '14' else _antisym_basis()
-    n = len(basis)
-    M = np.zeros((n, n))
-    for a, Ea in enumerate(basis):
-        UEU = Uv @ Ea @ Uv.T
-        for b, Eb in enumerate(basis):
-            M[b, a] = np.sum(Eb * UEU)
-    return M
+    if rep in ('10', '14'):
+        basis = _sym_traceless_basis() if rep == '14' else _antisym_basis()
+        n = len(basis)
+        M = np.zeros((n, n))
+        for a, Ea in enumerate(basis):
+            UEU = Uv @ Ea @ Uv.T
+            for b, Eb in enumerate(basis):
+                M[b, a] = np.sum(Eb * UEU)
+        return M
+    from .symbolic import tensors                 # general rank-k tensor irrep
+    sym, rank = rep
+    return tensors.U_rep_tensor(tensors.tensor_basis(sym, rank, 5), Uv)
 
 
 # ---- embeddings (orthonormal tensors for the SO(4) sub-multiplets) ------------------ #
