@@ -18,8 +18,10 @@ This file records the **debugging and validation methodology** that actually wor
   branching + Hodge split), plus the generic `tensors`/`decompose`/`derive`. The coset *instances*
   built on the engine: `so5` (MCHM — numeric **and** symbolic Goldstone dressing, merged; the
   symbolic side must reproduce the numeric bit-for-bit after `lambdify`), `so6`/`so6_spinors`
-  (NMCHM), `su4sp4` (the SU(4)/Sp(4) coset), `spinors` (SO(5) 4/16), `models` (the canonical
-  dressing-factor derivations). **A new coset = a new instance on the engine, not a new copy of it.**
+  (NMCHM), `su4sp4` (SU(4)/Sp(4)), `su5so5` (SU(5)/SO(5) littlest Higgs), `spinors` (SO(5) 4/16),
+  `models` (the canonical dressing-factor derivations), `landscape` (the coset enumerator).
+  **A new coset = a new instance on the engine, not a new copy of it.** Models are registered in ONE
+  place, `registry.py` (`MODELS`/`TUNED`), imported by `__init__/routes/spectrum/tuning`.
 - `tests/` — `test_thesis_equations.py` (closed-form thesis checks), `test_anchors.py` /
   `test_mchm14*.py` (pypngb numeric anchors), `test_routes_equivalence.py`, `test_su4sp4.py`
   (the new-coset cross-check), plus per-module group-theory consistency tests. ~130 tests; keep

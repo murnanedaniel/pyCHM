@@ -321,6 +321,36 @@ so the SU(4) antisymmetric $\mathbf6$ \emph{is} the irreducible SO(6) vector. Th
 reproduces the NMCHM group theory while sharing all of its tooling.
 \impl{groups/lie.py (su\_generators, sp\_subalgebra), groups/coset.py, groups/su4sp4.py}{test\_su4sp4.py}
 
+\section{SU(5)/SO(5) (littlest Higgs) and the coset landscape}
+\label{sec:su5}
+$\SU5/\SO5$ is a type-AI symmetric space: the Cartan involution $\theta(X)=\bar X$ (complex
+conjugation) splits $\mathfrak{su}(5)$ into the unbroken $\so5$ (10 imaginary-antisymmetric
+generators, the $\theta=-1$ eigenspace) and the coset (the $\theta=+1$ eigenspace, 14 real-symmetric
+generators). The same engine that built the SU(4)/Sp(4) split builds this one
+(\code{lie.cartan\_split} with the conjugation involution). The 14 pNGBs are the symmetric-traceless
+\textbf{14} of $\SO5$, which branches under custodial $\SO4$ as
+\begin{equation}
+  \mathbf{14}\;=\;(3,3)\oplus(2,2)\oplus(1,1)\;=\;\text{complex triplet }\phi\;\oplus\;\text{Higgs doublet }h\;\oplus\;\text{singlet }\eta,
+\end{equation}
+the littlest-Higgs pNGB content. The Goldstone in the fundamental \textbf{5} is $U=\exp(i\,\theta^a
+X^a)$ over the coset generators (a complex unitary rotation, unlike the real SO(N) one); along the
+Higgs axis the $(2,2)$ overlap magnitude reduces to the MCHM value
+$|\langle q_L|U|t_R\rangle|^2=\sh^2/2$, so the top and Higgs match the 5-5-5 there. The symmetric
+\textbf{15} of SU(5) (the fuller partner rep) is built with the SU(N) tensor basis (no
+$\delta$-trace removal: \code{tensor\_basis(\dots,group='SU')}) and branches $\mathbf{15}=\mathbf{14}
+\oplus\mathbf 1$ under $\SO5$. The genuinely new observables are the singlet and triplet pNGB masses,
+the curvatures of the two-extra-field Coleman--Weinberg potential at the vacuum (even in $\eta,\phi$,
+so $\langle\eta\rangle=\langle\phi\rangle=0$).
+\impl{groups/lie.py (cartan\_split), groups/su5so5.py, su5so5.py}{test\_su5so5.py}
+
+\paragraph{The landscape.} A composite Higgs needs a custodial $\SO4\cong\SU2_L\times\SU2_R\subset H$
+and a $(2,2)$ Higgs in the coset $G/H$. Chala \& Fonseca (arXiv:2309.10635) enumerate all compact
+$G/H$ with $\le13$ pNGBs satisfying this (642 models; complete up to 13 NGBs). \code{groups.landscape}
+reproduces a slice from pyCHM's own \code{Coset}: it branches each coset under the custodial $\SO4$
+and flags the $(2,2)$, recovering MCHM $(2,2)$, NMCHM $(1,1)+(2,2)$, and littlest-Higgs
+$(1,1)+(2,2)+(3,3)$, and discovering $\SO7/\SO6$, $\SO8/\SO7$ (see \code{docs/COSET\_LANDSCAPE.md}).
+\impl{groups/landscape.py}{test\_landscape.py}
+
 \section*{Provenance: derived vs.\ input vs.\ anchored}
 \addcontentsline{toc}{section}{Provenance}
 \begin{description}[leftmargin=1.4em,style=nextline]

@@ -279,6 +279,36 @@ theory while sharing all of its tooling.
 
 ---
 
+## 7. SU(5)/SO(5) (littlest Higgs) and the coset landscape
+
+SU(5)/SO(5) is a type-AI symmetric space: the Cartan involution `θ(X)=conj(X)` splits su(5) into the
+unbroken so(5) (10 imaginary-antisymmetric generators, θ=−1) and the coset (14 real-symmetric, θ=+1)
+— the same engine (`lie.cartan_split`) that built SU(4)/Sp(4). The 14 pNGBs are the
+symmetric-traceless **14** of SO(5), branching under custodial SO(4) as
+
+$$\mathbf{14}=(3,3)\oplus(2,2)\oplus(1,1)=\text{complex triplet }\phi\ \oplus\ \text{Higgs doublet }h\ \oplus\ \text{singlet }\eta,$$
+
+the littlest-Higgs content. The Goldstone in the **5** is `U=exp(i θᵃXᵃ)` (a complex unitary, unlike
+the real SO(N) rotation); along the Higgs axis the `(2,2)` overlap magnitude reduces to the MCHM
+`|⟨q_L|U|t_R⟩|²=sin²(h/f)/2`, so the top/Higgs match the 5-5-5 there. The symmetric **15** of SU(5)
+(the fuller partner rep) is built with the SU(N) tensor basis (no δ-trace removal,
+`tensor_basis(...,group='SU')`) and branches `15 = 14 ⊕ 1` under SO(5). The new observables are the
+singlet and triplet pNGB masses — curvatures of the multi-field CW potential at the vacuum (even in
+η,φ, so ⟨η⟩=⟨φ⟩=0).
+
+**▶ Implemented in:** `groups/lie.py` (`cartan_split`), `groups/su5so5.py`, `su5so5.py` — **Verified by:** `test_su5so5.py`
+
+**The landscape.** A composite Higgs needs a custodial `SO(4)=SU(2)_L×SU(2)_R ⊂ H` and a `(2,2)`
+Higgs in `G/H`. Chala & Fonseca (arXiv:2309.10635) enumerate all compact `G/H` with ≤13 pNGBs
+satisfying this — **642 models, complete up to 13 NGBs**. `groups.landscape` reproduces a slice from
+pyCHM's own `Coset`: branch each coset under the custodial `SO(4)`, flag the `(2,2)`, recovering MCHM
+`(2,2)`, NMCHM `(1,1)+(2,2)`, littlest-Higgs `(1,1)+(2,2)+(3,3)`, and discovering SO(7)/SO(6),
+SO(8)/SO(7) (see [`COSET_LANDSCAPE.md`](COSET_LANDSCAPE.md)).
+
+**▶ Implemented in:** `groups/landscape.py` — **Verified by:** `test_landscape.py`
+
+---
+
 ## Provenance: derived vs. input vs. anchored
 
 - **Derived (this document):** the Goldstone matrices $U,U_6$; the rep lifts; the SO(4)/SO(5)

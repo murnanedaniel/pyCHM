@@ -141,6 +141,44 @@ the anchor carry over), and the model adds the genuine NMCHM observable: a finit
 singlet pNGB mass from the fermion loop (`tests/test_so6.py`, `test_so6_spinors.py`,
 `test_nmchm6.py`; see `docs/THESIS_VALIDATION.md` for the derived-vs-input-vs-anchored boundary).
 
+### 5-5-su5 / 15-15-su5 (SU(5)/SO(5), littlest Higgs)
+
+The **SU(5)/SO(5)** coset (Ferretti real-rep / littlest Higgs) carries **14 pNGBs** — a Higgs
+doublet, a **complex triplet**, and a **singlet** (`14 → (3,3)+(2,2)+(1,1)` under custodial SO(4)).
+It is built on the same engine via the type-AI Cartan split (`groups.lie.cartan_split`), with the
+SU(N) symmetric-15 rep available through the no-trace-removal tensor builder
+(`tensor_basis(..., group='SU')`). Two runnable variants: partners in the fundamental **5**
+(`'5-5-su5'`) and in the symmetric **15** (`'15-15-su5'`).
+
+```python
+m = pychm.Model('5-5-su5')
+s = m.spectrum(point)          # EWSB fires; m_t, m_h match the MCHM Higgs sector
+from pychm import su5so5
+su5so5.singlet_mass2(point, thv, f=s['f'])   # the NEW observables: the singlet pNGB mass
+su5so5.triplet_mass2(point, thv, f=s['f'])   # and the complex-triplet pNGB mass
+```
+
+Beyond EWSB/`m_t`/`m_h`, the model predicts the **triplet and singlet pNGB masses** (curvatures of
+the multi-field CW potential), the genuinely new observables relative to the MCHM/NMCHM
+(`tests/test_su5so5.py`).
+
+### The coset landscape
+
+`pychm.groups.landscape` turns the abstraction around: it **enumerates** cosets `G/H` on the engine,
+branches each under a custodial `SO(4)`, and flags those with a `(2,2)` Higgs — reproducing a slice
+of the 642-model classification of Chala & Fonseca (arXiv:2309.10635) from pyCHM's own `Coset`:
+
+```python
+>>> from pychm.groups import landscape; landscape.print_scan(max_ngb=14)
+SO(5)/SO(4)   4  YES  (2,2)                    # MCHM
+SO(6)/SO(5)   5  YES  (1,1) + (2,2)            # NMCHM
+SO(7)/SO(6)   6  YES  2x(1,1) + (2,2)
+SU(5)/SO(5)  14  YES  (1,1) + (2,2) + (3,3)    # littlest Higgs
+```
+
+See [`docs/COSET_LANDSCAPE.md`](docs/COSET_LANDSCAPE.md) for the survey: the custodial-`(2,2)` +
+symmetric-space organizing principle, the systematic tables, and the completeness status.
+
 ## Toward a generic spectrum generator (`groups/so5.py`)
 
 The three models above hand-code their fermion mass matrices. Their *only* representation-specific
@@ -256,7 +294,10 @@ pages.
 | symbolic CCWZ engine (`groups/`): dressing derived in closed form, curve-fitting removed | ✅ |
 | arbitrary tensor irreps + SO(4) decomposition (5/10/14/30/…); spinor reps **4**, **16** | ✅ |
 | NMCHM **SO(6)/SO(5)**: reps **6/15/20'/10/4**, closed-form Goldstone + branchings; NM4DCHM6 model + singlet pNGB | ✅ |
-| CI: all models (hand-coded + assembled + symbolic + NMCHM) + route-equivalence (113 tests, 3.9/3.11/3.12) | ✅ |
+| group-agnostic **`Coset(G,H)` engine**: SO(N), SU(N), Sp(N) generators, one Goldstone, one branching | ✅ |
+| **SU(4)/Sp(4)** coset cross-checked against SO(6)/SO(5); **SU(5)/SO(5)** littlest-Higgs models (5 + 15) + triplet/singlet pNGB masses | ✅ |
+| **coset-landscape enumerator** (`groups.landscape`): reproduces a slice of the 642-model classification (arXiv:2309.10635) | ✅ |
+| CI: all models + cosets + the landscape (146 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence
 MIT.
