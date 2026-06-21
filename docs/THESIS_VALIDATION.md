@@ -5,6 +5,10 @@ This documents, chapter by chapter, how pyCHM is validated against Murnane's the
 and what is **out of scope** because the library does not implement it. It exists to make the
 validation claim precise rather than sweeping.
 
+> For the **derivations themselves** (the closed-form group theory behind every ✅ "derived" row),
+> see [`DERIVATIONS.md`](DERIVATIONS.md) / [`DERIVATIONS.pdf`](DERIVATIONS.pdf) — each step is tied
+> to the function and the test that implements it.
+
 Honest summary up front:
 - The **Goldstone/CCWZ dressing** (the `s_h`-dependence of every fermion mixing) is *derived from
   group theory*, not transcribed — see `pychm.symbolic`. The model *structure* (embeddings,

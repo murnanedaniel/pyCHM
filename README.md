@@ -225,6 +225,10 @@ and pole mass, the vacuum / Higgs-mass / gauge relations, and the Barbieri–Giu
 channel_weights_sym`); the overall `4/5` normalization is itself derived from the 14-singlet
 embedding (`|S₄₄|²=4/5`), so the prefactors are group theory end to end, not a thesis read-off.
 
+The **first-principles derivations** behind every "derived" claim are written up in
+[`docs/DERIVATIONS.md`](docs/DERIVATIONS.md) (and `docs/DERIVATIONS.pdf`), each step tied to the
+function and the test that closes it.
+
 **Scope is stated precisely** in [`docs/THESIS_VALIDATION.md`](docs/THESIS_VALIDATION.md): the
 Goldstone dressing is derived from group theory, the model structure is thesis input, and the
 validated equation classes are the ones the library implements. The NMCHM **SO(6)/SO(5)**

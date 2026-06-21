@@ -143,6 +143,19 @@ State which bucket each claim is in. This is the honest boundary that the user d
 - **Verify equation numbers from the source PDF, not from memory or from sub-agent reports.** When
   agents disagreed on numbering, the resolution was always to read `/tmp/thesis` (the PDF) directly.
 
+## Documenting derivations (REQUIRED for any new derivation)
+Every first-principles derivation — a Goldstone matrix, a rep lift, a branching, a channel weight,
+a coupling normalization, anything proved in closed form — MUST be written up in **both**
+`docs/DERIVATIONS.md` (GitHub-flavored markdown, `$...$`/`$$...$$` math) **and** `docs/DERIVATIONS.tex`
+(LaTeX), and the LaTeX recompiled to `docs/DERIVATIONS.pdf`. Keep the two in sync — same sections,
+same equations, same `▶ Implemented in: … / Verified by: …` line tying each derivation to the
+function and the test that closes it. The document and the code are one object: if a derivation is
+wrong, its named test fails.
+- **Compile:** `cd docs && /home/user/tectonic DERIVATIONS.tex` (tectonic fetches packages on first
+  run; it is the project's LaTeX engine — do not assume a system `pdflatex`).
+- **Commit all three** (`.md`, `.tex`, `.pdf`) together with the code + test that implement the
+  derivation. A derivation is not "done" until it is in both formats, compiled, and test-backed.
+
 ## Working principles
 - **No curve-fitting.** Every dressing factor must be a derived Goldstone matrix element with an
   exact symbolic residual of 0. If you find yourself least-squares fitting `s_h` samples, stop.
