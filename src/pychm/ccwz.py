@@ -93,9 +93,13 @@ def embedding(rep, kind):
     raise ValueError(rep)
 
 
-def overlap(rep, bra, ket, sh, hat=3):
-    """<bra| U_rep |ket> (sh = sin(h/f)): the Higgs-dressed mixing factor between embeddings."""
-    Uv = U_vector(sh, hat)
+def overlap(rep, bra, ket, sh, hat=3, Uv=None):
+    """<bra| U_rep |ket> (sh = sin(h/f)): the Higgs-dressed mixing factor between embeddings.
+
+    Pass a precomputed Uv = U_vector(sh, hat) to avoid rebuilding it across repeated
+    calls at the same sh (the same vector matrix dresses reps '5', '10' and '14')."""
+    if Uv is None:
+        Uv = U_vector(sh, hat)
     if rep == '5':
         return complex(np.vdot(bra, Uv @ ket))
     return complex(np.sum(np.conjugate(bra) * (Uv @ ket @ Uv.T)))

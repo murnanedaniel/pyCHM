@@ -163,8 +163,9 @@ class _Assembled14_1_10:
     def mass_U(self, P, sh):
         m = np.zeros((14, 14), dtype=complex)
         m[0, 0], m[1, 1] = _MU * 1e-3, _MC * 1e-3
+        Uv = ccwz.U_vector(sh)
         for k, ck in _C_QL_UP.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh)
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh, Uv=Uv)
         m[4, 2] = -np.conjugate(P['Delta_u'])                      # t_R singlet: no Goldstone dressing
         mQ, mU, mD, Yu, Yd = P['mQ'], P['mU'], P['mD'], P['Yu'], P['Yd']
         m[3, 3], m[3, 4], m[4, 4], m[5, 5] = mQ, 2 * Yu / _r5, mU, mD
@@ -176,10 +177,11 @@ class _Assembled14_1_10:
     def mass_D(self, P, sh):
         m = np.zeros((9, 9), dtype=complex)
         m[0, 0], m[1, 1] = _MD * 1e-3, _MS * 1e-3
+        Uv = ccwz.U_vector(sh)
         for k, ck in _C_QL_DN.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh)
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh, Uv=Uv)
         for k, ck in _C_BR.items():
-            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh)
+            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh, Uv=Uv)
         mQ, mD, Yd = P['mQ'], P['mD'], P['Yd']
         m[3, 3], m[4, 3], m[4, 4], m[5, 5] = mD, Yd / 2, mQ, mQ
         m[6, 6], m[7, 7], m[8, 8] = mQ, mD, mD
@@ -231,10 +233,11 @@ class _Assembled14_14_10:
     def mass_U(self, P, sh):
         m = np.zeros((19, 19), dtype=complex)
         m[0, 0], m[1, 1] = _MU * 1e-3, _MC * 1e-3
+        Uv = ccwz.U_vector(sh)
         for k, ck in _C_QL_UP_1414.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh)
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_UP, sh, Uv=Uv)
         for k, ck in _C_TR_1414.items():
-            m[k, 2] = np.conjugate(P['Delta_u']) * ccwz.overlap('14', ck, _E_TR_14, sh)
+            m[k, 2] = np.conjugate(P['Delta_u']) * ccwz.overlap('14', ck, _E_TR_14, sh, Uv=Uv)
         mQ, mU, mD, mYu, Yu, Yd, Ytu = (P['mQ'], P['mU'], P['mD'], P['mYu'], P['Yu'], P['Yd'], P['Ytu'])
         for k in (3, 6, 9, 11, 13, 15):
             m[k, k] = mQ
@@ -251,10 +254,11 @@ class _Assembled14_14_10:
     def mass_D(self, P, sh):
         m = np.zeros((12, 12), dtype=complex)
         m[0, 0], m[1, 1] = _MD * 1e-3, _MS * 1e-3
+        Uv = ccwz.U_vector(sh)
         for k, ck in _C_QL_DN_1414.items():
-            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh)
+            m[2, k] = P['Delta_q'] * ccwz.overlap('14', ck, _E_QL_DN, sh, Uv=Uv)
         for k, ck in _C_BR_1414.items():
-            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh)
+            m[k, 2] = np.conjugate(P['Delta_d']) * ccwz.overlap('10', ck, _E_BR, sh, Uv=Uv)
         mQ, mU, mD, mYu, Yu, Yd = P['mQ'], P['mU'], P['mD'], P['mYu'], P['Yu'], P['Yd']
         m[3, 3], m[10, 10], m[11, 11] = mD, mD, mD
         m[4, 4], m[6, 6], m[8, 8] = mQ, mQ, mQ
