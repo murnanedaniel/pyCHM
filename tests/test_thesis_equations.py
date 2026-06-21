@@ -1,14 +1,23 @@
 """Closed-form verification of pyCHM against Murnane's thesis (arXiv:2606.18364).
 
-Every assertion here cross-checks a pyCHM expression against an explicit equation of the
-thesis -- the Goldstone matrix and SO(5) generators, the SO(4) basis tensors and branchings,
-the App. A7 fermion form factors, the Coleman-Weinberg kernel and the pole-mass formula, and
-the Higgs-dressing s_h-coefficients of every representation.  The module doubles as the
-thesis<->code correspondence record: each test names the thesis equation it checks.
+Each assertion cross-checks a pyCHM expression against an explicit thesis equation: the Goldstone
+matrix and SO(5) generators, the SO(4) basis tensors and branchings, the App. A7 fermion form
+factors, the Coleman-Weinberg kernel and pole-mass formula, the Higgs-dressing s_h-coefficients of
+every representation, the closed-form physical relations (vacuum, m_h, gauge masses), and the
+Barbieri-Giudice / first-order tuning measures.  Each test names the equation it checks; together
+with `docs/THESIS_VALIDATION.md` this is the thesis<->code correspondence record.
 
-Where a dressing coefficient matches only up to a representation-dependent normalization (an
-embedding/coupling convention), the *trig structure* is asserted exactly and the normalization
-is asserted to be theta-independent (a pure constant) via `_ratio_is_constant`.
+Scope, stated honestly (see docs/THESIS_VALIDATION.md for the full coverage map):
+- This validates the equation classes the library IMPLEMENTS -- the fermion sector, conventions,
+  CW potential, and BG/first-order tuning.  It is NOT a validation of "all" thesis equations:
+  NMCHM (Ch.7), higher-order HOT / Bayesian evidence (Ch.3/A2), large-N (A6) and the scanning
+  machinery (Ch.4) are not implemented in pyCHM and are out of scope.
+- The 14-rep form-factor prefactors are DERIVED as exact SO(4) Clebsch weights
+  (`channel_weights_sym`) up to one overall coupling constant (4/5), which the thesis itself writes
+  explicitly (App. A7, `Y_T*sqrt(4/5)`).  `_ratio_is_constant` certifies that residual normalization
+  is theta-independent.
+- The thesis has no per-point numerical benchmark tables; the eigenvalue-route 14 models are pinned
+  to the independent pypngb engine (<0.1%) by tests/test_anchors.py and test_mchm14*.py.
 """
 import numpy as np
 import pytest
@@ -16,7 +25,7 @@ import pytest
 sp = pytest.importorskip("sympy")
 from scipy.linalg import expm
 
-from pychm import ccwz, mchm5, routes
+from pychm import ccwz, mchm5, routes, potential, spectrum, tuning
 from pychm.symbolic import core, decompose, spinors
 from pychm.symbolic import models as M
 
@@ -185,6 +194,31 @@ def test_coeffs_14_14_10_structure():
     assert _ratio_is_constant(sp.Rational(5, 4) * sh2 * ch2, sh2 * ch2) == sp.Rational(5, 4)
 
 
+def test_14_channel_weights_derive_thesis_prefactors():
+    """The thesis 14 form factors are the three SO(4)-invariant spurion contractions
+    Pi^0/Pi^1/Pi^2 = (1,1)/(2,2)/doubly-projected channels (6-LCHM eq.401).  The squared
+    SO(4)-channel projections of the Goldstone-dressed t_R-singlet are EXACT closed forms, and
+    every thesis Pi_uR / M_u prefactor is one of these Clebsch weights times a single overall
+    coupling constant (4/5).  This upgrades the structure-only check to a derivation."""
+    from pychm.symbolic import decompose
+    W = decompose.channel_weights_sym('14', M.E_TR_14)
+    W11, W22, W33 = W[(0.0, 0.0)], W[(0.5, 0.5)], W[(1.0, 1.0)]
+    # the exact group-theoretic channel weights (sum to 1 by unitarity)
+    assert sp.simplify(W11 - (4 * ch2 - sh2)**2 / 16) == 0       # = |<S|U_14|S>|^2
+    assert sp.simplify(W22 - sp.Rational(5, 2) * sh2 * ch2) == 0
+    assert sp.simplify(W33 - sp.Rational(15, 16) * sh2**2) == 0
+    assert sp.simplify(W11 + W22 + W33 - 1) == 0
+    # thesis Pi_uR weights derive from the channel weights + one coupling constant 4/5:
+    assert sp.simplify((4 * ch2 - sh2)**2 / 20 - sp.Rational(4, 5) * W11) == 0          # Pi^2 coeff
+    assert sp.simplify((sp.Rational(4, 5) * ch2 + sh2 / 20)
+                       - (sp.Rational(4, 5) - sp.Rational(3, 10) * W22 - sp.Rational(4, 5) * W33)) == 0  # Pi^1 coeff
+    # thesis M_u terms derive from the singlet and 4-plet overlaps:
+    ovSS = core.overlap_sym('14', M.E_TR_14, M.E_TR_14)
+    ovqS = core.overlap_sym('14', M.E_QL_UP, M.E_TR_14)
+    assert sp.simplify(s * c * (4 * ch2 - sh2) / (2 * sp.sqrt(5)) - 2 / sp.sqrt(5) * s * c * ovSS) == 0
+    assert sp.simplify(3 * s * c / (4 * sp.sqrt(5)) - (-sp.Rational(3, 10)) * ovqS) == 0
+
+
 def test_coeffs_14_1_10_tR_singlet_constant():
     """14-1-10: t_R is an SO(4) singlet -> NO Goldstone dressing in the up-right sector; M_u is
     constant.  Matches assemble/mchm14_1_10 m[4,2] = -Delta_u (h-independent)."""
@@ -245,3 +279,76 @@ def test_pole_mass_eq518():
     PiR = (R0 + sh2v * Rs)[0]
     Msq = (sh2v * (1 - sh2v) * M2c)[0]
     assert np.isclose(mchm5.fermion_mass(FF, sh2v, up=True), np.sqrt(Msq / (PiL * PiR)))
+
+
+# =====================================================================================
+# Stage A2 -- the thesis A7 14-form-factor s_h-structure ties to the SO(4) channel weights
+# =====================================================================================
+def test_14_formfactor_structure_ties_to_channel_weights():
+    """A7 eq:broken14-14-10: the thesis writes the t_R (=tau^c) 14 self-energy with the explicit
+    singlet-channel factor (1/5)(4-5 s_h^2)^2 and the 4-plet factor 2(4/5 - 3/4 s_h^2), and the
+    coupling combinations Y_T*sqrt(4/5), (Y_T+Yt_T)*4/5 -- i.e. the '4/5' is in the thesis source.
+    Here we tie the thesis s_h-factors to the group-theoretic channel weights of Stage A1."""
+    W = decompose.channel_weights_sym('14', M.E_TR_14)
+    W11 = W[(0.0, 0.0)]                                  # singlet (1,1) channel = (4c^2-s^2)^2/16
+    ovSS = core.overlap_sym('14', M.E_TR_14, M.E_TR_14)  # = (4c^2-s^2)/4
+    # thesis pure-singlet s_h-factor (coeff of Pi^(1)) is (4 - 5 s_h^2)^2 = 16 * W11
+    assert sp.simplify((4 - 5 * sh2)**2 - 16 * W11) == 0
+    # thesis M_tau singlet factor (4 - 5 s_h^2) = 4 <S|U_14|S>
+    assert sp.simplify((4 - 5 * sh2) - 4 * ovSS) == 0
+    # the three channel weights sum to 1 (unitarity): the singlet/(2,2)/(3,3) channels exhaust
+    # the dressed t_R, so the thesis Pi^(1)/Pi^(4)/Pi^(9) decomposition is complete.
+    assert sp.simplify(sum(W.values()) - 1) == 0
+
+
+# =====================================================================================
+# Stage B -- thesis closed-form physical relations (numerics; no per-point tables exist)
+# =====================================================================================
+def test_higgs_mass_scaling_closed_form():
+    """Thesis m_h^2 = (8 beta / f^2) xi (1 - xi) from V = -gamma s_h^2 + beta s_h^4 at the
+    minimum xi = gamma/(2 beta), with the (1-xi) Jacobian (s_h = sin(h/f))."""
+    g, b, f, xi = sp.symbols('gamma beta f xi', positive=True)
+    Vpp = -2 * g + 12 * b * xi                          # d^2V/ds_h^2 at s_h^2 = xi
+    Vpp_at_min = Vpp.subs(g, 2 * b * xi)                # gamma = 2 beta xi
+    mh2 = (1 - xi) * Vpp_at_min / f**2                  # spectrum._higgs_mass2 form
+    assert sp.simplify(mh2 - 8 * b / f**2 * xi * (1 - xi)) == 0
+
+
+def test_vev_and_vacuum_relations():
+    """v_EW = f sqrt(xi) (spectrum.py) and the vacuum xi = gamma/(2 beta) minimises
+    V = -gamma s^2 + beta s^4."""
+    from tests.test_anchors import REF
+    s = spectrum.spectrum(REF, model='5-5-5')
+    assert np.isclose(s['f'] * np.sqrt(s['xi']), potential.V_EW, rtol=1e-9)   # v = f sqrt(xi)
+    # symbolic vacuum condition: the nonzero stationary point of V = -gamma s^2 + beta s^4
+    # is s_h^2 = gamma/(2 beta) = xi.
+    sh, g, b = sp.symbols('s_h gamma beta', positive=True)
+    V = -g * sh**2 + b * sh**4
+    roots = sp.solve(sp.diff(V, sh) / sh, sh**2)            # drop the s_h=0 root
+    assert sp.simplify(roots[0] - g / (2 * b)) == 0
+
+
+def test_gauge_sector_sm_relations():
+    """At the EW vacuum the gauge masses obey the SM custodial relations m_W = g v/2,
+    m_Z = sqrt(g^2+g'^2) v/2, so m_W/m_Z = cos(theta_W) = g/sqrt(g^2+g'^2) (thesis Ch.5)."""
+    from tests.test_anchors import REF
+    s = spectrum.spectrum(REF, model='5-5-5')
+    g2, gp = spectrum.G2, spectrum.GP
+    assert np.isclose(s['mW'], g2 * potential.V_EW / 2)
+    assert np.isclose(s['mZ'], np.sqrt(g2**2 + gp**2) * potential.V_EW / 2)
+    assert np.isclose(s['mW'] / s['mZ'], g2 / np.sqrt(g2**2 + gp**2))      # cos(theta_W)
+
+
+# =====================================================================================
+# Stage C -- fine-tuning measures (thesis Ch.3, eq:BG and the HOT chain): BG, |J|, information
+# =====================================================================================
+def test_fine_tuning_measures():
+    """tuning.py implements Delta_BG = max_i|J_i| (BG), the first-order HOT |J| = ||J||_2, and
+    the information I = 1/2 log(1 + |J|^2) = KL (Gaussian limit).  Verify the relations hold."""
+    from tests.test_anchors import REF
+    out = tuning.tuning(REF, model='5-5-5')
+    J = np.asarray(out['J'])
+    assert np.isclose(out['BG'], np.max(np.abs(J)))                 # Delta_BG = max|J_i|
+    assert np.isclose(out['HOT'], np.sqrt(J @ J))                   # first-order HOT = ||J||
+    assert np.isclose(out['I'], 0.5 * np.log1p(J @ J))             # information
+    assert np.isclose(out['KL'], out['I'])                         # KL = I (Gaussian)

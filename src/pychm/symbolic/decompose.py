@@ -130,3 +130,33 @@ def compatible(basis, jL, jR, tol=1e-6):
     """True iff the irrep contains the SO(4) multiplet (jL, jR) -- i.e. an elementary fermion
     in (jL, jR) can be embedded in (mixed with a partner of) this representation."""
     return (jL, jR) in so4_content(basis, tol)
+
+
+def channel_weights_sym(rep, embedding, hat=3):
+    """Exact squared SO(4)-channel projections W_{(jL,jR)}(theta) of the Goldstone-dressed
+    `embedding` in the tensor irrep `rep` ('10' or '14').
+
+    The Higgs vev dresses the elementary embedding E as U_R(theta) E = Uv E Uv^T; this lands in
+    the rep, where it splits into SO(4) sub-multiplets.  W_{(jL,jR)} is the squared length of the
+    (jL,jR) component -- a closed trigonometric polynomial -- and sum_channels W = 1 (unitarity).
+    These channel weights are exactly the thesis Pi^(a) form-factor weights up to one overall
+    coupling normalization (purely group-theoretic Clebsch factors otherwise).
+
+    Returns {(jL, jR): sympy_expr_in(theta)}.  Pure group theory: no coupling/d-factors.
+    """
+    import sympy as sp
+    from . import core
+
+    Uv = core.U_vector_sym(hat)
+    E = sp.Matrix(embedding)
+    dressed = Uv * E * Uv.T
+    sym_basis = core.rep_basis_sym(rep)
+    coord = sp.Matrix([core._frob(b, dressed) for b in sym_basis])     # coords in the rep basis
+
+    num_basis = [np.array(sp.matrix2numpy(b, dtype=float)) for b in sym_basis]
+    out = {}
+    for (jL, jR), cols in so4_decompose(num_basis):
+        P = sp.nsimplify(sp.Matrix((cols @ cols.conj().T).real), rational=True)  # exact projector
+        out[(jL, jR)] = sp.simplify((coord.T * P * coord)[0])
+    return out
+

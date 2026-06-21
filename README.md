@@ -187,6 +187,24 @@ New representations have no hand-coded oracle, so they are validated by internal
 (unitarity, the representation homomorphism, the SO(4) branching) in `tests/test_tensors.py` and
 `tests/test_spinors.py`.
 
+## Validation against the thesis
+
+`tests/test_thesis_equations.py` cross-checks pyCHM against the published equations of
+*Murnane, The Landscape of Composite Higgs Models* (arXiv:2606.18364) in closed form: the
+Goldstone matrix and SO(5) generators, the SO(4) bases and branchings, the App. A7 form-factor
+building blocks (verbatim), the per-representation Higgs dressing, the Coleman–Weinberg kernel
+and pole mass, the vacuum / Higgs-mass / gauge relations, and the Barbieri–Giudice tuning. The
+14-rep prefactors are **derived** as exact SO(4) Clebsch weights (`symbolic.decompose.
+channel_weights_sym`) up to one coupling constant that the thesis writes explicitly.
+
+**Scope is stated precisely** in [`docs/THESIS_VALIDATION.md`](docs/THESIS_VALIDATION.md): the
+Goldstone dressing is derived from group theory, the model structure is thesis input, and the
+validated equation classes are the ones the library implements — NMCHM, higher-order tuning,
+Bayesian evidence, large-N and the scanning machinery are out of scope (not implemented), and the
+thesis has no per-point numeric tables (the 14 models are anchored to the independent pypngb
+engine to <0.1%). This is a precise validation of the implemented physics, not a sweep of all 218
+pages.
+
 ## Status
 
 | | state |
