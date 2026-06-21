@@ -154,6 +154,39 @@ representations, write down where the elementary fermions embed, and `ccwz` + `a
 Higgs-dependent mass matrices — no per-model transcription. `tests/test_assemble.py` is the regression
 harness (every model checked entry-for-entry and end-to-end against its hand-coded oracle).
 
+## Symbolic derivation from scratch, and arbitrary representations (`pychm.symbolic`)
+
+The dressing factors are not only computed numerically — they are **derived in closed form**. The
+symbolic engine builds the Goldstone matrix `U_R(θ)` (θ = h/f) with sympy and reduces each overlap to
+a closed trigonometric expression, so the benchmark factors follow from group theory with no
+curve-fitting:
+
+```python
+from pychm.symbolic import core, derive
+ES = core.embedding_sym('14', 'singlet')
+core.overlap_sym('14', ES, ES)                 # -> (5*cos(2*θ) + 3)/8, derived symbolically
+```
+
+The previous assembler reverse-fit its composite states by least squares over `s_h` samples; that is
+gone. Every benchmark dressing is now **proven** to be a genuine Goldstone matrix element `⟨c|U_R|E⟩`
+by an exact symbolic solve (`symbolic.derive.solve_composite`), and the assembled models lambdify these
+closed forms to numpy callables (no sympy on the hot path).
+
+The construction extends to **any compatible representation**:
+
+- **Arbitrary tensor irreps** — `symbolic.tensors` builds an orthonormal basis of any rank-`k`
+  symmetric-traceless / antisymmetric SO(5) irrep and lifts `U` to it; `ccwz.U_rep(('sym', 3), s_h)`
+  is the **30**, etc.
+- **SO(4) decomposition** — `symbolic.decompose` finds the `(j_L, j_R)` sub-multiplets via the two
+  SU(2) Casimirs (5 = (2,2)+(1,1); 10 = (2,2)+(3,1)+(1,3); 14 = (3,3)+(2,2)+(1,1)), with a
+  `compatible(rep, jL, jR)` predicate for placing the elementary fermions.
+- **Spinorial reps** — `symbolic.spinors` gives the SO(5)≅Sp(4) gamma matrices and the Goldstone
+  matrix in the **4** (the MCHM4 partner, 4 = (2,1)+(1,2)) and the **16**.
+
+New representations have no hand-coded oracle, so they are validated by internal consistency
+(unitarity, the representation homomorphism, the SO(4) branching) in `tests/test_tensors.py` and
+`tests/test_spinors.py`.
+
 ## Status
 
 | | state |
@@ -166,7 +199,9 @@ harness (every model checked entry-for-entry and end-to-end against its hand-cod
 | 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
 | generic mass-matrix assembler (`assemble.py`), reproduces **all 3 models** (reps 5/10/14) | ✅ |
-| CI: all models (hand-coded + assembled) + route-equivalence (27 tests, 3.9/3.11/3.12) | ✅ |
+| symbolic CCWZ engine (`symbolic/`): dressing derived in closed form, curve-fitting removed | ✅ |
+| arbitrary tensor irreps + SO(4) decomposition (5/10/14/30/…); spinor reps **4**, **16** | ✅ |
+| CI: all models (hand-coded + assembled + symbolic) + route-equivalence (59 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence
 MIT.

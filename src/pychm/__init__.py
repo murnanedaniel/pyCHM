@@ -1,6 +1,7 @@
 """pyCHM -- open Composite Higgs Model potential, spectrum and fine-tuning.
 
-Dual route (form-factor / mass-eigenvalue), pure numpy+scipy, no private dependencies.
+Dual route (form-factor / mass-eigenvalue), numpy+scipy at runtime (sympy for the symbolic
+CCWZ derivation of the Higgs dressing), no private dependencies.
 
     >>> import pychm
     >>> m = pychm.Model('5-5-5')
