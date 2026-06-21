@@ -11,7 +11,7 @@ validation claim precise rather than sweeping.
 
 Honest summary up front:
 - The **Goldstone/CCWZ dressing** (the `s_h`-dependence of every fermion mixing) is *derived from
-  group theory*, not transcribed — see `pychm.symbolic`. The model *structure* (embeddings,
+  group theory*, not transcribed — see `pychm.groups`. The model *structure* (embeddings,
   partner spectrum, mass placements) is input taken from the thesis, not derived.
 - The fermion-sector and convention equations are validated **exactly** in closed form
   (`tests/test_thesis_equations.py`). The higher-rep form-factor prefactors are derived as exact
@@ -32,11 +32,11 @@ Legend: ✅ validated in closed form (test named) · 🔵 validated numerically/
 
 | Source | Equation class | pyCHM | Status |
 |---|---|---|---|
-| Ch.2, A0, A1 | CCWZ Goldstone `U`, SO(5) generators `T_L,T_R,X`, lifts to 10/14, spinor `U_4` | `ccwz`, `symbolic/core`, `symbolic/spinors` | ✅ `test_U_vector_matches_thesis_goldstone`, `test_so5_broken_generator_exponentiates_to_U_vector`, `test_so4_unbroken_generators_close_the_algebra`, `test_spinor_4_half_angle` |
-| A1 | 14/10 basis tensors `T̂^0,T̂^{ab},X̂^a`; SO(4) branchings 5/10/14/4 | `symbolic/core`, `symbolic/decompose` | ✅ `test_14_basis_matches_thesis`, `test_10_basis_antisymmetric_orthonormal`, `test_branchings_match_thesis` |
+| Ch.2, A0, A1 | CCWZ Goldstone `U`, SO(5) generators `T_L,T_R,X`, lifts to 10/14, spinor `U_4` | `groups.so5`, `groups/so5`, `groups/spinors` | ✅ `test_U_vector_matches_thesis_goldstone`, `test_so5_broken_generator_exponentiates_to_U_vector`, `test_so4_unbroken_generators_close_the_algebra`, `test_spinor_4_half_angle` |
+| A1 | 14/10 basis tensors `T̂^0,T̂^{ab},X̂^a`; SO(4) branchings 5/10/14/4 | `groups/so5`, `groups/decompose` | ✅ `test_14_basis_matches_thesis`, `test_10_basis_antisymmetric_orthonormal`, `test_branchings_match_thesis` |
 | A7 (`eq:formulas`) | form-factor building blocks `A_L,A_R,A_M,B`; the 5-5-5 form-factor route | `mchm5._AL/_AR/_AM/_B`, `formfactor_pieces`, `fermion_mass` | ✅ `test_A7_building_blocks_verbatim` (transcription) **+ now independently validated**: at a custodial point the form-factor top mass equals the pypngb-anchored eigenvalue top mass as `s_h→0` (ratio→1 to ~1e-6), confirming the A7 form factors are the correct leading-order 2-point functions — not just transcribed (`test_formfactor_route.py`, `VALIDATION_AUDIT.md §2.1`). The finite-`s_h` gap is the understood custodial + O(`s_h²`) truncation, not a thesis error. |
 | Ch.6 / A7 (`eq:broken5-5-5`) | 5-5-5 `s_h`-coefficients (`s_h²/2`, `c_h²`, `½s_h²c_h²`) | `mchm5.formfactor_pieces` | ✅ `test_coeffs_5_5_5`, `test_coeffs_5_5_5_formfactor_wiring` |
-| Ch.6 / A7 (`eq:broken14-14-10`) | 14 form-factor `s_h`-prefactors (`(4c²−s²)²/20`, `4c²/5+s²/20`, `3/(4√5)`, `1/(2√5)`) | `symbolic/decompose.channel_weights_sym`, `core.embedding_sym` | ✅ **fully derived**: the trig structure + channel ratios are exact SO(4) Clebsch weights (`W₁₁+W₂₂+W₃₃=1`), and the overall `4/5` is **derived from the embedding** — `\|S₄₄\|²=4/5` for `S=diag(1,1,1,1,−4)/√20` (`test_4_5_is_derived_from_the_embedding`), so `(4c²−s²)²/20 = \|S₄₄\|²·W₁₁` is a genuine prediction, not a thesis read-off (`VALIDATION_AUDIT.md §2.2`). |
+| Ch.6 / A7 (`eq:broken14-14-10`) | 14 form-factor `s_h`-prefactors (`(4c²−s²)²/20`, `4c²/5+s²/20`, `3/(4√5)`, `1/(2√5)`) | `groups/so5.channel_weights_sym`, `so5.embedding_sym` | ✅ **fully derived**: the trig structure + channel ratios are exact SO(4) Clebsch weights (`W₁₁+W₂₂+W₃₃=1`), and the overall `4/5` is **derived from the embedding** — `\|S₄₄\|²=4/5` for `S=diag(1,1,1,1,−4)/√20` (`test_4_5_is_derived_from_the_embedding`), so `(4c²−s²)²/20 = \|S₄₄\|²·W₁₁` is a genuine prediction, not a thesis read-off (`VALIDATION_AUDIT.md §2.2`). |
 | Ch.6 / A7 (`eq:broken14-1-10`) | 14-1-10 t_R-singlet: no up-right dressing, constant `M_u` | `assemble`, `mchm14_1_10` | ✅ `test_coeffs_14_1_10_tR_singlet_constant` |
 | Ch.5 (`5-M4DCHM.tex:459`) | CW kernel `V=Σ c_i/(64π²) m_i⁴ log m_i²`, `c_i={3,6,−12}` | `routes._K_closed`, `_CF/_CV` | ✅ `test_cw_kernel_and_coefficients` |
 | Ch.5 (`5-M4DCHM.tex:518`) | pole mass `m=M(0,v)/√(Π_LΠ_R)` | `mchm5.fermion_mass` | ✅ `test_pole_mass_eq518` |
@@ -48,14 +48,14 @@ Legend: ✅ validated in closed form (test named) · 🔵 validated numerically/
 | Ch.3 / A2 (`eq.217–263`) | higher-order HOT `Δ_2,…,Δ_N` (Gram-determinant volumes), pseudo-determinant | — | ⚪ not implemented (library has BG + first-order `|J|` only) |
 | Ch.3 / A2 (`eq.27,130`) | Bayesian evidence `Z`, Occam factor, Athron volume ratios | — | ⚪ not implemented |
 | Ch.4 | nested sampling / MultiNest, likelihood scans | — | ⚪ not implemented (external) |
-| Ch.7/8 | NMCHM `SO(6)/SO(5)`, the 5-component Goldstone `Φ` (eq. 474), broken generators (eq. 632), the 6-embedding (eq. 633), the singlet pNGB | `symbolic/so6`, `symbolic/so6_spinors`, `nmchm6` | ✅ `test_so6.py`, `test_so6_spinors.py`, `test_nmchm6.py` (closed-form Goldstone + reps + branchings; model reduces to the anchored 5-5-5 and adds the singlet mass) |
+| Ch.7/8 | NMCHM `SO(6)/SO(5)`, the 5-component Goldstone `Φ` (eq. 474), broken generators (eq. 632), the 6-embedding (eq. 633), the singlet pNGB | `groups/so6`, `groups/so6_spinors`, `nmchm6` | ✅ `test_so6.py`, `test_so6_spinors.py`, `test_nmchm6.py` (closed-form Goldstone + reps + branchings; model reduces to the anchored 5-5-5 and adds the singlet mass) |
 | A6 | large-N scaling, meson sum rule | — | ⚪ not implemented (implicit in the form-factor structure only) |
 | Ch.1, A0 (defs) | SM review, Lie-group definitions | — | ⚪ review material, nothing to validate against code |
 
 ## NMCHM / SO(6) representation coverage (Ch.7/8)
 
 The Next-to-Minimal coset `SO(6)/SO(5)` and **all** its small irreps are implemented in
-`pychm.symbolic.so6` / `so6_spinors` and validated to the same bar as the SO(5) layer — closed
+`pychm.groups.so6` / `so6_spinors` and validated to the same bar as the SO(5) layer — closed
 form against the thesis where the thesis is explicit, and by internal group-theory consistency
 otherwise. The Goldstone dressing is *derived* (Rodrigues closed form for the 5-pNGB vector
 Goldstone, then lifted to every rep by the rank-`k` tensor / Clifford construction), not
@@ -82,7 +82,7 @@ Closed-form thesis identities (`sp.simplify(...) == 0` or exact numeric):
 - the **(h,s) Higgs/singlet dressing is derived in closed form**, not fitted: `so6.channel_weights6_sym`
   gives the exact closed-trig SO(4)-channel weights of the dressed `q_L` in the 6, which sum to 1
   (unitarity) and reduce to the MCHM5 `sin²(θ_h)/2` vector weight at `s=0` — the SO(6) analogue of
-  the SO(5) `decompose.channel_weights_sym`, and the symbolic Goldstone lambdifies to the numeric
+  the SO(5) `so5.channel_weights_sym`, and the symbolic Goldstone lambdifies to the numeric
   one bit-for-bit (`test_closed_form_channel_weights_derive_unity_and_mchm_limit`,
   `test_symbolic_goldstone_matches_numeric_bit_for_bit`).
 

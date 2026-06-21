@@ -5,7 +5,7 @@
 (b) the thesis (arXiv:2606.18364) being treated as an infallible oracle where the only
 trustworthy reference is the independent **pypngb** engine.
 
-**Method.** Read `src/pychm/*`, `src/pychm/symbolic/*`, `tests/*`, `docs/THESIS_VALIDATION.md`,
+**Method.** Read `src/pychm/*`, `src/pychm/groups/*`, `tests/*`, `docs/THESIS_VALIDATION.md`,
 `validation/two_routes_equivalence.py`, and streamed the session transcript
 (`fa29cb02-…jsonl`, 3053 records) + sampled subagent logs.
 

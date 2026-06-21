@@ -9,13 +9,13 @@ needed.
 
 ## What pyCHM already provides (the reuse surface)
 
-- **CCWZ Goldstone engine** (`ccwz.py`, `symbolic/core.py`, `symbolic/so6.py`): the Goldstone
+- **CCWZ Goldstone engine** (`groups/so5.py`, `groups/so5.py`, `groups/so6.py`): the Goldstone
   matrix `U` for a coset, currently built as an `SO(N)` rotation (a planar rotation for one vev
   direction; a closed-form Rodrigues rotation for the SO(6) two-field case).
-- **Representation tower** (`symbolic/tensors.py`): an `n`-agnostic builder of symmetric-traceless
-  and antisymmetric `SO(n)` tensor irreps of any rank, plus Clifford spinors (`symbolic/spinors.py`,
-  `symbolic/so6_spinors.py`). The Goldstone lift `U_rep` works for any of these.
-- **Branching machinery** (`symbolic/decompose.py`, `symbolic/so6.py`): `SO(N)→SO(N-1)→SO(4)`
+- **Representation tower** (`groups/tensors.py`): an `n`-agnostic builder of symmetric-traceless
+  and antisymmetric `SO(n)` tensor irreps of any rank, plus Clifford spinors (`groups/spinors.py`,
+  `groups/so6_spinors.py`). The Goldstone lift `U_rep` works for any of these.
+- **Branching machinery** (`groups/decompose.py`, `groups/so6.py`): `SO(N)→SO(N-1)→SO(4)`
   decompositions via quadratic Casimirs / SU(2)×SU(2) content.
 - **Model assembler** (`assemble.py`, `nmchm6.py`): partial-compositeness fermion mass matrices
   from declarative embeddings + the Goldstone dressing.
@@ -66,7 +66,7 @@ hypercolour group (Sp(4), SU(4), SO(7), …) and the ψ/χ irreps; the most latt
 ### pyCHM integration sketch
 
 - **SU(4)/Sp(4) — already implemented.** `SU(4)/Sp(4)` is locally isomorphic to **`SO(6)/SO(5)`**:
-  its 5 Goldstones are exactly the Higgs-doublet-plus-singlet of pyCHM's NMCHM (`symbolic/so6.py`,
+  its 5 Goldstones are exactly the Higgs-doublet-plus-singlet of pyCHM's NMCHM (`groups/so6.py`,
   `nmchm6.py`). **The minimal pseudoreal Ferretti/Sannino EW coset is the NMCHM pyCHM already
   has.** Near-term win: (i) document this equivalence; (ii) add the chimera-baryon top-partner
   embeddings (the partner sits in an Sp(4) irrep — the 5/10/14 of SO(5), already built in

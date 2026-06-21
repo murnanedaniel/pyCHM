@@ -73,7 +73,7 @@ is index $4$. In the vector (the $\mathbf 5$) the Hermitian generators are
 The six $T^{ab}$ ($a<b\le 3$) generate $\SO4$; the four broken generators are $X^{\hat a}=T^{\hat a 4}$.
 With the Higgs vacuum expectation value along the $\hat a=3$ direction, the only field that survives
 in unitary gauge is the physical Higgs $h$, and $U$ becomes a single planar rotation.
-\impl{ccwz.gen\_vector, symbolic/core.py}{test\_so4\_unbroken\_generators\_close\_the\_algebra}
+\impl{groups.so5.gen\_vector, groups/so5.py}{test\_so4\_unbroken\_generators\_close\_the\_algebra}
 
 \subsection{The vector Goldstone matrix}
 Exponentiating the broken generator $X^3=T^{34}$ with angle $\theta=h/f$ gives a rotation in the
@@ -87,7 +87,7 @@ $(3,4)$ plane,
 The library stores everything in the variable $\sh=\sin(h/f)$ with $\ch=\sqrt{1-\sh^2}$, avoiding
 an $\arcsin$ round-trip (machine precision). Eq.~\eqref{eq:U5} is the thesis ``explicit Goldstone
 matrix.''
-\impl{ccwz.U\_vector, core.U\_vector\_sym}{test\_U\_vector\_matches\_thesis\_goldstone}
+\impl{groups.so5.U\_vector, so5.U\_vector\_sym}{test\_U\_vector\_matches\_thesis\_goldstone}
 
 \subsection{Lifting to tensor representations}
 A rank-$k$ $\SO5$ tensor irrep is carried by the totally symmetric-traceless or totally
@@ -101,7 +101,7 @@ in an orthonormal basis $\{E_a\}$ of the irrep. The first three rungs are the
 $\mathbf 5$ (rank 1), the $\mathbf{10}$ (antisymmetric rank 2) and the $\mathbf{14}$
 (symmetric-traceless rank 2). The construction is dimension-agnostic, so the same code produces
 the $\mathbf{30}$ (rank-3 symmetric) and, with $n=6$, the $\SO6$ tower of \S\ref{sec:nmchm}.
-\impl{tensors.tensor\_basis, tensors.U\_rep\_tensor, ccwz.U\_rep}{test\_tensors.py (dimension, unitarity, homomorphism)}
+\impl{tensors.tensor\_basis, tensors.U\_rep\_tensor, groups.so5.U\_rep}{test\_tensors.py (dimension, unitarity, homomorphism)}
 
 \subsection{\texorpdfstring{$\SO4=\SU2_L\times\SU2_R$}{SO(4)=SU(2)xSU(2)} branching}
 The unbroken $\SO4$ on indices $0,\dots,3$ is $\SU2_L\times\SU2_R$ via the 't~Hooft combinations
@@ -123,7 +123,7 @@ in the span of the single-basis overlaps $\{\langle E_b|U_R|E\rangle\}$. The lib
 exact minimal-norm composite tensor $c$ with $\langle c|U_R|E\rangle=f$ and \emph{raises} if $f$ is
 not realisable. This is the from-scratch guarantee: every dressing factor in the model files is
 \emph{proven} to be a Goldstone matrix element, with symbolic residual exactly $0$.
-\impl{symbolic/derive.py::solve\_composite}{test\_dressings\_are\_matrix\_elements}
+\impl{groups/derive.py::solve\_composite}{test\_dressings\_are\_matrix\_elements}
 
 \subsection{The $\mathbf{5}$-$\mathbf{5}$-$\mathbf{5}$ coefficients}
 Embed the up-component of $q_L$ in the bidoublet, $E_{q_L}=(e_0+e_3)/\sqrt2$, and $t_R$ in the
@@ -138,7 +138,7 @@ $Ue_0=e_0$, so
 \end{align}
 These are exactly the $\Pi_L\sim\sh^2/2$, $\cos^2(h/2f)$ structures of the thesis $5$-$5$-$5$ form
 factors, here \emph{derived} from the overlaps.
-\impl{core.overlap\_sym, mchm5.formfactor\_pieces}{test\_coeffs\_5\_5\_5}
+\impl{so5.overlap\_sym, mchm5.formfactor\_pieces}{test\_coeffs\_5\_5\_5}
 
 \subsection{The $\mathbf{14}$ channel weights and the $4/5$ enhancement}
 \label{sec:45}
@@ -177,7 +177,7 @@ representation-dependent enhancement. The thesis singlet-channel prefactor then 
 \end{equation}
 which would fail for any inconsistent thesis number --- the check is no longer a tautology that
 reads $4/5$ off the prefactor $1/20$.
-\impl{decompose.channel\_weights\_sym, core.embedding\_sym}{test\_14\_channel\_weights\_derive\_thesis\_prefactors, test\_4\_5\_is\_derived\_from\_the\_embedding}
+\impl{decompose.channel\_weights\_sym, so5.embedding\_sym}{test\_14\_channel\_weights\_derive\_thesis\_prefactors, test\_4\_5\_is\_derived\_from\_the\_embedding}
 
 \section{Next-to-Minimal Composite Higgs: \texorpdfstring{$\SO6/\SO5$}{SO(6)/SO(5)}}
 \label{sec:nmchm}
@@ -290,6 +290,36 @@ the finite-$\sh$ gap being the form-factor route's leading-order-in-$\sh^2$ trun
 leading-order two-point functions of the \code{pypngb}-anchored mass matrix --- validated, not
 merely transcribed.
 \impl{mchm5.formfactor\_pieces, mchm5.fermion\_mass}{test\_formfactor\_route.py}
+
+\section{Beyond SO(N): the coset abstraction and SU(4)/Sp(4)}
+\label{sec:coset}
+Everything above is built from one group-agnostic engine (\code{pychm.groups}): a coset $G/H$ is a
+list of unbroken generators of $H$ and broken generators $X^a$ in some representation, and the
+Goldstone is $U(\pi)=\exp(i\,\pi^a X^a)$ -- in unitary gauge a rank-$\le2$ rotation, so the closed
+Rodrigues form \eqref{eq:U6} serves every case. The MCHM and NMCHM are the instances
+$\SO5/\SO4$ and $\SO6/\SO5$; the \emph{same code} builds $\SU N/\Sp N$ cosets, with the SU($N$)
+Gell-Mann generators and the USp($N$) subalgebra obtained from the Cartan involution
+$\theta(X)=\Omega\,\bar X\,\Omega^{-1}$ ($\Omega$ the symplectic form): $\mathfrak{usp}(N)$ is the
+$\theta=-1$ eigenspace, the coset the $\theta=+1$ eigenspace.
+
+\paragraph{SU(4)/Sp(4) $\cong$ SO(6)/SO(5).}
+The minimal pseudoreal Ferretti--Sannino coset $\SU4/\Sp4$ has $15-10=5$ broken generators --- the
+same five pNGBs (Higgs doublet $+$ singlet) as $\SO6/\SO5$. Under $\SU4\cong\mathrm{Spin}(6)$,
+$\Sp4\cong\mathrm{Spin}(5)$ the representations map as
+\begin{equation}
+  \mathbf 4_{\SU4}=\mathbf 4_{\text{spinor}}^{\SO6},\quad
+  \mathbf 6_{\SU4}^{[\text{antisym}]}=\mathbf 6_{\text{vector}}^{\SO6},\quad
+  \mathbf{15}_{\SU4}=\mathbf{15}^{\SO6}.
+\end{equation}
+The library builds $\SU4/\Sp4$ independently (its own generators, Goldstone, and the antisymmetric
+$\mathbf 6=[\mathbf4\otimes\mathbf4]_A$) and cross-checks it against the existing $\SO6$ code, which
+is an \emph{exact oracle}: the $\mathbf4$ branches to a single $\mathbf4$ of $\Sp4$ and the
+$\mathbf6$ to $\mathbf1\oplus\mathbf5$, matching the $\SO6$ spinor and vector; and the strong
+statement of the isomorphism --- the $\mathbf6$ generators span the full $15$-dimensional
+$\so6\cong\mathfrak{su}(4)$ algebra and act irreducibly (commutant $=$ scalars, by Schur) --- holds,
+so the SU(4) antisymmetric $\mathbf6$ \emph{is} the irreducible SO(6) vector. The new coset thus
+reproduces the NMCHM group theory while sharing all of its tooling.
+\impl{groups/lie.py (su\_generators, sp\_subalgebra), groups/coset.py, groups/su4sp4.py}{test\_su4sp4.py}
 
 \section*{Provenance: derived vs.\ input vs.\ anchored}
 \addcontentsline{toc}{section}{Provenance}

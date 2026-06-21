@@ -10,16 +10,20 @@ against group theory and an independent engine, not against a peer tool.
 This file records the **debugging and validation methodology** that actually worked here. Follow it.
 
 ## Project layout (what lives where)
-- `src/pychm/` — numeric engine: `mchm5`, `mchm14`, `mchm14_1_10`, `nmchm6` (the models);
-  `potential`, `spectrum`, `tuning`, `routes` (representation-agnostic downstream); `ccwz` (numeric
-  Goldstone dressing); `assemble` (generic mass-matrix assembler).
-- `src/pychm/symbolic/` — the **sympy mirror** of `ccwz`: `core`, `derive` (exact composite solver),
-  `models`, `tensors` (arbitrary rank-k irreps), `decompose` (SO(4) Casimir decomposition),
-  `spinors` (4, 16), `so6` / `so6_spinors` (NMCHM tower). The symbolic engine must reproduce the
-  numeric one *bit-for-bit* after `lambdify`.
+- `src/pychm/` — the models (`mchm5`, `mchm14`, `mchm14_1_10`, `nmchm6`), the representation-agnostic
+  downstream (`potential`, `spectrum`, `tuning`, `routes`), and the assembler (`assemble`).
+- `src/pychm/groups/` — **one canonical group-theory package** (replaced the old duplicated
+  `ccwz` + `symbolic/`). The shared *engine*: `lie` (SO/SU/Sp generators, `rodrigues_exp`),
+  `coset` (the `Coset(G,H)` abstraction + Goldstone), `reps` (tensor lifts), `branch` (Casimir
+  branching + Hodge split), plus the generic `tensors`/`decompose`/`derive`. The coset *instances*
+  built on the engine: `so5` (MCHM — numeric **and** symbolic Goldstone dressing, merged; the
+  symbolic side must reproduce the numeric bit-for-bit after `lambdify`), `so6`/`so6_spinors`
+  (NMCHM), `su4sp4` (the SU(4)/Sp(4) coset), `spinors` (SO(5) 4/16), `models` (the canonical
+  dressing-factor derivations). **A new coset = a new instance on the engine, not a new copy of it.**
 - `tests/` — `test_thesis_equations.py` (closed-form thesis checks), `test_anchors.py` /
-  `test_mchm14*.py` (pypngb numeric anchors), `test_routes_equivalence.py`, plus per-module
-  group-theory consistency tests. ~93 tests; keep them all green on Python 3.9/3.11/3.12.
+  `test_mchm14*.py` (pypngb numeric anchors), `test_routes_equivalence.py`, `test_su4sp4.py`
+  (the new-coset cross-check), plus per-module group-theory consistency tests. ~130 tests; keep
+  them all green on Python 3.9/3.11/3.12.
 - `docs/THESIS_VALIDATION.md` — the chapter-by-chapter coverage map and the derived/input/anchored
   boundary. **Update it whenever you change what is validated.**
 
@@ -43,9 +47,9 @@ A result is only "validated" if it clears one of these bars. Do not use the word
    `V(s_h)` to ~1% of its depth on random points (CI-enforced in `test_routes_equivalence.py`).
 
 Derive, don't fit. Every dressing factor is *proven* to be a Goldstone matrix element `⟨c|U_R|E⟩`
-by exact symbolic solve (`symbolic.derive.solve_composite`, residual exactly 0) — the old
+by exact symbolic solve (`groups.derive.solve_composite`, residual exactly 0) — the old
 least-squares reverse-fit is gone and must not return. Channel weights are **exact Clebsch factors**
-(`decompose.channel_weights_sym`, `W₁₁+W₂₂+W₃₃=1`), not tuned numbers.
+(`so5.channel_weights_sym`, `W₁₁+W₂₂+W₃₃=1`), not tuned numbers.
 
 ## The derived / input / anchored taxonomy
 State which bucket each claim is in. This is the honest boundary that the user demanded; respect it.
@@ -74,7 +78,7 @@ State which bucket each claim is in. This is the honest boundary that the user d
 
 ## Coding & convention rules
 - **SO(5)/SO(4):** SO(4) acts on indices **0..3**; the SO(5)/SO(4) coset direction is **index 4**.
-  Broken generators `T^{(â,4)}`, unbroken `T^{(a,b)}`, `a<b∈0..3` (see `ccwz.UNBROKEN/BROKEN`).
+  Broken generators `T^{(â,4)}`, unbroken `T^{(a,b)}`, `a<b∈0..3` (see `groups.so5.UNBROKEN/BROKEN`).
 - **SO(6)/SO(5):** SO(5) acts on **0..4**; the coset direction is **index 5** (`so6.COSET = 5`).
   The thesis's 6th index is our index 5.
 - **Goldstone normalization:** `U(h) = exp(i (h/f) T^{(â,4)})` (rotation angle = `h/f`, generator
@@ -82,15 +86,15 @@ State which bucket each claim is in. This is the honest boundary that the user d
   *normalization-independent* singlet overlap `⟨1,1|U₁₄|1,1⟩ = (3+5cos2θ)/8` (machine precision).
 - **The `sh` (sine) convention is library-wide:** pass `sh = sin(h/f)`, with `c = sqrt(1-sh²)` — **no
   `arcsin` round-trip** (it reintroduces machine-epsilon that the tuned vacuum amplifies). All of
-  `ccwz`, `symbolic`, and the model files use this; keep new code consistent.
+  `groups.so5`, `symbolic`, and the model files use this; keep new code consistent.
 - **Model interface:** every model object exposes `mass_U`, `mass_D`, `mass2_W`, `mass2_Z`. The
   downstream layer (`potential`/`spectrum`/`tuning`) dispatches on a `model=` string via `_MODELS`
   and never knows its representation — keep it that way; do not leak rep-specific logic downstream.
 - **The assembler pattern:** a model is specified declaratively (partner rep, elementary embeddings,
-  composite states); `assemble` emits `mass_U`/`mass_D` with the Higgs dressing supplied by `ccwz`.
+  composite states); `assemble` emits `mass_U`/`mass_D` with the Higgs dressing supplied by `groups.so5`.
   New models should go through it, validated entry-for-entry against a hand-coded oracle when one
   exists. Register assembled variants as `'<name>-assembled'`.
-- **`symbolic/` mirrors `ccwz` exactly** (same basis ordering, same conventions) so lambdify
+- **The symbolic side of `groups.so5` mirrors its numeric side exactly** (same basis ordering, same conventions) so lambdify
   reproduces the numeric engine bit-for-bit. Lambdify once at import to cached numpy callables; keep
   sympy off the hot path (~4000 builds/tuning must stay fast).
 - Use **exact sympy integers/rationals** in symbolic construction (`sp.Rational`, exact `sqrt`), not

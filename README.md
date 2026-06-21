@@ -123,7 +123,7 @@ The **Next-to-Minimal** model promotes the coset to **SO(6)/SO(5)**: the five pN
 doublet *plus a real SO(5) singlet* `s`, and the quark partners sit in the **6** (the NM4DCHM6).
 The full SO(6) representation tower — the **6**, the adjoint **15**, the symmetric-traceless
 **20'**, the self-dual **10**/`10bar` and the Weyl spinors **4**/`4bar` — is built from group
-theory in `pychm.symbolic.so6` (closed-form Goldstone via Rodrigues, lifts via the same tensor /
+theory in `pychm.groups.so6` (closed-form Goldstone via Rodrigues, lifts via the same tensor /
 Clifford machinery as SO(5)), and validated against the thesis in closed form (the Goldstone `Φ`
 eq. 474, the broken generators eq. 632, the `6 = 4+1+1` embedding eq. 633) and by the SO(6)→SO(5)
 branchings.
@@ -141,18 +141,19 @@ the anchor carry over), and the model adds the genuine NMCHM observable: a finit
 singlet pNGB mass from the fermion loop (`tests/test_so6.py`, `test_so6_spinors.py`,
 `test_nmchm6.py`; see `docs/THESIS_VALIDATION.md` for the derived-vs-input-vs-anchored boundary).
 
-## Toward a generic spectrum generator (`ccwz.py`)
+## Toward a generic spectrum generator (`groups/so5.py`)
 
 The three models above hand-code their fermion mass matrices. Their *only* representation-specific
 content is the Higgs (Goldstone) dressing — the s_h factors `cos(h/f), sin(h/f), cos²(h/2f)` for the
 **5**; `(3+5cos2h/f)/8, √5 sin(2h/f)/4` for the **14** — which are just the matrix elements of the
-Goldstone matrix `U(h)` in the chosen SO(5) irrep. `pychm.ccwz` builds `U_R(h)` for the 5, 10 and 14
+Goldstone matrix `U(h)` in the chosen SO(5) irrep. `pychm.groups.so5` builds `U_R(h)` for the 5, 10 and 14
 from group theory, so this dressing follows from one construction for any partner representation:
 
 ```python
-import numpy as np, pychm.ccwz as ccwz
-ES = ccwz.embedding('14', 'singlet')
-ccwz.overlap('14', ES, ES, h_over_f)        # == (3 + 5 cos(2 h/f)) / 8, exactly
+import numpy as np
+from pychm.groups import so5
+ES = so5.embedding('14', 'singlet')
+so5.overlap('14', ES, ES, h_over_f)        # == (3 + 5 cos(2 h/f)) / 8, exactly
 ```
 
 `tests/test_ccwz.py` checks these reproduce the hand-coded factors (the 14 singlet overlap to machine
@@ -161,7 +162,7 @@ four tuning measures — is already representation-agnostic and dispatches on a 
 
 **The assembler (`assemble.py`) closes the loop.** Given a declarative spec — the partner
 representation, the elementary embeddings, and the composite states (masses + SO(5) content) — it
-emits `mass_U`/`mass_D` with the Higgs dressing supplied by `ccwz`, for *any* representation. It is
+emits `mass_U`/`mass_D` with the Higgs dressing supplied by `groups.so5`, for *any* representation. It is
 validated to reproduce **all three** hand-coded models — **5-5-5**, **14-1-10** and **14-14-10** —
 entry-for-entry to machine precision, exercising the **5**, **10** and **14** of SO(5). Each assembled
 model is registered (`pychm.Model('5-5-5-assembled')`, `'14-1-10-assembled'`, `'14-14-10-assembled'`)
@@ -170,15 +171,15 @@ permits:
 
 ```python
 import pychm
-pychm.Model('14-14-10-assembled').spectrum(point)  # 19x19 up sector from 14/10 embeddings + ccwz
+pychm.Model('14-14-10-assembled').spectrum(point)  # 19x19 up sector from 14/10 embeddings + groups.so5
 ```
 
 So a composite-Higgs model is now specifiable purely by group-theoretic data: choose the partner
-representations, write down where the elementary fermions embed, and `ccwz` + `assemble` build the
+representations, write down where the elementary fermions embed, and `groups.so5` + `assemble` build the
 Higgs-dependent mass matrices — no per-model transcription. `tests/test_assemble.py` is the regression
 harness (every model checked entry-for-entry and end-to-end against its hand-coded oracle).
 
-## Symbolic derivation from scratch, and arbitrary representations (`pychm.symbolic`)
+## Symbolic derivation from scratch, and arbitrary representations (`pychm.groups`)
 
 The dressing factors are not only computed numerically — they are **derived in closed form**. The
 symbolic engine builds the Goldstone matrix `U_R(θ)` (θ = h/f) with sympy and reduces each overlap to
@@ -186,27 +187,27 @@ a closed trigonometric expression, so the benchmark factors follow from group th
 curve-fitting:
 
 ```python
-from pychm.symbolic import core, derive
-ES = core.embedding_sym('14', 'singlet')
-core.overlap_sym('14', ES, ES)                 # -> (5*cos(2*θ) + 3)/8, derived symbolically
+from pychm.groups import core, derive
+ES = so5.embedding_sym('14', 'singlet')
+so5.overlap_sym('14', ES, ES)                 # -> (5*cos(2*θ) + 3)/8, derived symbolically
 ```
 
 The previous assembler reverse-fit its composite states by least squares over `s_h` samples; that is
 gone. Every benchmark dressing is now **proven** to be a genuine Goldstone matrix element `⟨c|U_R|E⟩`
-by an exact symbolic solve (`symbolic.derive.solve_composite`), and the assembled models lambdify these
+by an exact symbolic solve (`groups.derive.solve_composite`), and the assembled models lambdify these
 closed forms to numpy callables (no sympy on the hot path).
 
 The construction extends to **any compatible representation**:
 
-- **Arbitrary tensor irreps** — `symbolic.tensors` builds an orthonormal basis of any rank-`k`
-  symmetric-traceless / antisymmetric SO(5) irrep and lifts `U` to it; `ccwz.U_rep(('sym', 3), s_h)`
+- **Arbitrary tensor irreps** — `groups.tensors` builds an orthonormal basis of any rank-`k`
+  symmetric-traceless / antisymmetric SO(5) irrep and lifts `U` to it; `groups.so5.U_rep(('sym', 3), s_h)`
   is the **30**, etc.
-- **SO(4) decomposition** — `symbolic.decompose` finds the `(j_L, j_R)` sub-multiplets via the two
+- **SO(4) decomposition** — `groups.decompose` finds the `(j_L, j_R)` sub-multiplets via the two
   SU(2) Casimirs (5 = (2,2)+(1,1); 10 = (2,2)+(3,1)+(1,3); 14 = (3,3)+(2,2)+(1,1)), with a
   `compatible(rep, jL, jR)` predicate for placing the elementary fermions.
-- **Spinorial reps** — `symbolic.spinors` gives the SO(5)≅Sp(4) gamma matrices and the Goldstone
+- **Spinorial reps** — `groups.spinors` gives the SO(5)≅Sp(4) gamma matrices and the Goldstone
   matrix in the **4** (the MCHM4 partner, 4 = (2,1)+(1,2)) and the **16**.
-- **NMCHM SO(6)/SO(5)** — `symbolic.so6` / `symbolic.so6_spinors` give the SO(6) coset, the
+- **NMCHM SO(6)/SO(5)** — `groups.so6` / `groups.so6_spinors` give the SO(6) coset, the
   closed-form 5-pNGB Goldstone, and the full irrep tower **6 / 15 / 20' / 10 / 4** with their
   SO(6)→SO(5)→SO(4) branchings; `nmchm6` is the worked NM4DCHM6 model.
 
@@ -221,7 +222,7 @@ New representations have no hand-coded oracle, so they are validated by internal
 Goldstone matrix and SO(5) generators, the SO(4) bases and branchings, the App. A7 form-factor
 building blocks (verbatim), the per-representation Higgs dressing, the Coleman–Weinberg kernel
 and pole mass, the vacuum / Higgs-mass / gauge relations, and the Barbieri–Giudice tuning. The
-14-rep prefactors are **derived** as exact SO(4) Clebsch weights (`symbolic.decompose.
+14-rep prefactors are **derived** as exact SO(4) Clebsch weights (`groups.decompose.
 channel_weights_sym`); the overall `4/5` normalization is itself derived from the 14-singlet
 embedding (`|S₄₄|²=4/5`), so the prefactors are group theory end to end, not a thesis read-off.
 
@@ -250,9 +251,9 @@ pages.
 | CI route-equivalence on random points | ✅ |
 | 14-14-10 representation (eigenvalue route), validated to <0.1% | ✅ |
 | 14-1-10 representation (eigenvalue route), validated to <0.1% | ✅ |
-| generic CCWZ Goldstone dressing (`ccwz.py`, reps 5/10/14), rep factors validated | ✅ |
+| generic CCWZ Goldstone dressing (`groups/so5.py`, reps 5/10/14), rep factors validated | ✅ |
 | generic mass-matrix assembler (`assemble.py`), reproduces **all 3 models** (reps 5/10/14) | ✅ |
-| symbolic CCWZ engine (`symbolic/`): dressing derived in closed form, curve-fitting removed | ✅ |
+| symbolic CCWZ engine (`groups/`): dressing derived in closed form, curve-fitting removed | ✅ |
 | arbitrary tensor irreps + SO(4) decomposition (5/10/14/30/…); spinor reps **4**, **16** | ✅ |
 | NMCHM **SO(6)/SO(5)**: reps **6/15/20'/10/4**, closed-form Goldstone + branchings; NM4DCHM6 model + singlet pNGB | ✅ |
 | CI: all models (hand-coded + assembled + symbolic + NMCHM) + route-equivalence (113 tests, 3.9/3.11/3.12) | ✅ |
