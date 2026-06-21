@@ -16,7 +16,7 @@ import pytest
 sp = pytest.importorskip("sympy")
 
 from pychm import ccwz
-from pychm.symbolic import so6
+from pychm.groups import so6
 
 
 # =====================================================================================

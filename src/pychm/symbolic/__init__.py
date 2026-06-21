@@ -24,11 +24,9 @@ from .core import (
     U_vector_sym, rep_basis_sym, U_rep_sym, overlap_sym, embedding_sym,
     to_closed_trig, as_sh_expr, lambdify_sh,
 )
-from . import so6, so6_spinors          # NMCHM: SO(6)/SO(5) coset, reps 6/15/20'/10/10bar/4/4bar
 
 __all__ = [
     "theta", "sh", "ch",
     "U_vector_sym", "rep_basis_sym", "U_rep_sym", "overlap_sym", "embedding_sym",
     "to_closed_trig", "as_sh_expr", "lambdify_sh",
-    "so6", "so6_spinors",
 ]

@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("sympy")
 
-from pychm.symbolic import so6_spinors as S
+from pychm.groups import so6_spinors as S
 
 
 def test_clifford_and_chirality():

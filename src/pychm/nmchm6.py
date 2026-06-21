@@ -33,7 +33,7 @@ singlet vev for the 1-field pipeline; default 0).
 import numpy as np
 
 from . import mchm5
-from .symbolic import so6
+from .groups import so6
 
 Nc = 3.0
 _R2 = np.sqrt(2.0)

@@ -11,7 +11,7 @@ their SO(5) branchings -- the group theory the model is built from.
 import numpy as np
 import pychm
 from pychm import nmchm6 as N
-from pychm.symbolic import so6, so6_spinors
+from pychm.groups import so6, so6_spinors
 
 # the validated 5-5-5 benchmark, reused (NMCHM6 shares the Lagrangian-mass basis at <s>=0)
 point = dict(
