@@ -41,9 +41,53 @@ Legend: ✅ validated in closed form (test named) · 🔵 validated numerically/
 | Ch.3 / A2 (`eq.217–263`) | higher-order HOT `Δ_2,…,Δ_N` (Gram-determinant volumes), pseudo-determinant | — | ⚪ not implemented (library has BG + first-order `|J|` only) |
 | Ch.3 / A2 (`eq.27,130`) | Bayesian evidence `Z`, Occam factor, Athron volume ratios | — | ⚪ not implemented |
 | Ch.4 | nested sampling / MultiNest, likelihood scans | — | ⚪ not implemented (external) |
-| Ch.7 | NMCHM `SO(6)/SO(5)`, the singlet pNGB, 5-component `Φ` | — | ⚪ not implemented |
+| Ch.7/8 | NMCHM `SO(6)/SO(5)`, the 5-component Goldstone `Φ` (eq. 474), broken generators (eq. 632), the 6-embedding (eq. 633), the singlet pNGB | `symbolic/so6`, `symbolic/so6_spinors`, `nmchm6` | ✅ `test_so6.py`, `test_so6_spinors.py`, `test_nmchm6.py` (closed-form Goldstone + reps + branchings; model reduces to the anchored 5-5-5 and adds the singlet mass) |
 | A6 | large-N scaling, meson sum rule | — | ⚪ not implemented (implicit in the form-factor structure only) |
 | Ch.1, A0 (defs) | SM review, Lie-group definitions | — | ⚪ review material, nothing to validate against code |
+
+## NMCHM / SO(6) representation coverage (Ch.7/8)
+
+The Next-to-Minimal coset `SO(6)/SO(5)` and **all** its small irreps are implemented in
+`pychm.symbolic.so6` / `so6_spinors` and validated to the same bar as the SO(5) layer — closed
+form against the thesis where the thesis is explicit, and by internal group-theory consistency
+otherwise. The Goldstone dressing is *derived* (Rodrigues closed form for the 5-pNGB vector
+Goldstone, then lifted to every rep by the rank-`k` tensor / Clifford construction), not
+transcribed.
+
+| SO(6) irrep | built as | dim | SO(5) branching | test |
+|---|---|---|---|---|
+| `6` vector | `tensor_basis('sym',1,6)` | 6 | `5 + 1` | ✅ `test_rep_dimension_and_branchings` |
+| `15` adjoint | `tensor_basis('antisym',2,6)` | 15 | `10 + 5` | ✅ `test_rep_dimension_and_branchings` |
+| `20'` sym-traceless | `tensor_basis('sym',2,6)` | 20 | `14 + 5 + 1` | ✅ `test_rep_dimension_and_branchings` |
+| `10` / `10bar` self-dual 3-form | `tensor_basis('antisym',3,6)` ± Hodge dual | 10 | `10` (SO(5) adjoint) | ✅ `test_three_form_splits_into_10_and_10bar` |
+| `4` / `4bar` Weyl spinor | 8-dim Clifford, chirality split | 4 | `4` (no bidoublet) | ✅ `test_spinor_branchings_match_thesis` |
+
+Closed-form thesis identities (`sp.simplify(...) == 0` or exact numeric):
+- **eq. 474** — the Goldstone field `Φ = U6·e₅ = (1/φ)sin(φ/f)(h₁..h₄, s, φ cot(φ/f))`
+  (`test_goldstone_vacuum_matches_thesis_eq474`).
+- **eq. 632** — the broken generators (bidoublet `X_B^a` + singlet `X_S`) exponentiate to the
+  vector Goldstone (`test_broken_generators_exponentiate_to_goldstone`); the 15 SO(6) generators
+  close the algebra (`test_so6_generators_close_the_algebra`).
+- **eq. 633** — the fundamental `6 = 4 + 1 + 1` embedding basis
+  (`test_fundamental_embedding_6_is_4_plus_1_plus_1`).
+- the thesis statement that the **4 has no `SU(2)_L×SU(2)_R` bidoublet** (so it cannot host the SM
+  `q_L`, the reason the NM4DCHM uses the 6) — `test_spinor_branchings_match_thesis`.
+
+What is *derived* vs *input* vs *anchored* — the honest boundary, identical in spirit to the
+MCHM accounting above:
+- **Derived (group theory):** the SO(6) generators and coset split, the closed-form 5-pNGB
+  Goldstone `U6(h,s)`, every irrep and its `U6` dressing, and the SO(6)→SO(5)→SO(4) branchings.
+- **Input (model structure):** the `nmchm6` NM4DCHM6 partner content — the `5-5-5` spectrum lifted
+  to the 6 with `t_R` in the SO(5)-singlet `e₅`. This is the standard partial-compositeness
+  choice, not a transcription of a thesis table.
+- **Anchored:** there is **no public NMCHM engine** (the thesis NM4DCHM6 scan is not reproduced
+  here), so the NMCHM model is not anchored to an external benchmark the way the MCHM is. Instead
+  it is validated by (i) **exact reduction to the pypngb-anchored 5-5-5 at `⟨s⟩=0`**
+  (`test_reduces_to_555_assembler_entry_for_entry`, `test_spectrum_matches_555`,
+  `test_tuning_matches_555`) and (ii) the new singlet observable being a finite, positive,
+  calculable fermion-loop mass with the vacuum at `⟨s⟩=0` (`test_potential_even_in_singlet…`,
+  `test_singlet_pNGB_has_positive_calculable_mass`). This reduction-plus-consistency is the
+  honest substitute for an external anchor, and is stated as such rather than left as a TODO.
 
 ## What "validated" means here
 

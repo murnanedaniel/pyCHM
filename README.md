@@ -117,6 +117,30 @@ On this benchmark pyCHM reproduces the independent engine to **0.035% on `sh`, 0
 <0.01% on `m_h`** (matched scheme at the oracle `f`) and **0.038% on `Delta_BG`**
 (`tests/test_mchm14_1_10.py`).
 
+### 6-6-6 (NMCHM, SO(6)/SO(5))
+
+The **Next-to-Minimal** model promotes the coset to **SO(6)/SO(5)**: the five pNGBs are the Higgs
+doublet *plus a real SO(5) singlet* `s`, and the quark partners sit in the **6** (the NM4DCHM6).
+The full SO(6) representation tower — the **6**, the adjoint **15**, the symmetric-traceless
+**20'**, the self-dual **10**/`10bar` and the Weyl spinors **4**/`4bar` — is built from group
+theory in `pychm.symbolic.so6` (closed-form Goldstone via Rodrigues, lifts via the same tensor /
+Clifford machinery as SO(5)), and validated against the thesis in closed form (the Goldstone `Φ`
+eq. 474, the broken generators eq. 632, the `6 = 4+1+1` embedding eq. 633) and by the SO(6)→SO(5)
+branchings.
+
+```python
+m = pychm.Model('6-6-6')
+m.spectrum(point)   # same xi/m_t/m_h as 5-5-5 at <s>=0 (inherits the pypngb anchor)
+m.tuning(point)     # same Delta_BG
+from pychm import nmchm6
+nmchm6.singlet_mass2(point, thv, f=f)   # the new SO(5)-singlet pNGB mass (massless in the MCHM)
+```
+
+At `<s>=0` the SO(6) mass matrices reduce to the validated 5-5-5 **entry-for-entry** (so EWSB and
+the anchor carry over), and the model adds the genuine NMCHM observable: a finite, calculable
+singlet pNGB mass from the fermion loop (`tests/test_so6.py`, `test_so6_spinors.py`,
+`test_nmchm6.py`; see `docs/THESIS_VALIDATION.md` for the derived-vs-input-vs-anchored boundary).
+
 ## Toward a generic spectrum generator (`ccwz.py`)
 
 The three models above hand-code their fermion mass matrices. Their *only* representation-specific
@@ -182,10 +206,13 @@ The construction extends to **any compatible representation**:
   `compatible(rep, jL, jR)` predicate for placing the elementary fermions.
 - **Spinorial reps** — `symbolic.spinors` gives the SO(5)≅Sp(4) gamma matrices and the Goldstone
   matrix in the **4** (the MCHM4 partner, 4 = (2,1)+(1,2)) and the **16**.
+- **NMCHM SO(6)/SO(5)** — `symbolic.so6` / `symbolic.so6_spinors` give the SO(6) coset, the
+  closed-form 5-pNGB Goldstone, and the full irrep tower **6 / 15 / 20' / 10 / 4** with their
+  SO(6)→SO(5)→SO(4) branchings; `nmchm6` is the worked NM4DCHM6 model.
 
 New representations have no hand-coded oracle, so they are validated by internal consistency
-(unitarity, the representation homomorphism, the SO(4) branching) in `tests/test_tensors.py` and
-`tests/test_spinors.py`.
+(unitarity, the representation homomorphism, the SO(4) branching) in `tests/test_tensors.py`,
+`tests/test_spinors.py`, `tests/test_so6.py` and `tests/test_so6_spinors.py`.
 
 ## Validation against the thesis
 
@@ -199,10 +226,13 @@ channel_weights_sym`) up to one coupling constant that the thesis writes explici
 
 **Scope is stated precisely** in [`docs/THESIS_VALIDATION.md`](docs/THESIS_VALIDATION.md): the
 Goldstone dressing is derived from group theory, the model structure is thesis input, and the
-validated equation classes are the ones the library implements — NMCHM, higher-order tuning,
-Bayesian evidence, large-N and the scanning machinery are out of scope (not implemented), and the
-thesis has no per-point numeric tables (the 14 models are anchored to the independent pypngb
-engine to <0.1%). This is a precise validation of the implemented physics, not a sweep of all 218
+validated equation classes are the ones the library implements. The NMCHM **SO(6)/SO(5)**
+representations (Ch.7/8) are now implemented and validated in closed form (Goldstone `Φ` eq. 474,
+broken generators eq. 632, the `6` embedding eq. 633, the full rep tower and its branchings);
+higher-order tuning, Bayesian evidence, large-N and the scanning machinery remain out of scope
+(not implemented). The thesis has no per-point numeric tables: the 14 models are anchored to the
+independent pypngb engine to <0.1%, and the NM4DCHM6 inherits that anchor by reducing to the
+5-5-5 at `<s>=0`. This is a precise validation of the implemented physics, not a sweep of all 218
 pages.
 
 ## Status
@@ -219,7 +249,8 @@ pages.
 | generic mass-matrix assembler (`assemble.py`), reproduces **all 3 models** (reps 5/10/14) | ✅ |
 | symbolic CCWZ engine (`symbolic/`): dressing derived in closed form, curve-fitting removed | ✅ |
 | arbitrary tensor irreps + SO(4) decomposition (5/10/14/30/…); spinor reps **4**, **16** | ✅ |
-| CI: all models (hand-coded + assembled + symbolic) + route-equivalence (59 tests, 3.9/3.11/3.12) | ✅ |
+| NMCHM **SO(6)/SO(5)**: reps **6/15/20'/10/4**, closed-form Goldstone + branchings; NM4DCHM6 model + singlet pNGB | ✅ |
+| CI: all models (hand-coded + assembled + symbolic + NMCHM) + route-equivalence (110 tests, 3.9/3.11/3.12) | ✅ |
 
 ## Licence
 MIT.
