@@ -118,16 +118,25 @@ def symplectic_form(n):
     return Om
 
 
-def sp_subalgebra(n, Omega):
-    """Split su(N) (N even) into the usp(N) subalgebra and the SU(N)/USp(N) coset, via the Cartan
-    involution theta(X) = Omega conj(X) Omega^{-1} of the type-AII symmetric space.
+def cartan_split(n, involution='sp', Omega=None):
+    """Split su(n) into an (unbroken subalgebra, coset) by diagonalising a Cartan involution theta
+    on the Gell-Mann basis.  Two symmetric-space families:
 
-    The Gell-Mann generators are not aligned with the split, so we diagonalise theta as an operator
-    on the n^2-1 dimensional algebra: usp(N) (the subgroup, dim n(n+1)/2... = N(N+1)/2 for USp(N)) is
-    the theta = -1 eigenspace, the coset (dim (N-1)(N+2)/2... = 5 for N=4) the theta = +1 eigenspace.
-    Returns (unbroken, broken) as lists of orthonormal Hermitian generators."""
+      involution='sp' (type AII): theta(X) = Omega conj(X) Omega^{-1}, Omega symplectic -> usp(n)
+                                   (n even).  SU(4)/USp(4).
+      involution='so' (type AI):  theta(X) = conj(X)  (Omega = identity)        -> so(n).
+                                   SU(5)/SO(5).
+
+    The Gell-Mann generators are not aligned with the split, so theta is diagonalised as an operator
+    on the (n^2-1)-dim algebra.  Convention: the **unbroken** subalgebra is the theta=-1 eigenspace,
+    the **coset** the theta=+1 eigenspace (so(n) is imaginary-antisymmetric -> -1; the coset is
+    real-symmetric -> +1).  Returns (unbroken, broken) as orthonormal Hermitian generators."""
     T = su_generators(n)
     d = len(T)
+    if involution == 'so':
+        Omega = np.eye(n, dtype=complex)
+    elif Omega is None:
+        Omega = symplectic_form(n)
     Omi = np.linalg.inv(Omega)
     coeffs = lambda M: np.array([2 * np.trace(t @ M) for t in T]).real   # M -> T-basis (real)
     Theta = np.zeros((d, d))
@@ -136,4 +145,14 @@ def sp_subalgebra(n, Omega):
     w, V = np.linalg.eigh((Theta + Theta.T) / 2)
     pick = lambda sign: [sum(V[a, k] * T[a] for a in range(d))
                          for k in np.where(np.abs(w - sign) < 1e-6)[0]]
-    return pick(-1.0), pick(+1.0)                     # (usp subalgebra, coset)
+    return pick(-1.0), pick(+1.0)                     # (unbroken subalgebra, coset)
+
+
+def sp_subalgebra(n, Omega):
+    """SU(n)/USp(n) split (type AII) -- thin alias for cartan_split(n, 'sp', Omega)."""
+    return cartan_split(n, 'sp', Omega)
+
+
+def so_subalgebra(n):
+    """SU(n)/SO(n) split (type AI): unbroken so(n) (dim n(n-1)/2), coset (dim (n-1)(n+2)/2)."""
+    return cartan_split(n, 'so')

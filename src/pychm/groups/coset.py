@@ -97,3 +97,10 @@ def su_sp_coset(n):
     Omega = lie.symplectic_form(n)
     unbroken, broken = lie.sp_subalgebra(n, Omega)
     return Coset(f"SU({n})/USp({n})", unbroken, broken)
+
+
+def su_so_coset(n):
+    """The SU(n)/SO(n) coset in the fundamental n (type AI).  For n=5 this is the littlest-Higgs /
+    Ferretti real-rep coset: unbroken so(5) (10), coset = the 14 (symmetric-traceless of SO(5))."""
+    unbroken, broken = lie.so_subalgebra(n)
+    return Coset(f"SU({n})/SO({n})", unbroken, broken)

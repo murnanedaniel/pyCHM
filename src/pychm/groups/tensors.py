@@ -50,11 +50,12 @@ def _trace_pair(T, a, b):
     return np.trace(T, axis1=a, axis2=b)
 
 
-def tensor_basis(symmetry, rank, n=5, tol=1e-10):
-    """Orthonormal basis (list of numpy arrays, shape (n,)*rank) of a tensor irrep of SO(n).
+def tensor_basis(symmetry, rank, n=5, tol=1e-10, group='SO'):
+    """Orthonormal basis (list of numpy arrays, shape (n,)*rank) of a tensor irrep.
 
-    symmetry='sym'  -> symmetric traceless (5->vector, 14 at rank 2, 30 at rank 3, ...)
-    symmetry='antisym' -> totally antisymmetric (10 at rank 2 for n=5).
+    symmetry='sym'/'antisym'; group='SO' removes the delta-trace (symmetric rank-2 -> the SO(n)
+    sym-traceless: 14 at rank 2 for n=5), group='SU' keeps the FULL symmetric space (irreducible
+    under SU(n): 15 at rank 2 for n=5).  Antisymmetric reps are identical for SO and SU.
     """
     antisym = (symmetry == 'antisym')
     dim = n**rank
@@ -70,7 +71,7 @@ def tensor_basis(symmetry, rank, n=5, tol=1e-10):
     M = np.array(raw)
     U, s, Vt = np.linalg.svd(M, full_matrices=False)
     sym_basis = [Vt[i].reshape([n] * rank) for i in range(np.sum(s > tol))]
-    if antisym or rank < 2:
+    if antisym or rank < 2 or group == 'SU':
         return [b / np.sqrt(np.vdot(b, b)) for b in sym_basis]
     # 2. remove traces: keep the subspace on which every pairwise contraction vanishes
     B = np.array([b.ravel() for b in sym_basis])              # (d_sym, n^k)
