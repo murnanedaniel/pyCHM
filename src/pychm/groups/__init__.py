@@ -3,7 +3,7 @@ representation lifts, Casimir branchings, and the SO(5)/SO(4), SO(6)/SO(5) and S
 instances.  Replaces the former duplicated `pychm.ccwz` / `pychm.symbolic.*` layer.
 """
 from . import lie, coset, reps, branch, tensors, decompose, derive
-from . import so5, so6, spinors, so6_spinors, models
+from . import so5, so6, spinors, so6_spinors, models, su4sp4
 
 __all__ = ["lie", "coset", "reps", "branch", "tensors", "decompose", "derive",
-           "so5", "so6", "spinors", "so6_spinors", "models"]
+           "so5", "so6", "spinors", "so6_spinors", "models", "su4sp4"]
