@@ -14,11 +14,11 @@ CCWZ derivation of the Higgs dressing), no private dependencies.
 diagonalise the same mass matrices.  See README for the validation status and roadmap.
 """
 from . import mchm5, mchm14, mchm14_1_10, nmchm6
-from . import assemble, routes, potential, spectrum, tuning
+from . import assemble, routes, potential, spectrum, tuning, constraints
 
 __version__ = "0.5.0"
 __all__ = ["Model", "mchm5", "mchm14", "mchm14_1_10", "nmchm6",
-           "routes", "potential", "spectrum", "tuning"]
+           "routes", "potential", "spectrum", "tuning", "constraints"]
 
 from .registry import MODELS as _MODELS
 
@@ -38,3 +38,7 @@ class Model:
 
     def potential_coeffs(self, point, route="eigenvalue"):
         return potential.potential_coeffs(point, route=route, model=self.representation)
+
+    def constraints(self, point, route="eigenvalue"):
+        """Run this model's spectrum at `point` past the experimental bounds (see `pychm.constraints`)."""
+        return constraints.check(self.spectrum(point, route=route))
