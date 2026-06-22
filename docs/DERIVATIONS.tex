@@ -1,0 +1,371 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{enumitem}
+
+\newcommand{\so}[1]{\mathfrak{so}(#1)}
+\newcommand{\SO}[1]{\mathrm{SO}(#1)}
+\newcommand{\SU}[1]{\mathrm{SU}(#1)}
+\newcommand{\Sp}[1]{\mathrm{Sp}(#1)}
+\newcommand{\Tr}{\mathrm{Tr}}
+\newcommand{\sh}{s_h}
+\newcommand{\ch}{c_h}
+\newcommand{\half}{\tfrac12}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\impl}[2]{\par\smallskip\noindent\textcolor{blue!60!black}{\small$\blacktriangleright$ \textbf{Implemented in:} \code{#1}\quad\textbf{Verified by:} \code{#2}}\par\smallskip}
+
+\title{\textbf{pyCHM derivations}\\[4pt]
+\large First-principles group theory of the Minimal and Next-to-Minimal Composite Higgs}
+\author{Generated for the \texttt{pyCHM} library}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note derives, from group theory alone, every quantity that \code{pyCHM} treats as
+\emph{derived} (as opposed to model input, or numerically anchored to the independent
+\code{pypngb} engine). Each step is tied to the function that implements it and the test that
+verifies it in closed form, so the document and the code are one object: if a derivation here is
+wrong, a named test fails. The reference physics is Murnane, \emph{The Landscape of Composite
+Higgs Models} (arXiv:2606.18364); conventions match the library exactly. Nothing here assumes the
+thesis is correct --- the closed forms are recomputed from the generators, and where the thesis is
+the only source (the App.~A7 form factors) it is cross-checked against the \code{pypngb}-anchored
+eigenvalue route (\S\ref{sec:ff}).
+\end{abstract}
+
+\tableofcontents
+
+\section{The CCWZ framework}
+A composite Higgs is a set of pseudo-Nambu--Goldstone bosons (pNGBs) of a spontaneously broken
+global symmetry $G\to H$. Write the generators of $\mathfrak{g}=\mathrm{Lie}(G)$ as the unbroken
+$T^a\in\mathfrak{h}$ and the broken $X^{\hat a}\in\mathfrak{g}/\mathfrak{h}$. The pNGBs
+$\pi^{\hat a}(x)$ parameterise the coset through the Goldstone matrix
+\begin{equation}
+  U(\pi) \;=\; \exp\!\Big(\tfrac{i}{f}\,\pi^{\hat a}X^{\hat a}\Big),
+  \label{eq:U}
+\end{equation}
+with $f$ the decay constant. Fermions are embedded in (generally incomplete) representations $R$
+of $G$; the Higgs dependence of every elementary--composite mixing is the matrix element of $U$
+in $R$,
+\begin{equation}
+  \big\langle c \,\big|\, U_R(\pi) \,\big|\, E \big\rangle ,
+  \label{eq:dressing}
+\end{equation}
+between the embedding $E$ of the elementary field and a composite state $c$. The central claim of
+the library is that \emph{these matrix elements are the only source of the $\sh$-dependence}, and
+that they are computable in closed form from the generators --- never fitted. The rest of this
+document carries out that computation for $\SO5/\SO4$ (MCHM) and $\SO6/\SO5$ (NMCHM).
+
+\section{Minimal Composite Higgs: \texorpdfstring{$\SO5/\SO4$}{SO(5)/SO(4)}}
+
+\subsection{Generators and conventions}
+$\SO5$ acts on indices $0,\dots,4$. The unbroken $\SO4$ acts on $0,\dots,3$; the coset direction
+is index $4$. In the vector (the $\mathbf 5$) the Hermitian generators are
+\begin{equation}
+  \big(T^{AB}\big)_{CD} \;=\; -\,i\big(\delta_{AC}\delta_{BD}-\delta_{AD}\delta_{BC}\big),
+  \qquad 0\le A<B\le 4 .
+\end{equation}
+The six $T^{ab}$ ($a<b\le 3$) generate $\SO4$; the four broken generators are $X^{\hat a}=T^{\hat a 4}$.
+With the Higgs vacuum expectation value along the $\hat a=3$ direction, the only field that survives
+in unitary gauge is the physical Higgs $h$, and $U$ becomes a single planar rotation.
+\impl{groups.so5.gen\_vector, groups/so5.py}{test\_so4\_unbroken\_generators\_close\_the\_algebra}
+
+\subsection{The vector Goldstone matrix}
+Exponentiating the broken generator $X^3=T^{34}$ with angle $\theta=h/f$ gives a rotation in the
+$(3,4)$ plane,
+\begin{equation}
+  U_{\mathbf 5}(\theta)=\exp\!\big(i\theta\,T^{34}\big)
+  =\begin{pmatrix} \mathbb 1_3 & & \\ & \ch & \sh \\ & -\sh & \ch \end{pmatrix},
+  \qquad \sh\equiv\sin\theta,\ \ \ch\equiv\cos\theta=\sqrt{1-\sh^2}.
+  \label{eq:U5}
+\end{equation}
+The library stores everything in the variable $\sh=\sin(h/f)$ with $\ch=\sqrt{1-\sh^2}$, avoiding
+an $\arcsin$ round-trip (machine precision). Eq.~\eqref{eq:U5} is the thesis ``explicit Goldstone
+matrix.''
+\impl{groups.so5.U\_vector, so5.U\_vector\_sym}{test\_U\_vector\_matches\_thesis\_goldstone}
+
+\subsection{Lifting to tensor representations}
+A rank-$k$ $\SO5$ tensor irrep is carried by the totally symmetric-traceless or totally
+antisymmetric part of $\mathbf 5^{\otimes k}$. The Goldstone acts on each index,
+\begin{equation}
+  \big(U_R\big)_{b a}=\big\langle E_b \,\big|\, U_{\mathbf 5}^{\otimes k}\,E_a\big\rangle
+  = \Tr\!\big(E_b^{\dagger}\,U E_a U^{\!\top}\big)\quad(\text{rank }2),
+  \label{eq:lift}
+\end{equation}
+in an orthonormal basis $\{E_a\}$ of the irrep. The first three rungs are the
+$\mathbf 5$ (rank 1), the $\mathbf{10}$ (antisymmetric rank 2) and the $\mathbf{14}$
+(symmetric-traceless rank 2). The construction is dimension-agnostic, so the same code produces
+the $\mathbf{30}$ (rank-3 symmetric) and, with $n=6$, the $\SO6$ tower of \S\ref{sec:nmchm}.
+\impl{tensors.tensor\_basis, tensors.U\_rep\_tensor, groups.so5.U\_rep}{test\_tensors.py (dimension, unitarity, homomorphism)}
+
+\subsection{\texorpdfstring{$\SO4=\SU2_L\times\SU2_R$}{SO(4)=SU(2)xSU(2)} branching}
+The unbroken $\SO4$ on indices $0,\dots,3$ is $\SU2_L\times\SU2_R$ via the 't~Hooft combinations
+\begin{equation}
+  J^{L/R}_i \;=\; \half\Big(\tfrac12\,\epsilon_{ijk}T^{jk}\;\pm\;T^{0i}\Big),\qquad i=1,2,3 .
+\end{equation}
+Diagonalising the two Casimirs $C_{L}=\sum_i (J^L_i)^2$, $C_{R}=\sum_i (J^R_i)^2$ on the irrep
+basis (they commute) labels each sub-multiplet by $(j_L,j_R)$ with $C=j(j+1)$. The branchings are
+\begin{align}
+  \mathbf 5 &= \big(\tfrac12,\tfrac12\big)\oplus(0,0),\\
+  \mathbf{10} &= \big(\tfrac12,\tfrac12\big)\oplus(1,0)\oplus(0,1),\\
+  \mathbf{14} &= (1,1)\oplus\big(\tfrac12,\tfrac12\big)\oplus(0,0).
+\end{align}
+\impl{decompose.so4\_decompose, decompose.\_su2\_casimirs}{test\_branchings\_match\_thesis}
+
+\subsection{Dressings are matrix elements (derive, don't fit)}
+A claimed closed form $f(\theta)$ for an elementary--composite mixing is admissible only if it lies
+in the span of the single-basis overlaps $\{\langle E_b|U_R|E\rangle\}$. The library solves for the
+exact minimal-norm composite tensor $c$ with $\langle c|U_R|E\rangle=f$ and \emph{raises} if $f$ is
+not realisable. This is the from-scratch guarantee: every dressing factor in the model files is
+\emph{proven} to be a Goldstone matrix element, with symbolic residual exactly $0$.
+\impl{groups/derive.py::solve\_composite}{test\_dressings\_are\_matrix\_elements}
+
+\subsection{The $\mathbf{5}$-$\mathbf{5}$-$\mathbf{5}$ coefficients}
+Embed the up-component of $q_L$ in the bidoublet, $E_{q_L}=(e_0+e_3)/\sqrt2$, and $t_R$ in the
+$\SO4$ singlet $E_{t_R}=e_4$. From \eqref{eq:U5}, $U e_4=\sh\,e_3+\ch\,e_4$ and $U e_3=\ch\,e_3-\sh\,e_4$,
+$Ue_0=e_0$, so
+\begin{align}
+  \langle q_L|U_{\mathbf 5}|t_R\rangle
+  &=\big\langle\tfrac{e_0+e_3}{\sqrt2}\,\big|\,\sh\,e_3+\ch\,e_4\big\rangle=\frac{\sh}{\sqrt2},
+  &\big|\langle q_L|U|t_R\rangle\big|^2&=\frac{\sh^2}{2},\\
+  \langle q_L|U_{\mathbf 5}|q_L\rangle
+  &=\tfrac12\big(1+\ch\big)=\cos^2\!\tfrac{h}{2f}.
+\end{align}
+These are exactly the $\Pi_L\sim\sh^2/2$, $\cos^2(h/2f)$ structures of the thesis $5$-$5$-$5$ form
+factors, here \emph{derived} from the overlaps.
+\impl{so5.overlap\_sym, mchm5.formfactor\_pieces}{test\_coeffs\_5\_5\_5}
+
+\subsection{The $\mathbf{14}$ channel weights and the $4/5$ enhancement}
+\label{sec:45}
+The $t_R$ embeds in the $\SO4$ singlet of the $\mathbf{14}$, the unit-normalised
+symmetric-traceless tensor
+\begin{equation}
+  S=\frac{1}{\sqrt{20}}\,\mathrm{diag}(1,1,1,1,-4),\qquad \Tr S^2=\frac{4+16}{20}=1 .
+\end{equation}
+Dress it, $S\mapsto U S U^{\!\top}$, and project onto the $\SO4$ channels of the $\mathbf{14}$. The
+squared lengths in the singlet $(1,1)$, bidoublet $(\tfrac12,\tfrac12)$, and $(1,1)\!\to\!(3,3)$
+channels are the closed trigonometric \emph{channel weights}
+\begin{equation}
+  W_{11}=\frac{(4\ch^2-\sh^2)^2}{16},\quad
+  W_{22}=\frac{5}{2}\,\sh^2\ch^2,\quad
+  W_{33}=\frac{15}{16}\,\sh^4,
+\end{equation}
+which satisfy unitarity exactly:
+\begin{equation}
+  W_{11}+W_{22}+W_{33}
+  =\Big(1-\tfrac52\sh^2+\tfrac{25}{16}\sh^4\Big)+\tfrac52\sh^2(1-\sh^2)+\tfrac{15}{16}\sh^4=1 .
+\end{equation}
+The thesis writes the $t_R$ self-energy with an overall coupling $Y_T\sqrt{4/5}$. That
+normalisation is \emph{not} an external input: it is the squared index-$4$ component of the
+embedding itself,
+\begin{equation}
+  \boxed{\;\big|S_{44}\big|^2=\Big(\tfrac{-4}{\sqrt{20}}\Big)^2=\frac{16}{20}=\frac45\;}
+  \qquad\Longleftrightarrow\qquad \sqrt{\tfrac45}=|S_{44}| .
+  \label{eq:45}
+\end{equation}
+Index $4$ is the coset-singlet direction through which the top mass is generated; the
+$\mathbf 5$-singlet has weight $1$ there (the unenhanced reference), so the $4/5$ is a genuine
+representation-dependent enhancement. The thesis singlet-channel prefactor then follows as a
+\emph{prediction},
+\begin{equation}
+  \frac{(4\ch^2-\sh^2)^2}{20}\;=\;|S_{44}|^2\,W_{11}\;=\;\frac45\cdot\frac{(4\ch^2-\sh^2)^2}{16},
+\end{equation}
+which would fail for any inconsistent thesis number --- the check is no longer a tautology that
+reads $4/5$ off the prefactor $1/20$.
+\impl{decompose.channel\_weights\_sym, so5.embedding\_sym}{test\_14\_channel\_weights\_derive\_thesis\_prefactors, test\_4\_5\_is\_derived\_from\_the\_embedding}
+
+\section{Next-to-Minimal Composite Higgs: \texorpdfstring{$\SO6/\SO5$}{SO(6)/SO(5)}}
+\label{sec:nmchm}
+
+\subsection{Coset and broken generators}
+$\SO6$ acts on indices $0,\dots,5$. The unbroken $\SO5$ acts on $0,\dots,4$; the coset direction is
+index $5$. The five broken generators split, under the $\SO4\subset\SO5$, into the Higgs bidoublet
+and a singlet:
+\begin{equation}
+  X_B^{a}=T^{a5}\ (a=0,1,2,3)\quad(\text{the doublet }h_1,\dots,h_4),
+  \qquad X_S=T^{45}\quad(\text{the singlet }s).
+\end{equation}
+This is the thesis decomposition (its 6th index is our index $5$). The $15$ generators close the
+$\so6$ algebra; the ten $T^{ab}$ with $a<b\le 4$ are the unbroken $\SO5$.
+\impl{so6.gen\_vector, so6.UNBROKEN/BROKEN}{test\_so6\_generators\_close\_the\_algebra, test\_coset\_split\_10\_plus\_5}
+
+\subsection{The five-pNGB Goldstone matrix (closed form)}
+In unitary gauge the Higgs points along $\hat a=3$ and the singlet along $X_S$, so the vector
+Goldstone is generated by
+\begin{equation}
+  G=\theta_h\,L^{(3,5)}+\theta_s\,L^{(4,5)},\qquad
+  \theta_h=\tfrac{h}{f},\ \ \theta_s=\tfrac{s}{f},
+\end{equation}
+with $L^{(ab)}$ the real antisymmetric rotation generators. $G$ is supported on the three indices
+$\{3,4,5\}$ and has rank $2$, hence satisfies $G^3=-\Theta^2 G$ with
+$\Theta=\sqrt{\theta_h^2+\theta_s^2}$. Rodrigues' formula then gives the Goldstone in closed form,
+\begin{equation}
+  U_6(\theta_h,\theta_s)=\mathbb 1+\frac{\sin\Theta}{\Theta}\,G+\frac{1-\cos\Theta}{\Theta^2}\,G^2 .
+  \label{eq:U6}
+\end{equation}
+Acting on the vacuum $e_5$ reproduces the thesis Goldstone field (eq.~474 there):
+\begin{equation}
+  \Phi=U_6\,e_5=\Big(0,0,0,\ \theta_h\tfrac{\sin\Theta}{\Theta},\ \theta_s\tfrac{\sin\Theta}{\Theta},\ \cos\Theta\Big)^{\!\top},
+\end{equation}
+i.e.\ $\Phi=\frac{1}{\Theta}\sin\Theta\,(h_1,\dots,h_4,s,\Theta\cot\Theta)$ with
+$\Theta=\varphi/f$, $\varphi=\sqrt{\sum h_i^2+s^2}$. Setting $\theta_s=0$ returns the MCHM planar
+rotation \eqref{eq:U5} (with coset index $4\to5$).
+\impl{so6.U6\_vector, so6.U6\_vector\_sym, so6.goldstone\_vacuum}{test\_goldstone\_vacuum\_matches\_thesis\_eq474, test\_U6\_vector\_orthogonal\_identity\_homomorphism}
+
+\subsection{The representation tower}
+The fermion-partner irreps of $\SO6\cong\SU4$ are built and dressed by the same machinery:
+tensors via $n=6$, spinors via the Clifford algebra. Their dimensions, $\SO5$ branchings (from the
+quadratic Casimir $C_5=\sum_{a<b\le4}(T^{ab})^2$), and $\SO4$ content are
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+irrep & construction & $\dim$ & $\SO5$ branching\\
+\midrule
+$\mathbf 6$ & vector & $6$ & $\mathbf 5\oplus\mathbf 1$\\
+$\mathbf{15}$ & antisym.\ rank 2 (adjoint) & $15$ & $\mathbf{10}\oplus\mathbf 5$\\
+$\mathbf{20'}$ & sym.-traceless rank 2 & $20$ & $\mathbf{14}\oplus\mathbf 5\oplus\mathbf 1$\\
+$\mathbf{10},\overline{\mathbf{10}}$ & (anti)self-dual 3-form & $10$ & $\mathbf{10}$ (each)\\
+$\mathbf 4,\overline{\mathbf 4}$ & Weyl spinor & $4$ & $\mathbf 4$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The Casimir calibration $C_5\in\{0,\tfrac52,4,6,10\}\leftrightarrow\{\mathbf1,\mathbf4,\mathbf5,\mathbf{10},\mathbf{14}\}$
+identifies each sub-irrep with its multiplicity; the antisymmetric 3-form is $20$-dimensional and
+splits, by the $\pm i$ eigenspaces of the Hodge dual $(\star T)_{ijk}=\tfrac{1}{3!}\epsilon_{ijklmn}T_{lmn}$,
+into the self-dual $\mathbf{10}$ and anti-self-dual $\overline{\mathbf{10}}$ (the $\SU4$
+$\mathbf{10}+\overline{\mathbf{10}}$). The spinors come from six $8\times8$ Euclidean gammas
+$\Gamma^A=(\sigma_1\!\otimes\!\gamma^a_{\SO5},\,\sigma_2\!\otimes\!\mathbb 1)$, split by chirality
+$\chi=\sigma_3\otimes\mathbb 1$; the $\mathbf 4$ carries no $(\tfrac12,\tfrac12)$ bidoublet, which
+is exactly the thesis reason the NM4DCHM uses the $\mathbf 6$ (not the $\mathbf 4$) for $q_L$.
+\impl{so6.rep\_basis, so6.U6\_rep, so6.so5\_content, so6\_spinors.py}{test\_so6.py, test\_so6\_spinors.py}
+
+\subsection{Two-field dressing and the singlet pNGB}
+The $\mathbf 6$ Goldstone dresses the elementary--composite overlaps with \emph{both} angles. With
+$E_{q_L}=(e_0+e_3)/\sqrt2$ and $E_{t_R}=e_5$, no embedding has support on index $4$, so every
+overlap depends on $\theta_h,\theta_s$ only through quantities even in $\theta_s$; the potential is
+even in $s$, the vacuum sits at $\langle s\rangle=0$, and the singlet mass is the $s$-curvature of
+the Coleman--Weinberg potential there. Because the $q_L$ bidoublet dressing carries explicit
+$\theta_h$-dependence distinct from the radial $\Theta$ the $t_R$ feels, $V(h,s)$ is genuinely
+two-dimensional and the singlet acquires a finite, calculable mass --- the defining NMCHM
+observable, absent in the MCHM. At $\theta_s=0$ the mass matrices reduce \emph{entry-for-entry} to
+the $\code{pypngb}$-anchored $5$-$5$-$5$ model.
+\impl{nmchm6.py (spec, assemble, potential, singlet\_mass2)}{test\_nmchm6.py (reduction, even-in-$s$, singlet mass)}
+
+\section{The Coleman--Weinberg potential and observables}
+The one-loop pNGB potential is the supertraced kernel
+\begin{equation}
+  V(\sh)=\sum_i \frac{c_i}{64\pi^2}\,m_i^2(\sh)^2\log m_i^2(\sh),
+  \qquad c_i=\{+3,+6,-12\}
+\end{equation}
+for $\{$neutral vector, charged vector, coloured Dirac$\}$, with $m_i(\sh)$ the eigenvalues of the
+$\sh$-dependent mass matrices. Writing $V=-\gamma\,\sh^2+\beta\,\sh^4$, the vacuum, Higgs mass and
+electroweak scale are the closed forms
+\begin{equation}
+  \xi=\sin^2\!\frac{\langle h\rangle}{f}=\frac{\gamma}{2\beta},\qquad
+  m_h^2=\frac{8\beta}{f^2}\,\xi(1-\xi),\qquad v_{\mathrm{EW}}=f\sqrt{\xi},
+\end{equation}
+and the Barbieri--Giudice tuning is $\Delta_{\rm BG}=\max_i|\partial\ln f/\partial\ln x_i|$ over the
+fundamental Lagrangian masses $x_i$. These relations are validated symbolically; the full mass
+matrices and the resulting $\xi,m_t,m_h,\Delta_{\rm BG}$ are anchored numerically to the
+independent \code{pypngb} engine to $<0.1\%$.
+\impl{routes.py, potential.py, spectrum.py, tuning.py}{test\_cw\_kernel\_and\_coefficients, test\_higgs\_mass\_scaling\_closed\_form, test\_anchors.py}
+
+\section{The form-factor route and the oracle boundary}
+\label{sec:ff}
+The thesis App.~A7 form factors $A_L,A_R,A_M,B$ are transcribed in \code{mchm5}; transcription
+proves faithful copying, not physical correctness. They are confronted with the
+\code{pypngb}-anchored eigenvalue route by comparing the top mass two ways. With the
+\emph{custodial} parametrisation the form-factor route requires (a single $q_L$ coupling $L_q$,
+i.e.\ $\Delta_{uL}=\Delta_{dL}$), the two coincide as $\sh\to0$,
+\begin{equation}
+  \frac{m_t^{\rm ff}(\sh)}{m_t^{\rm eig}(\sh)}=1-0.755\,\sh^2+\mathcal O(\sh^4)\ \xrightarrow[\sh\to0]{}\ 0.999997,
+\end{equation}
+the finite-$\sh$ gap being the form-factor route's leading-order-in-$\sh^2$ truncation of the exact
+(non-polynomial) eigenvalue mass. The App.~A7 form factors are therefore the correct
+leading-order two-point functions of the \code{pypngb}-anchored mass matrix --- validated, not
+merely transcribed.
+\impl{mchm5.formfactor\_pieces, mchm5.fermion\_mass}{test\_formfactor\_route.py}
+
+\section{Beyond SO(N): the coset abstraction and SU(4)/Sp(4)}
+\label{sec:coset}
+Everything above is built from one group-agnostic engine (\code{pychm.groups}): a coset $G/H$ is a
+list of unbroken generators of $H$ and broken generators $X^a$ in some representation, and the
+Goldstone is $U(\pi)=\exp(i\,\pi^a X^a)$ -- in unitary gauge a rank-$\le2$ rotation, so the closed
+Rodrigues form \eqref{eq:U6} serves every case. The MCHM and NMCHM are the instances
+$\SO5/\SO4$ and $\SO6/\SO5$; the \emph{same code} builds $\SU N/\Sp N$ cosets, with the SU($N$)
+Gell-Mann generators and the USp($N$) subalgebra obtained from the Cartan involution
+$\theta(X)=\Omega\,\bar X\,\Omega^{-1}$ ($\Omega$ the symplectic form): $\mathfrak{usp}(N)$ is the
+$\theta=-1$ eigenspace, the coset the $\theta=+1$ eigenspace.
+
+\paragraph{SU(4)/Sp(4) $\cong$ SO(6)/SO(5).}
+The minimal pseudoreal Ferretti--Sannino coset $\SU4/\Sp4$ has $15-10=5$ broken generators --- the
+same five pNGBs (Higgs doublet $+$ singlet) as $\SO6/\SO5$. Under $\SU4\cong\mathrm{Spin}(6)$,
+$\Sp4\cong\mathrm{Spin}(5)$ the representations map as
+\begin{equation}
+  \mathbf 4_{\SU4}=\mathbf 4_{\text{spinor}}^{\SO6},\quad
+  \mathbf 6_{\SU4}^{[\text{antisym}]}=\mathbf 6_{\text{vector}}^{\SO6},\quad
+  \mathbf{15}_{\SU4}=\mathbf{15}^{\SO6}.
+\end{equation}
+The library builds $\SU4/\Sp4$ independently (its own generators, Goldstone, and the antisymmetric
+$\mathbf 6=[\mathbf4\otimes\mathbf4]_A$) and cross-checks it against the existing $\SO6$ code, which
+is an \emph{exact oracle}: the $\mathbf4$ branches to a single $\mathbf4$ of $\Sp4$ and the
+$\mathbf6$ to $\mathbf1\oplus\mathbf5$, matching the $\SO6$ spinor and vector; and the strong
+statement of the isomorphism --- the $\mathbf6$ generators span the full $15$-dimensional
+$\so6\cong\mathfrak{su}(4)$ algebra and act irreducibly (commutant $=$ scalars, by Schur) --- holds,
+so the SU(4) antisymmetric $\mathbf6$ \emph{is} the irreducible SO(6) vector. The new coset thus
+reproduces the NMCHM group theory while sharing all of its tooling.
+\impl{groups/lie.py (su\_generators, sp\_subalgebra), groups/coset.py, groups/su4sp4.py}{test\_su4sp4.py}
+
+\section{SU(5)/SO(5) (littlest Higgs) and the coset landscape}
+\label{sec:su5}
+$\SU5/\SO5$ is a type-AI symmetric space: the Cartan involution $\theta(X)=\bar X$ (complex
+conjugation) splits $\mathfrak{su}(5)$ into the unbroken $\so5$ (10 imaginary-antisymmetric
+generators, the $\theta=-1$ eigenspace) and the coset (the $\theta=+1$ eigenspace, 14 real-symmetric
+generators). The same engine that built the SU(4)/Sp(4) split builds this one
+(\code{lie.cartan\_split} with the conjugation involution). The 14 pNGBs are the symmetric-traceless
+\textbf{14} of $\SO5$, which branches under custodial $\SO4$ as
+\begin{equation}
+  \mathbf{14}\;=\;(3,3)\oplus(2,2)\oplus(1,1)\;=\;\text{complex triplet }\phi\;\oplus\;\text{Higgs doublet }h\;\oplus\;\text{singlet }\eta,
+\end{equation}
+the littlest-Higgs pNGB content. The Goldstone in the fundamental \textbf{5} is $U=\exp(i\,\theta^a
+X^a)$ over the coset generators (a complex unitary rotation, unlike the real SO(N) one); along the
+Higgs axis the $(2,2)$ overlap magnitude reduces to the MCHM value
+$|\langle q_L|U|t_R\rangle|^2=\sh^2/2$, so the top and Higgs match the 5-5-5 there. The symmetric
+\textbf{15} of SU(5) (the fuller partner rep) is built with the SU(N) tensor basis (no
+$\delta$-trace removal: \code{tensor\_basis(\dots,group='SU')}) and branches $\mathbf{15}=\mathbf{14}
+\oplus\mathbf 1$ under $\SO5$. The genuinely new observables are the singlet and triplet pNGB masses,
+the curvatures of the two-extra-field Coleman--Weinberg potential at the vacuum (even in $\eta,\phi$,
+so $\langle\eta\rangle=\langle\phi\rangle=0$).
+\impl{groups/lie.py (cartan\_split), groups/su5so5.py, su5so5.py}{test\_su5so5.py}
+
+\paragraph{The landscape.} A composite Higgs needs a custodial $\SO4\cong\SU2_L\times\SU2_R\subset H$
+and a $(2,2)$ Higgs in the coset $G/H$. Chala \& Fonseca (arXiv:2309.10635) enumerate all compact
+$G/H$ with $\le13$ pNGBs satisfying this (642 models; complete up to 13 NGBs). \code{groups.landscape}
+reproduces a slice from pyCHM's own \code{Coset}: it branches each coset under the custodial $\SO4$
+and flags the $(2,2)$, recovering MCHM $(2,2)$, NMCHM $(1,1)+(2,2)$, and littlest-Higgs
+$(1,1)+(2,2)+(3,3)$, and discovering $\SO7/\SO6$, $\SO8/\SO7$ (see \code{docs/COSET\_LANDSCAPE.md}).
+\impl{groups/landscape.py}{test\_landscape.py}
+
+\section*{Provenance: derived vs.\ input vs.\ anchored}
+\addcontentsline{toc}{section}{Provenance}
+\begin{description}[leftmargin=1.4em,style=nextline]
+  \item[Derived (this document)] the Goldstone matrices $U,U_6$; the rep lifts; the $\SO4/\SO5$
+    branchings; the $5$-$5$-$5$ coefficients; the $\mathbf{14}$ channel weights and the
+    $4/5=|S_{44}|^2$ enhancement; the full $\SO6$ tower. Each closes symbolically (a named test
+    asserts \texttt{simplify}$(\cdot)=0$).
+  \item[Input (model structure)] the partner content --- which composite multiplets exist, the
+    embeddings, the partner masses. Taken from the thesis/\code{pypngb}, not derived.
+  \item[Anchored] the full mass matrices and the physical observables, validated against
+    \code{pypngb} ($<0.1\%$). The NMCHM has no public engine and is anchored indirectly by its
+    exact reduction to the $5$-$5$-$5$ at $\langle s\rangle=0$, with the new singlet observable
+    cross-checked internally (stencil independence + parabolic fit).
+\end{description}
+After \S\ref{sec:45} and \S\ref{sec:ff}, no quantity that feeds an observable is a thesis
+read-off: correctness rests on \code{pypngb} $+$ group theory.
+
+\end{document}

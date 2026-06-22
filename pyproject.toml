@@ -4,20 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pychm"
-version = "0.1.0"
+version = "0.5.0"
 description = "Open Composite Higgs Model potential, spectrum and fine-tuning (dual route)"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
 authors = [{name = "Daniel Murnane"}]
-dependencies = ["numpy>=1.20", "scipy>=1.7"]
+dependencies = ["numpy>=1.20", "scipy>=1.7", "sympy>=1.11"]
 keywords = ["composite-higgs", "fine-tuning", "naturalness", "MCHM", "particle-physics"]
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+docs = ["mkdocs>=1.5", "mkdocs-material>=9.5", "mkdocstrings[python]>=0.24", "pymdown-extensions>=10"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]

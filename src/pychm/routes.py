@@ -1,69 +1,82 @@
 """The two evaluation routes for the Coleman-Weinberg potential.
 
-Both compute the same one-loop V(s_h); they differ in how the trace-log is taken:
-  - 'eigenvalue' : diagonalise the mass matrix M(s_h), sum the closed-form CW over m_i.
-  - 'formfactor' : integrate out the heavy partners (form factors), one momentum integral.
+Both diagonalise the mass matrices M(s_h); they differ only in the per-eigenvalue kernel:
 
-The gauge sector is computed by the eigenvalue route in BOTH cases (its mass matrices are
-simple; the gauge form factor has resonance subtleties). The route choice therefore selects
-the FERMION method. The two fermion methods are mathematically identical and must agree;
-`tests/test_routes_equivalence.py` enforces this.
+  route='eigenvalue' : closed-form CW,   K(m^2) = m^4 log(m^2)
+  route='momentum'   : Euclidean momentum integral of the *renormalised* one-loop density
 
-NOTE (roadmap): the eigenvalue FERMION method needs the 11x11 fermion mass matrices, which
-are being ported (Phase 1). Until then `route='eigenvalue'` raises NotImplementedError and
-`route='formfactor'` is the working route.
+This is the same one-loop potential (int log det = sum int log(eigenvalue)); the two routes
+are an internal consistency check (tests/test_routes_equivalence.py enforces agreement on
+random points).
+
+The momentum kernel is the manifestly convergent, divergence-subtracted integrand
+
+  K_mom(m^2) = 4 int_0^inf pE^3 [ log(pE^2+m^2) - log(pE^2+1)
+                                  - (m^2-1)/(pE^2+1) + (m^2-1)^2/(2(pE^2+1)^2) ] dpE
+             = m^4 log(m^2) - 3/2 m^4 + 2 m^2 - 1/2 .
+
+The two subtractions cancel the quadratic and logarithmic UV divergences at the integrand
+level (so there is no catastrophic cancellation of a ~Lambda^4 piece against a ~1e-3 signal,
+the failure mode of the naive cutoff integral).  The extra -3/2 m^4 + 2 m^2 - 1/2 is a
+polynomial of degree <=2 in m^2; because Str 1, Str m^2 and Str m^4 are all s_h-independent
+in this model, it drops out of V(s_h)-V(0) -- exactly the closed-form route.
+
+Sectors and dof weights (per eigenvalue): fermions U, D carry -3/(16 pi^2) (Dirac x3 colour);
+gauge W +2*3/(64 pi^2), Z +3/(64 pi^2) skipping the photon. The s_h-independent exotic (Q4,Q5)
+and lepton sectors drop out of V(s_h)-V(0) and are omitted.
 """
 import numpy as np
 from scipy import integrate
-from . import mchm5
+from . import mchm5, mchm14, mchm14_1_10, nmchm6
+from . import assemble
 
-# momentum grid for the form-factor / log-det integrals
-_PE = np.linspace(1e-4, 60.0, 6000)
+from .registry import MODELS as _MODELS
+
+_PI2 = np.pi**2
+# uniform Euclidean grid; the subtracted integrand decays as 1/pE^3 so a moderate cutoff
+# suffices.  This resolution gives the kernel to ~1e-5 relative -- needed because a tuned
+# vacuum V(s_h)-V(0) is a near-cancellation that amplifies kernel error.
+_PE = np.linspace(1e-5, 600.0, 200000)
 _PE2 = _PE**2
 _PE3 = _PE**3
+_DEN = _PE2 + 1.0
+_LOGDEN = np.log(_DEN)
+_CF = -1.0/(16*_PI2)        # one colour, Dirac fermion (x3 colour applied below)
+_CV = 3.0/(64*_PI2)         # one massive vector (3 polarisations)
 
 
-# --- gauge (eigenvalue route; shared) ---------------------------------------- #
-def _veff_V(m_TeV):
-    m2 = np.maximum(m_TeV**2, 0.0)
-    return np.where(m2 > 1e-30, (3/64./np.pi**2) * m2**2 * np.log(np.maximum(m2, 1e-30)), 0.0)
+def _K_closed(m2):
+    m2 = np.maximum(np.atleast_1d(m2), 0.0)
+    return np.where(m2 > 1e-30, m2**2 * np.log(np.maximum(m2, 1e-30)), 0.0)
 
-def gauge_cw(P, shs):
-    """Gauge CW V(s_h) over s_h values (eigenvalue route: W x2, Z skip photon)."""
-    out = np.zeros(len(shs))
+def _K_mom(m2):
+    """Convergent divergence-subtracted momentum integral, vectorised over eigenvalues."""
+    m2 = np.atleast_1d(m2)[:, None]                  # (n_eig, 1)
+    a = m2 - 1.0
+    integ = _PE3*(np.log(_PE2 + m2) - _LOGDEN - a/_DEN + a*a/(2*_DEN*_DEN))
+    return 4.0*integrate.simpson(integ, x=_PE, axis=1)
+
+_KERNEL = {'eigenvalue': _K_closed, 'momentum': _K_mom}
+
+
+def _sector_masses(P, sh, model='5-5-5'):
+    """All s_h-dependent mass-squared eigenvalues with their CW coefficients."""
+    mod = _MODELS[model]
+    out = []
+    for M in (mod.mass_U(P, sh), mod.mass_D(P, sh)):
+        sv = np.linalg.svd(M, compute_uv=False)
+        out.append((sv**2, 3.0*_CF))
+    out.append((np.abs(np.linalg.eigvalsh(mod.mass2_W(P, sh))), 2.0*_CV))
+    eZ = np.sort(np.abs(np.linalg.eigvalsh(mod.mass2_Z(P, sh))))
+    out.append((eZ[1:], _CV))
+    return out
+
+
+def potential_curve(P, shs, route='eigenvalue', model='5-5-5'):
+    """Total V(s_h) over the given s_h values, offset to V(0)=0."""
+    K = _KERNEL[route]
+    V = np.zeros(len(shs))
     for j, sh in enumerate(shs):
-        eW = np.linalg.eigvalsh(mchm5.mass2_W(P, sh))
-        eZ = np.sort(np.linalg.eigvalsh(mchm5.mass2_Z(P, sh)))
-        mW = np.sqrt(np.abs(eW)); mZ = np.sqrt(np.abs(eZ[1:]))   # skip photon (lightest=0)
-        out[j] = 2*np.sum(_veff_V(mW)) + np.sum(_veff_V(mZ))
-    return out
-
-
-# --- fermion: form-factor route ---------------------------------------------- #
-def fermion_cw_formfactor(P, shs):
-    """Fermion CW V(s_h) via the momentum integral of the log-determinant of form factors."""
-    out = np.zeros(len(shs))
-    for up in (True, False):
-        L0, Ls, R0, Rs, M2c = mchm5.formfactor_pieces(P, _PE2, up=up)
-        for j, sh in enumerate(shs):
-            s = sh**2
-            arg = _PE2*(L0 + s*Ls)*(R0 + s*Rs) + s*(1 - s)*M2c
-            arg = np.where(arg > 1e-300, arg, 1e-300)
-            out[j] += -2.0*mchm5.Nc*(1/(8*np.pi**2))*integrate.simpson(_PE3*np.log(arg), _PE)
-    return out
-
-
-# --- fermion: eigenvalue route (Phase 1) ------------------------------------- #
-def fermion_cw_eigenvalue(P, shs):
-    raise NotImplementedError(
-        "eigenvalue fermion route needs the fermion mass matrices (Phase 1 port). "
-        "Use route='formfactor' for now; see two_routes_equivalence demonstration.")
-
-
-_FERMION = {'formfactor': fermion_cw_formfactor, 'eigenvalue': fermion_cw_eigenvalue}
-
-
-def potential_curve(P, shs, route='formfactor'):
-    """Total V(s_h) = fermion (chosen route) + gauge (eigenvalue), offset to V(0)=0."""
-    V = _FERMION[route](P, shs) + gauge_cw(P, shs)
+        for m2, c in _sector_masses(P, max(sh, 1e-9), model=model):
+            V[j] += c * np.sum(K(m2))
     return V - V[0]

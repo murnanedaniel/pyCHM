@@ -1,0 +1,1615 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open Composite Higgs Model calculator -- potential, spectrum, fine-tuning, constraints">
+      
+      
+      
+        <link rel="canonical" href="https://murnanedaniel.github.io/pyCHM/EXTENDING_BSM/">
+      
+      
+        <link rel="prev" href="../VALIDATION_AUDIT/">
+      
+      
+        <link rel="next" href="../api/model/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Extending pyCHM - pyCHM</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#extending-pychm-to-the-post-2019-bsm-landscape" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="pyCHM" class="md-header__button md-logo" aria-label="pyCHM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pyCHM
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Extending pyCHM
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/murnanedaniel/pyCHM" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    murnanedaniel/pyCHM
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="pyCHM" class="md-nav__button md-logo" aria-label="pyCHM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    pyCHM
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/murnanedaniel/pyCHM" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    murnanedaniel/pyCHM
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Physics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Physics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../COSET_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coset landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mathematics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mathematics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Coset(G,H) engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DERIVATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Derivations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Validation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../THESIS_VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thesis validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VALIDATION_AUDIT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending pyCHM
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending pyCHM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-pychm-already-provides-the-reuse-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What pyCHM already provides (the reuse surface)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-fundamental-composite-dynamics-the-ferrettikarateev-classification-highest-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Fundamental composite dynamics &amp; the Ferretti–Karateev classification (highest priority)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Fundamental composite dynamics &amp; the Ferretti–Karateev classification (highest priority)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-little-higgs-the-littlest-higgs-and-collective-symmetry-breaking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Little Higgs (the littlest Higgs and collective symmetry breaking)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Little Higgs (the littlest Higgs and collective symmetry breaking)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-twin-higgs-neutral-naturalness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Twin Higgs &amp; neutral naturalness
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Twin Higgs &amp; neutral naturalness">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-holographic-5d-warped-composite-higgs-pychms-own-lineage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Holographic / 5D / warped composite Higgs (pyCHM's own lineage)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Holographic / 5D / warped composite Higgs (pyCHM&#39;s own lineage)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-current-experimental-constraints-validationphenomenology-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Current experimental constraints (validation/phenomenology targets)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-clockwork-relaxion-exotic-naturalness-longer-term" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Clockwork / relaxion / exotic naturalness (longer term)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prioritised-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioritised roadmap
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model & top-level
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/spectrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Potential & spectrum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fine-tuning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constraints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The group engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-pychm-already-provides-the-reuse-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What pyCHM already provides (the reuse surface)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-fundamental-composite-dynamics-the-ferrettikarateev-classification-highest-priority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Fundamental composite dynamics &amp; the Ferretti–Karateev classification (highest priority)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Fundamental composite dynamics &amp; the Ferretti–Karateev classification (highest priority)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-little-higgs-the-littlest-higgs-and-collective-symmetry-breaking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Little Higgs (the littlest Higgs and collective symmetry breaking)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Little Higgs (the littlest Higgs and collective symmetry breaking)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-twin-higgs-neutral-naturalness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Twin Higgs &amp; neutral naturalness
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Twin Higgs &amp; neutral naturalness">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-holographic-5d-warped-composite-higgs-pychms-own-lineage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Holographic / 5D / warped composite Higgs (pyCHM's own lineage)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Holographic / 5D / warped composite Higgs (pyCHM&#39;s own lineage)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pychm-integration-sketch_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pyCHM integration sketch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-current-experimental-constraints-validationphenomenology-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Current experimental constraints (validation/phenomenology targets)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-clockwork-relaxion-exotic-naturalness-longer-term" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Clockwork / relaxion / exotic naturalness (longer term)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prioritised-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioritised roadmap
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="extending-pychm-to-the-post-2019-bsm-landscape">Extending pyCHM to the post-2019 BSM landscape<a class="headerlink" href="#extending-pychm-to-the-post-2019-bsm-landscape" title="Permanent link">&para;</a></h1>
+<p>A research-grounded roadmap for growing pyCHM beyond the Minimal (SO(5)/SO(4)) and
+Next-to-Minimal (SO(6)/SO(5)) composite-Higgs cosets it implements today. Each section states
+the model class, the relevant literature (arXiv ids verified against the abstract pages), the
+coset <code>G/H</code> and fermion content, and an honest <strong>pyCHM integration sketch</strong> — what the existing
+CCWZ / tensor / potential / tuning machinery already covers versus what new infrastructure is
+needed.</p>
+<h2 id="what-pychm-already-provides-the-reuse-surface">What pyCHM already provides (the reuse surface)<a class="headerlink" href="#what-pychm-already-provides-the-reuse-surface" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>CCWZ Goldstone engine</strong> (<code>groups/so5.py</code>, <code>groups/so5.py</code>, <code>groups/so6.py</code>): the Goldstone
+  matrix <code>U</code> for a coset, currently built as an <code>SO(N)</code> rotation (a planar rotation for one vev
+  direction; a closed-form Rodrigues rotation for the SO(6) two-field case).</li>
+<li><strong>Representation tower</strong> (<code>groups/tensors.py</code>): an <code>n</code>-agnostic builder of symmetric-traceless
+  and antisymmetric <code>SO(n)</code> tensor irreps of any rank, plus Clifford spinors (<code>groups/spinors.py</code>,
+  <code>groups/so6_spinors.py</code>). The Goldstone lift <code>U_rep</code> works for any of these.</li>
+<li><strong>Branching machinery</strong> (<code>groups/decompose.py</code>, <code>groups/so6.py</code>): <code>SO(N)→SO(N-1)→SO(4)</code>
+  decompositions via quadratic Casimirs / SU(2)×SU(2) content.</li>
+<li><strong>Model assembler</strong> (<code>assemble.py</code>, <code>nmchm6.py</code>): partial-compositeness fermion mass matrices
+  from declarative embeddings + the Goldstone dressing.</li>
+<li><strong>Physics pipeline</strong> (<code>routes.py</code>, <code>potential.py</code>, <code>spectrum.py</code>, <code>tuning.py</code>): the
+  Coleman-Weinberg potential (eigenvalue + momentum routes), the EW vacuum, the spectrum, and the
+  Barbieri-Giudice / information fine-tuning. <strong>This pipeline is coset-agnostic</strong> — it only needs a
+  model exposing <code>mass_U/mass_D/mass2_W/mass2_Z</code> (and, for multi-pNGB cosets, a multi-field
+  potential as in <code>nmchm6.potential</code>).</li>
+</ul>
+<p><strong>The single biggest lever:</strong> the tensor/CCWZ core is hard-wired to <strong><code>SO(N)</code> cosets</strong>. The
+modern composite-Higgs frontier (Ferretti–Karateev, Sannino, little Higgs) lives on <strong><code>SU(N)</code>
+cosets</strong> (<code>SU(N)/SO(N)</code>, <code>SU(N)/Sp(N)</code>, <code>SU(N)×SU(N)/SU(N)</code>). Generalising the Goldstone
+construction and the irrep builder from <code>SO(N)</code> to general symmetric spaces / <code>SU(N)</code> Young
+tableaux is the infrastructure investment that unlocks most of the list below.</p>
+<hr />
+<h2 id="1-fundamental-composite-dynamics-the-ferrettikarateev-classification-highest-priority">1. Fundamental composite dynamics &amp; the Ferretti–Karateev classification (highest priority)<a class="headerlink" href="#1-fundamental-composite-dynamics-the-ferrettikarateev-classification-highest-priority" title="Permanent link">&para;</a></h2>
+<p>The dominant post-2019 program: UV-complete the composite Higgs with a confining gauge theory of
+"hyperfermions," classified by Ferretti &amp; Karateev.</p>
+<ul>
+<li>Ferretti, Karateev, <em>Fermionic UV completions of composite Higgs models</em> — <strong>arXiv:1312.5330</strong>
+  (JHEP 03 (2014) 077).</li>
+<li>Ferretti, <em>Gauge theories of partial compositeness: scenarios for Run-II</em> — <strong>arXiv:1604.06467</strong>.</li>
+<li>Belyaev et al., <em>Di-boson signatures as Standard Candles…</em> — <strong>arXiv:1610.06591</strong> (defines the
+  <strong>M1–M12</strong> model labels).</li>
+<li>Cacciapaglia, Ferretti, Flacke, Serôdio, <em>Light scalars in composite Higgs models</em> —
+  <strong>arXiv:1902.06890</strong> (Front. Phys. 7 (2019) 22; the clean M1–M12 table).</li>
+<li>Cacciapaglia, Pica, Sannino, <em>Fundamental Composite Dynamics: A Review</em> — <strong>arXiv:2002.04914</strong>
+  (Phys. Rept. 877 (2020) 1).</li>
+<li>Witzel, <em>Review on Composite Higgs Models</em> (lattice) — <strong>arXiv:1901.08216</strong>; e.g. Sp(4) lattice
+  PRD 109 (2024) 094512 — <strong>arXiv:2401.05637</strong>.</li>
+</ul>
+<p><strong>Three EW Higgs cosets</strong> (set by whether the EW hyperfermion rep is real / pseudoreal / complex):</p>
+<table>
+<thead>
+<tr>
+<th>EW coset</th>
+<th>rep type</th>
+<th># Goldstones</th>
+<th>pNGB Higgs content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SU(4)/Sp(4)</strong></td>
+<td>pseudoreal</td>
+<td>5</td>
+<td>Higgs doublet <strong>+ 1 singlet</strong></td>
+</tr>
+<tr>
+<td><strong>SU(5)/SO(5)</strong></td>
+<td>real</td>
+<td>14</td>
+<td>Higgs doublet + extra triplet/singlets</td>
+</tr>
+<tr>
+<td><strong>SU(4)×SU(4)/SU(4)</strong></td>
+<td>complex</td>
+<td>15</td>
+<td>two Higgs doublets + …</td>
+</tr>
+</tbody>
+</table>
+<p>Each model has <strong>two hyperfermion species</strong> (ψ building the EW coset, χ carrying QCD colour); the
+<strong>top partner is a "chimera baryon"</strong> ψψχ or ψχχ. The 12 minimal models M1–M12 differ by the
+hypercolour group (Sp(4), SU(4), SO(7), …) and the ψ/χ irreps; the most lattice-studied are the
+<strong>Sp(4)</strong> model with fundamental+antisymmetric hyperfermions (M5-type) and the <strong>SU(4)</strong> models.</p>
+<h3 id="pychm-integration-sketch">pyCHM integration sketch<a class="headerlink" href="#pychm-integration-sketch" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>SU(4)/Sp(4) — already implemented.</strong> <code>SU(4)/Sp(4)</code> is locally isomorphic to <strong><code>SO(6)/SO(5)</code></strong>:
+  its 5 Goldstones are exactly the Higgs-doublet-plus-singlet of pyCHM's NMCHM (<code>groups/so6.py</code>,
+  <code>nmchm6.py</code>). <strong>The minimal pseudoreal Ferretti/Sannino EW coset is the NMCHM pyCHM already
+  has.</strong> Near-term win: (i) document this equivalence; (ii) add the chimera-baryon top-partner
+  embeddings (the partner sits in an Sp(4) irrep — the 5/10/14 of SO(5), already built in
+  <code>symbolic</code>), so the existing assembler + potential pipeline yields the spectrum and tuning of the
+  minimal fundamental composite Higgs. <strong>Effort: low</strong> (embeddings + a model file; coset is done).</li>
+<li><strong>SU(5)/SO(5) — the key new coset</strong> (covers both the real-rep Ferretti models <em>and</em> the littlest
+  Higgs, §3). Needs: (a) the symmetric-space Goldstone <code>Σ = U Σ₀ Uᵀ</code> with <code>U=exp(iΠ/f)</code> over the
+  14 broken (symmetric) <code>SU(5)</code> generators — a generalisation of the so6 Rodrigues construction to
+  a non-abelian multi-field coset; (b) <code>SU(5)</code> irreps for the partners (Young tableaux, i.e. an
+  <code>SU(N)</code> analogue of <code>tensor_basis</code>); (c) the <code>SU(5)→SO(5)→SU(2)×SU(2)</code> branching. <strong>Effort:
+  medium-high</strong> (the symmetric-space CCWZ + SU(N) rep builder is the reusable infrastructure).</li>
+<li><strong>SU(4)×SU(4)/SU(4)</strong> (complex, two-Higgs-doublet): left-right product coset; needs the product-
+  group CCWZ. <strong>Effort: high.</strong></li>
+<li>Reusable as-is once the coset/embeddings exist: the <strong>entire potential/spectrum/tuning pipeline</strong>
+  (multi-field potential already demonstrated in <code>nmchm6</code>), and the light-scalar phenomenology
+  (extra singlets/octet) is just extra pNGB directions in the same <code>V(π)</code>.</li>
+</ul>
+<p><strong>Recommended first step:</strong> promote the SO(6)/SO(5) NMCHM to an explicit <strong>SU(4)/Sp(4) fundamental
+composite Higgs</strong> with chimera-baryon partners (low effort, high scientific value — it connects
+pyCHM directly to the lattice program), <em>then</em> build the general <code>SU(N)/SO(N)</code> symmetric-space
+engine for SU(5)/SO(5).</p>
+<hr />
+<h2 id="2-little-higgs-the-littlest-higgs-and-collective-symmetry-breaking">2. Little Higgs (the littlest Higgs and collective symmetry breaking)<a class="headerlink" href="#2-little-higgs-the-littlest-higgs-and-collective-symmetry-breaking" title="Permanent link">&para;</a></h2>
+<p>The pre-composite-Higgs pNGB program; shares the <code>SU(5)/SO(5)</code> coset, so it rides on the same
+infrastructure as §1.</p>
+<ul>
+<li>Arkani-Hamed, Cohen, Katz, Nelson, <em>The Littlest Higgs</em> — <strong>arXiv:hep-ph/0206021</strong>
+  (<code>SU(5)/SO(5)</code>, f ~ TeV, cutoff Λ ≲ 4πf ~ 10 TeV).</li>
+<li>Arkani-Hamed, Cohen, Georgi, <em>(De)Constructing Dimensions</em> — <strong>arXiv:hep-th/0104005</strong> (the
+  moose/deconstruction machinery).</li>
+<li>Cheng, Low, <em>Little hierarchy, little Higgses, and a little symmetry</em> — <strong>arXiv:hep-ph/0405243</strong>
+  (T-parity); Low, <em>T-parity and the littlest Higgs</em> — <strong>arXiv:hep-ph/0409025</strong>.</li>
+<li>Reuter et al., <em>The fate of the littlest Higgs with T-parity under 13 TeV LHC data</em> —
+  <strong>arXiv:1811.02268</strong> (the most complete recent recast; the subfield has since gone quiet,
+  absorbed into generic vector-like-quark searches).</li>
+</ul>
+<p><strong>Collective symmetry breaking:</strong> the Higgs mass is protected because <em>no single coupling</em> breaks
+all the global symmetry — at least two must act together, pushing the quadratic divergence to two
+loops (Λ ~ 10 TeV).</p>
+<h3 id="pychm-integration-sketch_1">pyCHM integration sketch<a class="headerlink" href="#pychm-integration-sketch_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The coset is <code>SU(5)/SO(5)</code> → <strong>shares the §1 SU(5)/SO(5) engine.</strong> Once that exists, the littlest
+  Higgs is a <em>different embedding + gauge structure</em> on the same coset: gauge <code>[SU(2)×U(1)]²</code>
+  (collective), and the heavy gauge/top partners that cancel the SM loops.</li>
+<li><strong>New piece — collective gauging / the moose:</strong> pyCHM's gauge sector (<code>mchm5.mass2_W/Z</code>) is a
+  two-site <code>SU(2)×U(1)</code>. Little Higgs needs the <em>doubled</em> gauge group and the deconstructed
+  multi-site moose. This is a generalisation of the existing two-site gauge matrices to an
+  N-site quiver. <strong>Effort: medium</strong> on top of the SU(5)/SO(5) coset.</li>
+<li><strong>T-parity</strong> is a discrete symmetry on the moose — a bookkeeping/projection layer, not new CCWZ.</li>
+<li>The Coleman-Weinberg/vacuum/tuning pipeline is reusable; the fine-tuning module is directly
+  relevant (little Higgs is <em>about</em> the little hierarchy, so <code>tuning.py</code>'s BG/information measures
+  apply).</li>
+</ul>
+<hr />
+<h2 id="3-twin-higgs-neutral-naturalness">3. Twin Higgs &amp; neutral naturalness<a class="headerlink" href="#3-twin-higgs-neutral-naturalness" title="Permanent link">&para;</a></h2>
+<p>Naturalness with <strong>colourless</strong> top partners — the partners cancelling the top loop live in a
+mirror/hidden sector, evading LHC coloured-partner searches.</p>
+<ul>
+<li>Chacko, Goh, Harnik, <em>The Twin Higgs: natural EWSB from mirror symmetry</em> —
+  <strong>arXiv:hep-ph/0506256</strong> (approximate global <code>SU(4)</code>, realised as <code>SU(4)/SU(3)</code>).</li>
+<li>Craig, Katz, Strassler, Sundrum, <em>Naturalness in the dark at the LHC</em> (fraternal twin Higgs) —
+  <strong>arXiv:1501.05310</strong>.</li>
+<li>Burdman, Chacko, Goh, Harnik, <em>Folded supersymmetry…</em> — <strong>arXiv:hep-ph/0609152</strong>;
+  Craig, Knapen, Longhi, <em>Neutral naturalness from the orbifold Higgs</em> — <strong>arXiv:1410.6808</strong>;
+  Cohen, Craig, Giudice, McCullough, <em>The Hyperbolic Higgs</em> — <strong>arXiv:1803.03647</strong>.</li>
+<li>Batell, Low, Neil, Verhaaren, <em>Review of Neutral Naturalness</em> — <strong>arXiv:2203.05531</strong>;
+  Bansal et al., <em>Mirror Twin Higgs cosmology (H0, S8 tensions)</em> — <strong>arXiv:2110.04317</strong>.</li>
+</ul>
+<p><strong>Coset:</strong> global <code>SU(4)→SU(3)</code> gives <code>2·(4²−1)−… = 7</code> broken generators; one <code>SU(2)</code> doublet (4
+real Goldstones) is the Higgs, protected by the <code>Z2</code> mirror symmetry.</p>
+<h3 id="pychm-integration-sketch_2">pyCHM integration sketch<a class="headerlink" href="#pychm-integration-sketch_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Coset <code>SU(4)/SU(3)</code> → needs the <code>SU(N)/SU(N-1)</code> symmetric-space CCWZ (a third coset family
+  beyond <code>SU(N)/SO(N)</code> and <code>SU(N)/Sp(N)</code>). Once the general <code>SU(N)</code> Goldstone engine exists, this
+  is a new <code>H</code> choice. <strong>Effort: medium</strong> for the coset.</li>
+<li><strong>Genuinely new infrastructure — the twin sector:</strong> the defining physics is a <em>mirror copy of
+  the SM</em> with a <code>Z2</code> exchange symmetry, and the cancellation happens between visible and twin
+  loops. pyCHM's potential currently sums one sector's mass spectrum; twin Higgs needs the visible
+  <strong>+ twin</strong> spectra with the <code>Z2</code> relation enforced. This is a structural extension of
+  <code>routes._sector_masses</code> (add a mirror sector) plus the <code>Z2</code>-symmetric potential. <strong>Effort:
+  high.</strong> Cosmology (dark radiation, H0/S8) is out of scope for a spectrum/tuning library.</li>
+<li>Folded SUSY / hyperbolic / orbifold Higgs are different UV realisations of the same IR
+  protection; the orbifold-Higgs framework (1410.6808) is the natural general target if pursued.</li>
+</ul>
+<hr />
+<h2 id="4-holographic-5d-warped-composite-higgs-pychms-own-lineage">4. Holographic / 5D / warped composite Higgs (pyCHM's own lineage)<a class="headerlink" href="#4-holographic-5d-warped-composite-higgs-pychms-own-lineage" title="Permanent link">&para;</a></h2>
+<p>The original dual picture: a pNGB Higgs from a 5D gauge field in a warped (Randall–Sundrum)
+background; the 4D CCWZ models pyCHM implements are the "two-site" deconstruction of these.</p>
+<ul>
+<li>Contino, Nomura, Pomarol, <em>Higgs as a holographic pseudo-Goldstone boson</em> —
+  <strong>arXiv:hep-ph/0306259</strong> (the AdS/CFT origin).</li>
+<li>Agashe, Contino, Pomarol, <em>The Minimal Composite Higgs Model</em> — <strong>arXiv:hep-ph/0412089</strong> (the
+  <code>SO(5)/SO(4)</code> MCHM in 5D AdS — the coset pyCHM's <code>mchm5</code> implements).</li>
+<li>Contino, Da Rold, Pomarol, <em>Light custodians…</em> — <strong>arXiv:hep-ph/0612048</strong> (the custodial
+  <code>X5/3</code>/top-partner structure that the partner embeddings encode).</li>
+<li>Panico, Wulzer, <em>The Discrete Composite Higgs Model</em> — <strong>arXiv:1106.2719</strong>: the 4D multi-site
+  deconstruction; a <strong>two-site truncation suffices for a finite, calculable Higgs potential</strong>.
+  <strong>This is exactly the two-site M4DCHM pyCHM implements</strong> — the form factors <code>Π(p)</code>
+  (<code>mchm5.formfactor_pieces</code>) are the truncated 5D propagators.</li>
+<li>Carragher, Murnane, Stangl, Su, White, Williams, <em>Minimal 4D Composite Higgs Models Under Current
+  LHC Constraints</em> — <strong>arXiv:2007.11943</strong>: global fits of the M4DCHM^{5-5-5}, ^{14-14-10},
+  ^{14-1-10} variants — the <strong>direct pyCHM lineage</strong> (shares an author with this repo). A natural
+  external cross-check / validation target for the spectrum + tuning pyCHM computes.</li>
+<li>Blasi, Bollig, Goertz, <em>Holographic Composite Higgs Model Building: …Maximal Symmetry…</em> —
+  <strong>arXiv:2212.11007</strong> (recent: maximal symmetry decouples the light Higgs from light top partners).
+  Review: Goertz, <em>Composite Higgs theory</em> — <strong>arXiv:1812.07362</strong>.</li>
+</ul>
+<h3 id="pychm-integration-sketch_3">pyCHM integration sketch<a class="headerlink" href="#pychm-integration-sketch_3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>N-site deconstruction</strong> (more KK levels) → a tower of partners converging to the continuum 5D
+  result: a generalisation of the assembler to N composite sites, reusing the CCWZ dressing per
+  site, same coset. <strong>Effort: medium.</strong> This is the natural way to study the maximal-symmetry /
+  light-top-partner mechanism (2212.11007) within pyCHM's existing framework.</li>
+<li>A genuine 5D solver (bulk profiles, holographic two-point functions) is different numerical
+  technology and <strong>out of scope</strong> for the current eigenvalue/momentum-route design.</li>
+</ul>
+<h2 id="5-current-experimental-constraints-validationphenomenology-targets">5. Current experimental constraints (validation/phenomenology targets)<a class="headerlink" href="#5-current-experimental-constraints-validationphenomenology-targets" title="Permanent link">&para;</a></h2>
+<p>Not new cosets, but the numbers any extension must respect — and concrete external anchors pyCHM
+could be checked against (all arXiv ids verified):</p>
+<ul>
+<li><strong>Compositeness scale:</strong> custodial + Higgs-coupling (<code>g_hVV ∝ √(1−ξ)</code>) and S-parameter data give
+  the standard bound <strong>ξ = v²/f² ≲ 0.1, i.e. f ≳ 0.8–1 TeV</strong> (relaxable to ξ ~ 0.2–0.4 with extra
+  light states). EWPT analysis: Frandsen, Rosenlyst, <strong>arXiv:2207.01465</strong>. <em>(pyCHM's REF point sits
+  at ξ ≈ 0.07 — inside this bound.)</em></li>
+<li><strong>Top partners (VLQ):</strong> pair production excludes <code>m ≳ 1.5 TeV</code> (up to ~1.6 TeV degenerate/doublet)
+  — ATLAS <strong>arXiv:2212.05263</strong>; single production is coupling-dependent, reaching 2+ TeV at large
+  mixing — ATLAS <strong>arXiv:2305.03401</strong>; review Benbrik et al. <strong>arXiv:2412.01761</strong>. <em>(pyCHM's
+  <code>spectrum()</code> returns <code>mtop_partner</code>; this is a direct cut.)</em></li>
+<li><strong>Higgs self-coupling (di-Higgs):</strong> ATLAS+CMS combination <strong>−0.71 &lt; κ_λ &lt; 6.1</strong> (95% CL,
+  <strong>arXiv:2602.23991</strong>); the pNGB shift <code>δκ_λ ∝ ξ</code> is still allowed at O(1), so di-Higgs is not yet
+  the leading ξ constraint.</li>
+<li><strong>Global SMEFT fits:</strong> <code>fitmaker</code> (Ellis et al., <strong>arXiv:2012.02779</strong>) and <code>SMEFiT</code> (Giani,
+  Magni, Rojo, <strong>arXiv:2302.06660</strong>) bound the dim-6 Higgs/EW operators onto which ξ maps — all
+  consistent with ξ ≲ 0.1.</li>
+</ul>
+<p><strong>Library opportunity:</strong> a thin <code>constraints</code> module mapping pyCHM's spectrum (<code>ξ</code>, <code>mtop_partner</code>,
+<code>κ_λ</code> shift) onto these published bounds would turn the calculator into a phenomenology tool —
+small effort, high utility, and (via 2007.11943) a natural external validation of the spectrum.</p>
+<hr />
+<h2 id="6-clockwork-relaxion-exotic-naturalness-longer-term">6. Clockwork / relaxion / exotic naturalness (longer term)<a class="headerlink" href="#6-clockwork-relaxion-exotic-naturalness-longer-term" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Clockwork / linear dilaton</strong> (Choi–Im; Giudice–McCullough, <em>A Clockwork Theory</em> —
+  arXiv:1610.07962): a chain of fields with hierarchical couplings generating exponentially small
+  effective couplings. Could be modelled as an N-site moose (overlaps with §2/§4 deconstruction
+  infrastructure), but the Higgs-as-clockwork-pNGB constructions are niche. <strong>Effort: high, value:
+  speculative.</strong></li>
+<li><strong>Relaxion</strong> (Graham, Kaplan, Rajendran, arXiv:1504.07551): solves the hierarchy cosmologically
+  via a scanning axion-like field. This is <strong>cosmological dynamics, not a spectrum/tuning
+  calculation</strong> — out of scope for pyCHM's design, though the relaxion <em>potential</em> could be a
+  module if ever wanted.</li>
+</ul>
+<hr />
+<h2 id="prioritised-roadmap">Prioritised roadmap<a class="headerlink" href="#prioritised-roadmap" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>SU(4)/Sp(4) fundamental composite Higgs (now).</strong> Re-cast the NMCHM as the minimal pseudoreal
+   Ferretti/Sannino model with chimera-baryon top partners. Coset already done; only embeddings +
+   a model file. Connects pyCHM to the active Sp(4) lattice program. <strong>Low effort, high value.</strong></li>
+<li><strong>General <code>SU(N)/SO(N)</code> symmetric-space CCWZ + an <code>SU(N)</code> irrep builder (the infrastructure).</strong>
+   The reusable core that unlocks SU(5)/SO(5). Generalise the so6 Rodrigues/exp-map to a multi-field
+   non-abelian coset; add an <code>SU(N)</code> Young-tableau analogue of <code>tensor_basis</code>. <strong>Medium-high effort,
+   unlocks §1 real-rep models and §2 little Higgs.</strong></li>
+<li><strong>Littlest Higgs <code>SU(5)/SO(5)</code> + collective (moose) gauging.</strong> Rides on (2); add the doubled
+   gauge group and T-parity. <strong>Medium effort.</strong></li>
+<li><strong><code>SU(N)/Sp(N)</code> and <code>SU(N)/SU(N-1)</code> coset families</strong> → the rest of the Ferretti M1–M12 table and
+   the twin-Higgs coset. <strong>Medium effort given (2).</strong></li>
+<li><strong>Twin sector / neutral naturalness</strong> (mirror spectrum + Z2 potential) and <strong>N-site holographic
+   deconstruction.</strong> Larger structural extensions. <strong>High effort.</strong></li>
+</ol>
+<p>The throughline: investment (2) — a general symmetric-space CCWZ on <code>SU(N)</code> cosets with an <code>SU(N)</code>
+representation builder — is what converts pyCHM from "the two minimal <code>SO(N)</code> models" into a
+general composite-pNGB-Higgs calculator covering the modern (Ferretti/Sannino) landscape. The
+<code>SU(4)/Sp(4) ≅ SO(6)/SO(5)</code> coincidence means pyCHM is already one concrete model into that
+landscape today.</p>
+<p><em>Citations above were verified against arXiv abstract pages by the research agents; integration
+effort estimates are this library's assessment, not from the literature.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

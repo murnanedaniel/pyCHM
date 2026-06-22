@@ -1,6 +1,7 @@
 """pyCHM -- open Composite Higgs Model potential, spectrum and fine-tuning.
 
-Dual route (form-factor / mass-eigenvalue), pure numpy+scipy, no private dependencies.
+Dual route (form-factor / mass-eigenvalue), numpy+scipy at runtime (sympy for the symbolic
+CCWZ derivation of the Higgs dressing), no private dependencies.
 
     >>> import pychm
     >>> m = pychm.Model('5-5-5')
@@ -8,15 +9,18 @@ Dual route (form-factor / mass-eigenvalue), pure numpy+scipy, no private depende
     >>> t = m.tuning(point)                # {BG, HOT, I, KL}
     >>> g, b, d = m.potential_coeffs(point)
 
-`route='formfactor'` (default) or `route='eigenvalue'` selects the fermion method; the gauge
-sector uses the eigenvalue route in both.  See README for the validation status and roadmap.
+`route='eigenvalue'` (default, closed-form CW -- the precision route) or `route='momentum'`
+(divergence-subtracted momentum integral) selects the Coleman-Weinberg evaluation; both
+diagonalise the same mass matrices.  See README for the validation status and roadmap.
 """
-from . import mchm5, routes, potential, spectrum, tuning
+from . import mchm5, mchm14, mchm14_1_10, nmchm6
+from . import assemble, routes, potential, spectrum, tuning, constraints
 
-__version__ = "0.1.0"
-__all__ = ["Model", "mchm5", "routes", "potential", "spectrum", "tuning"]
+__version__ = "0.5.0"
+__all__ = ["Model", "mchm5", "mchm14", "mchm14_1_10", "nmchm6",
+           "routes", "potential", "spectrum", "tuning", "constraints"]
 
-_MODELS = {"5-5-5": mchm5}
+from .registry import MODELS as _MODELS
 
 
 class Model:
@@ -26,11 +30,15 @@ class Model:
                 f"representation {representation!r} not implemented; available: {list(_MODELS)}")
         self.representation = representation
 
-    def spectrum(self, point, route="formfactor"):
-        return spectrum.spectrum(point, route=route)
+    def spectrum(self, point, route="eigenvalue"):
+        return spectrum.spectrum(point, route=route, model=self.representation)
 
-    def tuning(self, point, route="formfactor"):
-        return tuning.tuning(point, route=route)
+    def tuning(self, point, route="eigenvalue"):
+        return tuning.tuning(point, route=route, model=self.representation)
 
-    def potential_coeffs(self, point, route="formfactor"):
-        return potential.potential_coeffs(point, route=route)
+    def potential_coeffs(self, point, route="eigenvalue"):
+        return potential.potential_coeffs(point, route=route, model=self.representation)
+
+    def constraints(self, point, route="eigenvalue"):
+        """Run this model's spectrum at `point` past the experimental bounds (see `pychm.constraints`)."""
+        return constraints.check(self.spectrum(point, route=route))
