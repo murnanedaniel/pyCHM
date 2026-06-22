@@ -15,6 +15,7 @@ keywords = ["composite-higgs", "fine-tuning", "naturalness", "MCHM", "particle-p
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+docs = ["mkdocs>=1.5", "mkdocs-material>=9.5", "mkdocstrings[python]>=0.24", "pymdown-extensions>=10"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

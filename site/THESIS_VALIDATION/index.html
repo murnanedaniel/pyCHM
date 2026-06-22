@@ -1,0 +1,1376 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open Composite Higgs Model calculator -- potential, spectrum, fine-tuning, constraints">
+      
+      
+      
+        <link rel="canonical" href="https://murnanedaniel.github.io/pyCHM/THESIS_VALIDATION/">
+      
+      
+        <link rel="prev" href="../DERIVATIONS/">
+      
+      
+        <link rel="next" href="../VALIDATION_AUDIT/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Thesis validation - pyCHM</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#thesis-validation-coverage-map" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="pyCHM" class="md-header__button md-logo" aria-label="pyCHM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pyCHM
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Thesis validation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/murnanedaniel/pyCHM" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    murnanedaniel/pyCHM
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="pyCHM" class="md-nav__button md-logo" aria-label="pyCHM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    pyCHM
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/murnanedaniel/pyCHM" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    murnanedaniel/pyCHM
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Physics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Physics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../COSET_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coset landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mathematics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mathematics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Coset(G,H) engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DERIVATIONS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Derivations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Validation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thesis validation
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thesis validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-appendix-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter / appendix coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nmchm-so6-representation-coverage-ch78" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NMCHM / SO(6) representation coverage (Ch.7/8)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-validated-means-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What "validated" means here
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VALIDATION_AUDIT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EXTENDING_BSM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending pyCHM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model & top-level
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/spectrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Potential & spectrum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fine-tuning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constraints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The group engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-appendix-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter / appendix coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nmchm-so6-representation-coverage-ch78" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NMCHM / SO(6) representation coverage (Ch.7/8)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-validated-means-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What "validated" means here
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="thesis-validation-coverage-map">Thesis validation coverage map<a class="headerlink" href="#thesis-validation-coverage-map" title="Permanent link">&para;</a></h1>
+<p>This documents, chapter by chapter, how pyCHM is validated against Murnane's thesis
+<em>The Higgs as a Composite Goldstone Boson</em> (arXiv:2606.18364) — what is checked in closed form,
+and what is <strong>out of scope</strong> because the library does not implement it. It exists to make the
+validation claim precise rather than sweeping.</p>
+<blockquote>
+<p>For the <strong>derivations themselves</strong> (the closed-form group theory behind every ✅ "derived" row),
+see <a href="../DERIVATIONS/"><code>DERIVATIONS.md</code></a> / <a href="../DERIVATIONS.pdf"><code>DERIVATIONS.pdf</code></a> — each step is tied
+to the function and the test that implements it.</p>
+</blockquote>
+<p>Honest summary up front:
+- The <strong>Goldstone/CCWZ dressing</strong> (the <code>s_h</code>-dependence of every fermion mixing) is <em>derived from
+  group theory</em>, not transcribed — see <code>pychm.groups</code>. The model <em>structure</em> (embeddings,
+  partner spectrum, mass placements) is input taken from the thesis, not derived.
+- The fermion-sector and convention equations are validated <strong>exactly</strong> in closed form
+  (<code>tests/test_thesis_equations.py</code>). The higher-rep form-factor prefactors are derived as exact
+  SO(4) Clebsch weights, with the overall <code>4/5</code> itself derived from the 14-singlet embedding
+  (<code>|S₄₄|²=4/5</code>) — group theory end to end. (The earlier text said this constant was matched to the
+  thesis; it is now derived — see <code>VALIDATION_AUDIT.md §2.2</code>.) The thesis writes the same constant
+  explicitly (<code>Y_T√(4/5)</code>, App. A7 <code>eq:broken14-14-10</code>).
+- The thesis contains <strong>no per-point numerical benchmark tables</strong>; it tabulates parameter domains
+  and scan-level results. "Numerical validation" therefore means the closed-form physical
+  relations, plus the existing anchor tests (<code>tests/test_anchors.py</code>, <code>test_mchm14*.py</code>) that pin
+  the library to the independent pypngb engine to &lt;0.1%.</p>
+<p>Legend: ✅ validated in closed form (test named) · 🔵 validated numerically/by anchor ·
+◐ partially validated (structure derived, overall magnitude matched to the thesis) ·
+⚪ out of scope (not implemented in pyCHM).</p>
+<h2 id="chapter-appendix-coverage">Chapter / appendix coverage<a class="headerlink" href="#chapter-appendix-coverage" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Equation class</th>
+<th>pyCHM</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ch.2, A0, A1</td>
+<td>CCWZ Goldstone <code>U</code>, SO(5) generators <code>T_L,T_R,X</code>, lifts to 10/14, spinor <code>U_4</code></td>
+<td><code>groups.so5</code>, <code>groups/so5</code>, <code>groups/spinors</code></td>
+<td>✅ <code>test_U_vector_matches_thesis_goldstone</code>, <code>test_so5_broken_generator_exponentiates_to_U_vector</code>, <code>test_so4_unbroken_generators_close_the_algebra</code>, <code>test_spinor_4_half_angle</code></td>
+</tr>
+<tr>
+<td>A1</td>
+<td>14/10 basis tensors <code>T̂^0,T̂^{ab},X̂^a</code>; SO(4) branchings 5/10/14/4</td>
+<td><code>groups/so5</code>, <code>groups/decompose</code></td>
+<td>✅ <code>test_14_basis_matches_thesis</code>, <code>test_10_basis_antisymmetric_orthonormal</code>, <code>test_branchings_match_thesis</code></td>
+</tr>
+<tr>
+<td>A7 (<code>eq:formulas</code>)</td>
+<td>form-factor building blocks <code>A_L,A_R,A_M,B</code>; the 5-5-5 form-factor route</td>
+<td><code>mchm5._AL/_AR/_AM/_B</code>, <code>formfactor_pieces</code>, <code>fermion_mass</code></td>
+<td>✅ <code>test_A7_building_blocks_verbatim</code> (transcription) <strong>+ now independently validated</strong>: at a custodial point the form-factor top mass equals the pypngb-anchored eigenvalue top mass as <code>s_h→0</code> (ratio→1 to ~1e-6), confirming the A7 form factors are the correct leading-order 2-point functions — not just transcribed (<code>test_formfactor_route.py</code>, <code>VALIDATION_AUDIT.md §2.1</code>). The finite-<code>s_h</code> gap is the understood custodial + O(<code>s_h²</code>) truncation, not a thesis error.</td>
+</tr>
+<tr>
+<td>Ch.6 / A7 (<code>eq:broken5-5-5</code>)</td>
+<td>5-5-5 <code>s_h</code>-coefficients (<code>s_h²/2</code>, <code>c_h²</code>, <code>½s_h²c_h²</code>)</td>
+<td><code>mchm5.formfactor_pieces</code></td>
+<td>✅ <code>test_coeffs_5_5_5</code>, <code>test_coeffs_5_5_5_formfactor_wiring</code></td>
+</tr>
+<tr>
+<td>Ch.6 / A7 (<code>eq:broken14-14-10</code>)</td>
+<td>14 form-factor <code>s_h</code>-prefactors (<code>(4c²−s²)²/20</code>, <code>4c²/5+s²/20</code>, <code>3/(4√5)</code>, <code>1/(2√5)</code>)</td>
+<td><code>groups/so5.channel_weights_sym</code>, <code>so5.embedding_sym</code></td>
+<td>✅ <strong>fully derived</strong>: the trig structure + channel ratios are exact SO(4) Clebsch weights (<code>W₁₁+W₂₂+W₃₃=1</code>), and the overall <code>4/5</code> is <strong>derived from the embedding</strong> — <code>\|S₄₄\|²=4/5</code> for <code>S=diag(1,1,1,1,−4)/√20</code> (<code>test_4_5_is_derived_from_the_embedding</code>), so <code>(4c²−s²)²/20 = \|S₄₄\|²·W₁₁</code> is a genuine prediction, not a thesis read-off (<code>VALIDATION_AUDIT.md §2.2</code>).</td>
+</tr>
+<tr>
+<td>Ch.6 / A7 (<code>eq:broken14-1-10</code>)</td>
+<td>14-1-10 t_R-singlet: no up-right dressing, constant <code>M_u</code></td>
+<td><code>assemble</code>, <code>mchm14_1_10</code></td>
+<td>✅ <code>test_coeffs_14_1_10_tR_singlet_constant</code></td>
+</tr>
+<tr>
+<td>Ch.5 (<code>5-M4DCHM.tex:459</code>)</td>
+<td>CW kernel <code>V=Σ c_i/(64π²) m_i⁴ log m_i²</code>, <code>c_i={3,6,−12}</code></td>
+<td><code>routes._K_closed</code>, <code>_CF/_CV</code></td>
+<td>✅ <code>test_cw_kernel_and_coefficients</code></td>
+</tr>
+<tr>
+<td>Ch.5 (<code>5-M4DCHM.tex:518</code>)</td>
+<td>pole mass <code>m=M(0,v)/√(Π_LΠ_R)</code></td>
+<td><code>mchm5.fermion_mass</code></td>
+<td>✅ <code>test_pole_mass_eq518</code></td>
+</tr>
+<tr>
+<td>Ch.5</td>
+<td><code>V=−γs_h²+βs_h⁴</code>, vacuum <code>ξ=γ/2β</code>, <code>m_h²=(8β/f²)ξ(1−ξ)</code>, <code>v_EW=f√ξ</code></td>
+<td><code>potential</code>, <code>spectrum</code></td>
+<td>✅ <code>test_higgs_mass_scaling_closed_form</code>, <code>test_vev_and_vacuum_relations</code></td>
+</tr>
+<tr>
+<td>Ch.5</td>
+<td>gauge sector SM relations <code>m_W=gv/2</code>, <code>m_Z=√(g²+g'²)v/2</code>, <code>m_W/m_Z=cosθ_W</code></td>
+<td><code>spectrum</code></td>
+<td>✅ <code>test_gauge_sector_sm_relations</code></td>
+</tr>
+<tr>
+<td>Ch.3 (<code>eq:BG</code>)</td>
+<td>Barbieri–Giudice <code>Δ_BG=max|J_i|</code>; first-order <code>|J|</code>; information <code>½log(1+|J|²)=KL</code></td>
+<td><code>tuning</code></td>
+<td>✅ <code>test_fine_tuning_measures</code></td>
+</tr>
+<tr>
+<td>Ch.5/6</td>
+<td>full 14/14-1-10 fermion mass matrices (eigenvalue route), physical <code>m_t,m_b,m_h,ξ,Δ_BG</code></td>
+<td><code>mchm14</code>, <code>mchm14_1_10</code>, <code>spectrum</code>, <code>tuning</code></td>
+<td>🔵 anchored to pypngb &lt;0.1% (<code>test_anchors</code>, <code>test_mchm14</code>, <code>test_mchm14_1_10</code>); symbolic engine reproduces the matrices entry-for-entry (<code>test_assemble</code>, <code>test_symbolic</code>)</td>
+</tr>
+<tr>
+<td>Ch.5 (<code>eq.366/370</code>)</td>
+<td>gauge form factor <code>Π_W(p,s_h)</code>, <code>γ_g</code> (the momentum-dependent two-point function)</td>
+<td><code>mchm5.mass2_W/mass2_Z</code> (eigenvalue masses only)</td>
+<td>🔵 the eigenvalue-route gauge masses are used and anchored; the full momentum-dependent <code>Π_W</code> is not separately validated</td>
+</tr>
+<tr>
+<td>Ch.3 / A2 (<code>eq.217–263</code>)</td>
+<td>higher-order HOT <code>Δ_2,…,Δ_N</code> (Gram-determinant volumes), pseudo-determinant</td>
+<td>—</td>
+<td>⚪ not implemented (library has BG + first-order <code>|J|</code> only)</td>
+</tr>
+<tr>
+<td>Ch.3 / A2 (<code>eq.27,130</code>)</td>
+<td>Bayesian evidence <code>Z</code>, Occam factor, Athron volume ratios</td>
+<td>—</td>
+<td>⚪ not implemented</td>
+</tr>
+<tr>
+<td>Ch.4</td>
+<td>nested sampling / MultiNest, likelihood scans</td>
+<td>—</td>
+<td>⚪ not implemented (external)</td>
+</tr>
+<tr>
+<td>Ch.7/8</td>
+<td>NMCHM <code>SO(6)/SO(5)</code>, the 5-component Goldstone <code>Φ</code> (eq. 474), broken generators (eq. 632), the 6-embedding (eq. 633), the singlet pNGB</td>
+<td><code>groups/so6</code>, <code>groups/so6_spinors</code>, <code>nmchm6</code></td>
+<td>✅ <code>test_so6.py</code>, <code>test_so6_spinors.py</code>, <code>test_nmchm6.py</code> (closed-form Goldstone + reps + branchings; model reduces to the anchored 5-5-5 and adds the singlet mass)</td>
+</tr>
+<tr>
+<td>A6</td>
+<td>large-N scaling, meson sum rule</td>
+<td>—</td>
+<td>⚪ not implemented (implicit in the form-factor structure only)</td>
+</tr>
+<tr>
+<td>Ch.1, A0 (defs)</td>
+<td>SM review, Lie-group definitions</td>
+<td>—</td>
+<td>⚪ review material, nothing to validate against code</td>
+</tr>
+</tbody>
+</table>
+<h2 id="nmchm-so6-representation-coverage-ch78">NMCHM / SO(6) representation coverage (Ch.7/8)<a class="headerlink" href="#nmchm-so6-representation-coverage-ch78" title="Permanent link">&para;</a></h2>
+<p>The Next-to-Minimal coset <code>SO(6)/SO(5)</code> and <strong>all</strong> its small irreps are implemented in
+<code>pychm.groups.so6</code> / <code>so6_spinors</code> and validated to the same bar as the SO(5) layer — closed
+form against the thesis where the thesis is explicit, and by internal group-theory consistency
+otherwise. The Goldstone dressing is <em>derived</em> (Rodrigues closed form for the 5-pNGB vector
+Goldstone, then lifted to every rep by the rank-<code>k</code> tensor / Clifford construction), not
+transcribed.</p>
+<table>
+<thead>
+<tr>
+<th>SO(6) irrep</th>
+<th>built as</th>
+<th>dim</th>
+<th>SO(5) branching</th>
+<th>test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>6</code> vector</td>
+<td><code>tensor_basis('sym',1,6)</code></td>
+<td>6</td>
+<td><code>5 + 1</code></td>
+<td>✅ <code>test_rep_dimension_and_branchings</code></td>
+</tr>
+<tr>
+<td><code>15</code> adjoint</td>
+<td><code>tensor_basis('antisym',2,6)</code></td>
+<td>15</td>
+<td><code>10 + 5</code></td>
+<td>✅ <code>test_rep_dimension_and_branchings</code></td>
+</tr>
+<tr>
+<td><code>20'</code> sym-traceless</td>
+<td><code>tensor_basis('sym',2,6)</code></td>
+<td>20</td>
+<td><code>14 + 5 + 1</code></td>
+<td>✅ <code>test_rep_dimension_and_branchings</code></td>
+</tr>
+<tr>
+<td><code>10</code> / <code>10bar</code> self-dual 3-form</td>
+<td><code>tensor_basis('antisym',3,6)</code> ± Hodge dual</td>
+<td>10</td>
+<td><code>10</code> (SO(5) adjoint)</td>
+<td>✅ <code>test_three_form_splits_into_10_and_10bar</code></td>
+</tr>
+<tr>
+<td><code>4</code> / <code>4bar</code> Weyl spinor</td>
+<td>8-dim Clifford, chirality split</td>
+<td>4</td>
+<td><code>4</code> (no bidoublet)</td>
+<td>✅ <code>test_spinor_branchings_match_thesis</code></td>
+</tr>
+</tbody>
+</table>
+<p>Closed-form thesis identities (<code>sp.simplify(...) == 0</code> or exact numeric):
+- <strong>eq. 474</strong> — the Goldstone field <code>Φ = U6·e₅ = (1/φ)sin(φ/f)(h₁..h₄, s, φ cot(φ/f))</code>
+  (<code>test_goldstone_vacuum_matches_thesis_eq474</code>).
+- <strong>eq. 632</strong> — the broken generators (bidoublet <code>X_B^a</code> + singlet <code>X_S</code>) exponentiate to the
+  vector Goldstone (<code>test_broken_generators_exponentiate_to_goldstone</code>); the 15 SO(6) generators
+  close the algebra (<code>test_so6_generators_close_the_algebra</code>).
+- <strong>eq. 633</strong> — the fundamental <code>6 = 4 + 1 + 1</code> embedding basis
+  (<code>test_fundamental_embedding_6_is_4_plus_1_plus_1</code>).
+- the thesis statement that the <strong>4 has no <code>SU(2)_L×SU(2)_R</code> bidoublet</strong> (so it cannot host the SM
+  <code>q_L</code>, the reason the NM4DCHM uses the 6) — <code>test_spinor_branchings_match_thesis</code>.
+- the <strong>(h,s) Higgs/singlet dressing is derived in closed form</strong>, not fitted: <code>so6.channel_weights6_sym</code>
+  gives the exact closed-trig SO(4)-channel weights of the dressed <code>q_L</code> in the 6, which sum to 1
+  (unitarity) and reduce to the MCHM5 <code>sin²(θ_h)/2</code> vector weight at <code>s=0</code> — the SO(6) analogue of
+  the SO(5) <code>so5.channel_weights_sym</code>, and the symbolic Goldstone lambdifies to the numeric
+  one bit-for-bit (<code>test_closed_form_channel_weights_derive_unity_and_mchm_limit</code>,
+  <code>test_symbolic_goldstone_matches_numeric_bit_for_bit</code>).</p>
+<p>What is <em>derived</em> vs <em>input</em> vs <em>anchored</em> — the honest boundary, identical in spirit to the
+MCHM accounting above:
+- <strong>Derived (group theory):</strong> the SO(6) generators and coset split, the closed-form 5-pNGB
+  Goldstone <code>U6(h,s)</code>, every irrep and its <code>U6</code> dressing, and the SO(6)→SO(5)→SO(4) branchings.
+- <strong>Input (model structure):</strong> the <code>nmchm6</code> NM4DCHM6 partner content — the <code>5-5-5</code> spectrum lifted
+  to the 6 with <code>t_R</code> in the SO(5)-singlet <code>e₅</code>. This is the standard partial-compositeness
+  choice, not a transcription of a thesis table.
+- <strong>Anchored:</strong> there is <strong>no public NMCHM engine</strong> (the thesis NM4DCHM6 scan is not reproduced
+  here), so the NMCHM model is not anchored to an external benchmark the way the MCHM is. Instead
+  it is validated by (i) <strong>exact reduction to the pypngb-anchored 5-5-5 at <code>⟨s⟩=0</code></strong>
+  (<code>test_reduces_to_555_assembler_entry_for_entry</code>, <code>test_spectrum_matches_555</code>,
+  <code>test_tuning_matches_555</code>) and (ii) the new singlet observable being a finite, positive,
+  calculable fermion-loop mass with the vacuum at <code>⟨s⟩=0</code> (<code>test_potential_even_in_singlet…</code>,
+  <code>test_singlet_pNGB_has_positive_calculable_mass</code>). This reduction-plus-consistency is the
+  honest substitute for an external anchor, and is stated as such — an inherent limitation (no
+  public NMCHM engine exists), not an open work item.</p>
+<h2 id="what-validated-means-here">What "validated" means here<a class="headerlink" href="#what-validated-means-here" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Closed-form (✅):</strong> a symbolic identity <code>sp.simplify(pyCHM_expr − thesis_expr) == 0</code>, or an
+  exact numeric identity between two pyCHM quantities that encode a thesis equation.</li>
+<li><strong>Derivation, not transcription (now complete).</strong> The 14 form-factor prefactors are derived end
+  to end: the <em>trig structure</em> + channel <em>ratios</em> are exact Clebsch weights from <code>channel_weights_sym</code>
+  (summing to 1), and the overall <code>4/5</code> is the <strong>index-4 component of the canonical 14-singlet
+  embedding</strong> <code>S=diag(1,1,1,1,−4)/√20</code>, <code>|S₄₄|²=4/5</code> (<code>test_4_5_is_derived_from_the_embedding</code>).
+  The thesis prefactor <code>(4c²−s²)²/20</code> then equals the <em>derived</em> <code>|S₄₄|²·W₁₁</code> — a prediction that would
+  fail if the thesis number were inconsistent, no longer a read-off of the thesis <code>1/20</code>. The thesis
+  writes the same constant as <code>Y_T√(4/5)</code> (App. A7); it is no longer an unverified input.</li>
+<li><strong>Oracle honesty — the form-factor route (resolved).</strong> The App. A7 building blocks <code>A_L,A_R,A_M,B</code>
+  and the 5-5-5 form-factor route (<code>mchm5.formfactor_pieces</code>, <code>fermion_mass</code>) are <strong>transcribed</strong> from
+  the thesis and used by <em>no</em> pipeline code (spectrum/tuning/routes run the eigenvalue route). They
+  were previously checked only against themselves; they are now <strong>independently validated</strong> against
+  the pypngb-anchored eigenvalue route: at a custodial point (<code>Δ_uL=Δ_dL</code>, which the single-<code>Lq</code>
+  form factor assumes) the form-factor top mass equals the eigenvalue top mass as <code>s_h→0</code>
+  (ratio→1 to ~1e-6), with the finite-<code>s_h</code> difference a clean O(<code>s_h²</code>) leading-order truncation —
+  <em>not</em> a thesis error (<code>VALIDATION_AUDIT.md §2.1</code>, <code>test_formfactor_route.py</code>). The form factors are
+  thus confirmed correct in the regime where both routes compute the same object.</li>
+<li><strong>Anchored (🔵):</strong> validated numerically against the independent pypngb engine (the same engine
+  behind arXiv:2101.00428), not re-derived from the thesis equations.</li>
+<li><strong>Out of scope (⚪):</strong> the library does not implement this physics, so there is no code to check
+  the thesis equation against. This is the honest boundary of the validation.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

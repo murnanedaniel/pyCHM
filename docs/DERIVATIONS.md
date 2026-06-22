@@ -7,7 +7,7 @@ document and the code are one object: **if a derivation here is wrong, a named t
 reference physics is Murnane, *The Landscape of Composite Higgs Models* (arXiv:2606.18364);
 conventions match the library exactly. Nothing here assumes the thesis is correct — the closed
 forms are recomputed from the generators, and where the thesis is the only source (the App. A7 form
-factors) it is cross-checked against the `pypngb`-anchored eigenvalue route ([§7](#7-the-form-factor-route-and-the-oracle-boundary)).
+factors) it is cross-checked against the `pypngb`-anchored eigenvalue route ([§5](#5-the-form-factor-route-and-the-oracle-boundary)).
 
 > This is the human-readable companion to `docs/DERIVATIONS.tex` / `DERIVATIONS.pdf`. The two are
 > kept in sync (see the CLAUDE.md rule: *all new derivations go in both markdown and LaTeX*).

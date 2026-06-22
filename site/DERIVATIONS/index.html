@@ -1,0 +1,1744 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open Composite Higgs Model calculator -- potential, spectrum, fine-tuning, constraints">
+      
+      
+      
+        <link rel="canonical" href="https://murnanedaniel.github.io/pyCHM/DERIVATIONS/">
+      
+      
+        <link rel="prev" href="../engine/">
+      
+      
+        <link rel="next" href="../THESIS_VALIDATION/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Derivations - pyCHM</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pychm-derivations-first-principles-group-theory-of-the-nmchm" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="pyCHM" class="md-header__button md-logo" aria-label="pyCHM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            pyCHM
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Derivations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/murnanedaniel/pyCHM" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    murnanedaniel/pyCHM
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="pyCHM" class="md-nav__button md-logo" aria-label="pyCHM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    pyCHM
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/murnanedaniel/pyCHM" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    murnanedaniel/pyCHM
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Physics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Physics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../COSET_LANDSCAPE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coset landscape
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mathematics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Mathematics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Coset(G,H) engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Derivations
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Derivations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-ccwz-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The CCWZ framework
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-minimal-composite-higgs-so5so4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Minimal Composite Higgs: SO(5)/SO(4)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Minimal Composite Higgs: SO(5)/SO(4)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-generators-and-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Generators and conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-the-vector-goldstone-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 The vector Goldstone matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-lifting-to-tensor-representations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Lifting to tensor representations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-so4-su2_l-su2_r-branching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 SO(4) = SU(2)_L × SU(2)_R branching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-dressings-are-matrix-elements-derive-dont-fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Dressings are matrix elements (derive, don't fit)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-the-5-5-5-coefficients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 The 5-5-5 coefficients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-the-14-channel-weights-and-the-45-enhancement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 The 14 channel weights and the 4/5 enhancement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-next-to-minimal-composite-higgs-so6so5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Next-to-Minimal Composite Higgs: SO(6)/SO(5)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Next-to-Minimal Composite Higgs: SO(6)/SO(5)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-coset-and-broken-generators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Coset and broken generators
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-the-five-pngb-goldstone-matrix-closed-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 The five-pNGB Goldstone matrix (closed form)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-the-representation-tower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 The representation tower
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-two-field-dressing-and-the-singlet-pngb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Two-field dressing and the singlet pNGB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-colemanweinberg-potential-and-observables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The Coleman–Weinberg potential and observables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-the-form-factor-route-and-the-oracle-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. The form-factor route and the oracle boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-beyond-son-the-coset-abstraction-and-su4sp4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Beyond SO(N): the coset abstraction and SU(4)/Sp(4)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-su5so5-littlest-higgs-and-the-coset-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. SU(5)/SO(5) (littlest Higgs) and the coset landscape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provenance-derived-vs-input-vs-anchored" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provenance: derived vs. input vs. anchored
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Validation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../THESIS_VALIDATION/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Thesis validation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../VALIDATION_AUDIT/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Validation audit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../EXTENDING_BSM/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending pyCHM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Model & top-level
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/spectrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Potential & spectrum
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fine-tuning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/constraints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Constraints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/groups/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The group engine
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-the-ccwz-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. The CCWZ framework
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-minimal-composite-higgs-so5so4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Minimal Composite Higgs: SO(5)/SO(4)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Minimal Composite Higgs: SO(5)/SO(4)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-generators-and-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Generators and conventions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-the-vector-goldstone-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 The vector Goldstone matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-lifting-to-tensor-representations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Lifting to tensor representations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-so4-su2_l-su2_r-branching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 SO(4) = SU(2)_L × SU(2)_R branching
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-dressings-are-matrix-elements-derive-dont-fit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Dressings are matrix elements (derive, don't fit)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-the-5-5-5-coefficients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 The 5-5-5 coefficients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#27-the-14-channel-weights-and-the-45-enhancement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 The 14 channel weights and the 4/5 enhancement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-next-to-minimal-composite-higgs-so6so5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Next-to-Minimal Composite Higgs: SO(6)/SO(5)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Next-to-Minimal Composite Higgs: SO(6)/SO(5)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-coset-and-broken-generators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Coset and broken generators
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-the-five-pngb-goldstone-matrix-closed-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 The five-pNGB Goldstone matrix (closed form)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-the-representation-tower" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 The representation tower
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-two-field-dressing-and-the-singlet-pngb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Two-field dressing and the singlet pNGB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-the-colemanweinberg-potential-and-observables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. The Coleman–Weinberg potential and observables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-the-form-factor-route-and-the-oracle-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. The form-factor route and the oracle boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-beyond-son-the-coset-abstraction-and-su4sp4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Beyond SO(N): the coset abstraction and SU(4)/Sp(4)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-su5so5-littlest-higgs-and-the-coset-landscape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. SU(5)/SO(5) (littlest Higgs) and the coset landscape
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provenance-derived-vs-input-vs-anchored" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provenance: derived vs. input vs. anchored
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="pychm-derivations-first-principles-group-theory-of-the-nmchm">pyCHM derivations — first-principles group theory of the (N)MCHM<a class="headerlink" href="#pychm-derivations-first-principles-group-theory-of-the-nmchm" title="Permanent link">&para;</a></h1>
+<p>This note derives, from group theory alone, every quantity that <code>pyCHM</code> treats as <strong>derived</strong> (as
+opposed to model input, or numerically anchored to the independent <code>pypngb</code> engine). Each step is
+tied to the function that implements it and the test that verifies it in closed form, so the
+document and the code are one object: <strong>if a derivation here is wrong, a named test fails.</strong> The
+reference physics is Murnane, <em>The Landscape of Composite Higgs Models</em> (arXiv:2606.18364);
+conventions match the library exactly. Nothing here assumes the thesis is correct — the closed
+forms are recomputed from the generators, and where the thesis is the only source (the App. A7 form
+factors) it is cross-checked against the <code>pypngb</code>-anchored eigenvalue route (<a href="#5-the-form-factor-route-and-the-oracle-boundary">§5</a>).</p>
+<blockquote>
+<p>This is the human-readable companion to <code>docs/DERIVATIONS.tex</code> / <code>DERIVATIONS.pdf</code>. The two are
+kept in sync (see the CLAUDE.md rule: <em>all new derivations go in both markdown and LaTeX</em>).</p>
+</blockquote>
+<p>Notation: each section ends with <strong>▶ Implemented in / Verified by</strong>, naming the code and the test.</p>
+<hr />
+<h2 id="1-the-ccwz-framework">1. The CCWZ framework<a class="headerlink" href="#1-the-ccwz-framework" title="Permanent link">&para;</a></h2>
+<p>A composite Higgs is a set of pseudo-Nambu–Goldstone bosons (pNGBs) of a spontaneously broken
+global symmetry <span class="arithmatex">\(G\to H\)</span>. Split the generators of <span class="arithmatex">\(\mathfrak g=\mathrm{Lie}(G)\)</span> into unbroken
+<span class="arithmatex">\(T^a\in\mathfrak h\)</span> and broken <span class="arithmatex">\(X^{\hat a}\in\mathfrak g/\mathfrak h\)</span>. The pNGBs <span class="arithmatex">\(\pi^{\hat a}(x)\)</span>
+parameterise the coset through the <strong>Goldstone matrix</strong></p>
+<div class="arithmatex">\[U(\pi)=\exp\!\Big(\tfrac{i}{f}\,\pi^{\hat a}X^{\hat a}\Big),\]</div>
+<p>with <span class="arithmatex">\(f\)</span> the decay constant. Fermions are embedded in (generally incomplete) representations <span class="arithmatex">\(R\)</span> of
+<span class="arithmatex">\(G\)</span>; the Higgs dependence of every elementary–composite mixing is the matrix element of <span class="arithmatex">\(U\)</span> in <span class="arithmatex">\(R\)</span>,</p>
+<div class="arithmatex">\[\big\langle c\,\big|\,U_R(\pi)\,\big|\,E\big\rangle,\]</div>
+<p>between the embedding <span class="arithmatex">\(E\)</span> of the elementary field and a composite state <span class="arithmatex">\(c\)</span>. The central claim of
+the library: <strong>these matrix elements are the only source of the <span class="arithmatex">\(s_h\)</span>-dependence, and they are
+computable in closed form from the generators — never fitted.</strong> The rest of this document carries
+that out for <span class="arithmatex">\(\mathrm{SO}(5)/\mathrm{SO}(4)\)</span> (MCHM) and <span class="arithmatex">\(\mathrm{SO}(6)/\mathrm{SO}(5)\)</span> (NMCHM).</p>
+<hr />
+<h2 id="2-minimal-composite-higgs-so5so4">2. Minimal Composite Higgs: SO(5)/SO(4)<a class="headerlink" href="#2-minimal-composite-higgs-so5so4" title="Permanent link">&para;</a></h2>
+<h3 id="21-generators-and-conventions">2.1 Generators and conventions<a class="headerlink" href="#21-generators-and-conventions" title="Permanent link">&para;</a></h3>
+<p><span class="arithmatex">\(\mathrm{SO}(5)\)</span> acts on indices <span class="arithmatex">\(0,\dots,4\)</span>. The unbroken <span class="arithmatex">\(\mathrm{SO}(4)\)</span> acts on <span class="arithmatex">\(0,\dots,3\)</span>; the
+coset direction is index <span class="arithmatex">\(4\)</span>. In the vector (the <strong>5</strong>) the Hermitian generators are</p>
+<div class="arithmatex">\[\big(T^{AB}\big)_{CD}=-i\big(\delta_{AC}\delta_{BD}-\delta_{AD}\delta_{BC}\big),\qquad 0\le A&lt;B\le4.\]</div>
+<p>The six <span class="arithmatex">\(T^{ab}\)</span> (<span class="arithmatex">\(a&lt;b\le3\)</span>) generate <span class="arithmatex">\(\mathrm{SO}(4)\)</span>; the four broken generators are
+<span class="arithmatex">\(X^{\hat a}=T^{\hat a 4}\)</span>. With the Higgs vev along <span class="arithmatex">\(\hat a=3\)</span>, only the physical Higgs <span class="arithmatex">\(h\)</span> survives
+in unitary gauge and <span class="arithmatex">\(U\)</span> becomes a single planar rotation.</p>
+<p><strong>▶ Implemented in:</strong> <code>groups.so5.gen_vector</code>, <code>groups/so5.py</code> — <strong>Verified by:</strong> <code>test_so4_unbroken_generators_close_the_algebra</code></p>
+<h3 id="22-the-vector-goldstone-matrix">2.2 The vector Goldstone matrix<a class="headerlink" href="#22-the-vector-goldstone-matrix" title="Permanent link">&para;</a></h3>
+<p>Exponentiating <span class="arithmatex">\(X^3=T^{34}\)</span> with angle <span class="arithmatex">\(\theta=h/f\)</span> gives a rotation in the <span class="arithmatex">\((3,4)\)</span> plane,</p>
+<div class="arithmatex">\[U_{\mathbf 5}(\theta)=\exp\!\big(i\theta\,T^{34}\big)=\begin{pmatrix}\mathbb 1_3&amp;&amp;\\&amp;c_h&amp;s_h\\&amp;-s_h&amp;c_h\end{pmatrix},\qquad s_h\equiv\sin\theta,\ \ c_h\equiv\cos\theta=\sqrt{1-s_h^2}.\]</div>
+<p>The library stores everything in <span class="arithmatex">\(s_h=\sin(h/f)\)</span> with <span class="arithmatex">\(c_h=\sqrt{1-s_h^2}\)</span>, avoiding an <span class="arithmatex">\(\arcsin\)</span>
+round-trip (machine precision). This is the thesis "explicit Goldstone matrix."</p>
+<p><strong>▶ Implemented in:</strong> <code>groups.groups.so5.U_vector</code>, <code>groups.so5.U_vector_sym</code> — <strong>Verified by:</strong> <code>test_U_vector_matches_thesis_goldstone</code></p>
+<h3 id="23-lifting-to-tensor-representations">2.3 Lifting to tensor representations<a class="headerlink" href="#23-lifting-to-tensor-representations" title="Permanent link">&para;</a></h3>
+<p>A rank-<span class="arithmatex">\(k\)</span> <span class="arithmatex">\(\mathrm{SO}(5)\)</span> tensor irrep is the symmetric-traceless or antisymmetric part of
+<span class="arithmatex">\(\mathbf 5^{\otimes k}\)</span>. The Goldstone acts on each index,</p>
+<div class="arithmatex">\[\big(U_R\big)_{ba}=\big\langle E_b\,\big|\,U_{\mathbf 5}^{\otimes k}E_a\big\rangle=\mathrm{Tr}\!\big(E_b^{\dagger}\,U E_a U^{\top}\big)\quad(\text{rank }2),\]</div>
+<p>in an orthonormal basis <span class="arithmatex">\(\{E_a\}\)</span>. The first three rungs are the <strong>5</strong> (rank 1), the <strong>10</strong>
+(antisymmetric rank 2), the <strong>14</strong> (symmetric-traceless rank 2). The construction is
+dimension-agnostic, so the same code gives the <strong>30</strong> (rank-3 symmetric) and, with <span class="arithmatex">\(n=6\)</span>, the
+<span class="arithmatex">\(\mathrm{SO}(6)\)</span> tower of <a href="#3-next-to-minimal-composite-higgs-so6so5">§3</a>.</p>
+<p><strong>▶ Implemented in:</strong> <code>tensors.tensor_basis</code>, <code>tensors.U_rep_tensor</code>, <code>groups.so5.U_rep</code> — <strong>Verified by:</strong> <code>test_tensors.py</code> (dimension, unitarity, homomorphism)</p>
+<h3 id="24-so4-su2_l-su2_r-branching">2.4 SO(4) = SU(2)_L × SU(2)_R branching<a class="headerlink" href="#24-so4-su2_l-su2_r-branching" title="Permanent link">&para;</a></h3>
+<p>The unbroken <span class="arithmatex">\(\mathrm{SO}(4)\)</span> on <span class="arithmatex">\(0,\dots,3\)</span> is <span class="arithmatex">\(\mathrm{SU}(2)_L\times\mathrm{SU}(2)_R\)</span> via the
+'t Hooft combinations</p>
+<div class="arithmatex">\[J^{L/R}_i=\tfrac12\Big(\tfrac12\,\epsilon_{ijk}T^{jk}\pm T^{0i}\Big),\qquad i=1,2,3.\]</div>
+<p>Diagonalising the commuting Casimirs <span class="arithmatex">\(C_L=\sum_i(J^L_i)^2\)</span>, <span class="arithmatex">\(C_R=\sum_i(J^R_i)^2\)</span> labels each
+sub-multiplet by <span class="arithmatex">\((j_L,j_R)\)</span> with <span class="arithmatex">\(C=j(j+1)\)</span>:</p>
+<div class="arithmatex">\[\mathbf 5=(\tfrac12,\tfrac12)\oplus(0,0),\quad \mathbf{10}=(\tfrac12,\tfrac12)\oplus(1,0)\oplus(0,1),\quad \mathbf{14}=(1,1)\oplus(\tfrac12,\tfrac12)\oplus(0,0).\]</div>
+<p><strong>▶ Implemented in:</strong> <code>decompose.so4_decompose</code>, <code>decompose._su2_casimirs</code> — <strong>Verified by:</strong> <code>test_branchings_match_thesis</code></p>
+<h3 id="25-dressings-are-matrix-elements-derive-dont-fit">2.5 Dressings are matrix elements (derive, don't fit)<a class="headerlink" href="#25-dressings-are-matrix-elements-derive-dont-fit" title="Permanent link">&para;</a></h3>
+<p>A claimed closed form <span class="arithmatex">\(f(\theta)\)</span> is admissible only if it lies in the span of the single-basis
+overlaps <span class="arithmatex">\(\{\langle E_b|U_R|E\rangle\}\)</span>. The library solves for the exact minimal-norm composite
+tensor <span class="arithmatex">\(c\)</span> with <span class="arithmatex">\(\langle c|U_R|E\rangle=f\)</span> and <strong>raises</strong> if <span class="arithmatex">\(f\)</span> is not realisable. This is the
+from-scratch guarantee: every dressing factor is <em>proven</em> to be a Goldstone matrix element, with
+symbolic residual exactly <span class="arithmatex">\(0\)</span>.</p>
+<p><strong>▶ Implemented in:</strong> <code>groups/derive.py::solve_composite</code> — <strong>Verified by:</strong> <code>test_dressings_are_matrix_elements</code></p>
+<h3 id="26-the-5-5-5-coefficients">2.6 The 5-5-5 coefficients<a class="headerlink" href="#26-the-5-5-5-coefficients" title="Permanent link">&para;</a></h3>
+<p>Embed <span class="arithmatex">\(E_{q_L}=(e_0+e_3)/\sqrt2\)</span> (bidoublet) and <span class="arithmatex">\(E_{t_R}=e_4\)</span> (SO(4) singlet). From the rotation,
+<span class="arithmatex">\(Ue_4=s_h e_3+c_h e_4\)</span>, <span class="arithmatex">\(Ue_3=c_h e_3-s_h e_4\)</span>, <span class="arithmatex">\(Ue_0=e_0\)</span>, so</p>
+<div class="arithmatex">\[\langle q_L|U_{\mathbf 5}|t_R\rangle=\frac{s_h}{\sqrt2},\qquad \big|\langle q_L|U|t_R\rangle\big|^2=\frac{s_h^2}{2},\qquad \langle q_L|U_{\mathbf 5}|q_L\rangle=\tfrac12(1+c_h)=\cos^2\!\tfrac{h}{2f}.\]</div>
+<p>These are exactly the <span class="arithmatex">\(\Pi_L\sim s_h^2/2\)</span> and <span class="arithmatex">\(\cos^2(h/2f)\)</span> structures of the thesis 5-5-5 form
+factors — here <strong>derived</strong> from the overlaps.</p>
+<p><strong>▶ Implemented in:</strong> <code>groups.so5.overlap_sym</code>, <code>mchm5.formfactor_pieces</code> — <strong>Verified by:</strong> <code>test_coeffs_5_5_5</code></p>
+<h3 id="27-the-14-channel-weights-and-the-45-enhancement">2.7 The 14 channel weights and the 4/5 enhancement<a class="headerlink" href="#27-the-14-channel-weights-and-the-45-enhancement" title="Permanent link">&para;</a></h3>
+<p>The <span class="arithmatex">\(t_R\)</span> embeds in the SO(4) singlet of the <strong>14</strong>, the unit-normalised symmetric-traceless tensor</p>
+<div class="arithmatex">\[S=\frac{1}{\sqrt{20}}\,\mathrm{diag}(1,1,1,1,-4),\qquad \mathrm{Tr}\,S^2=\frac{4+16}{20}=1.\]</div>
+<p>Dressing <span class="arithmatex">\(S\mapsto USU^{\top}\)</span> and projecting onto the SO(4) channels of the <strong>14</strong> gives the closed
+trigonometric <strong>channel weights</strong></p>
+<div class="arithmatex">\[W_{11}=\frac{(4c_h^2-s_h^2)^2}{16},\qquad W_{22}=\frac52 s_h^2 c_h^2,\qquad W_{33}=\frac{15}{16}s_h^4,\]</div>
+<p>which satisfy unitarity exactly:</p>
+<div class="arithmatex">\[W_{11}+W_{22}+W_{33}=\Big(1-\tfrac52 s_h^2+\tfrac{25}{16}s_h^4\Big)+\tfrac52 s_h^2(1-s_h^2)+\tfrac{15}{16}s_h^4=1.\]</div>
+<p>The thesis writes the <span class="arithmatex">\(t_R\)</span> self-energy with an overall coupling <span class="arithmatex">\(Y_T\sqrt{4/5}\)</span>. That normalisation
+is <strong>not</strong> an external input — it is the squared index-4 component of the embedding itself:</p>
+<div class="arithmatex">\[\boxed{\ \big|S_{44}\big|^2=\Big(\tfrac{-4}{\sqrt{20}}\Big)^2=\frac{16}{20}=\frac45\ }\qquad\Longleftrightarrow\qquad \sqrt{\tfrac45}=|S_{44}|.\]</div>
+<p>Index 4 is the coset-singlet direction through which the top mass is generated; the <strong>5</strong>-singlet
+has weight <span class="arithmatex">\(1\)</span> there (the unenhanced reference), so <span class="arithmatex">\(4/5\)</span> is a genuine representation-dependent
+enhancement. The thesis singlet-channel prefactor then follows as a <strong>prediction</strong>,</p>
+<div class="arithmatex">\[\frac{(4c_h^2-s_h^2)^2}{20}=|S_{44}|^2\,W_{11}=\frac45\cdot\frac{(4c_h^2-s_h^2)^2}{16},\]</div>
+<p>which would fail for any inconsistent thesis number — no longer a tautology that reads <span class="arithmatex">\(4/5\)</span> off the
+prefactor <span class="arithmatex">\(1/20\)</span>.</p>
+<p><strong>▶ Implemented in:</strong> <code>groups.so5.channel_weights_sym</code>, <code>groups.so5.embedding_sym</code> — <strong>Verified by:</strong> <code>test_14_channel_weights_derive_thesis_prefactors</code>, <code>test_4_5_is_derived_from_the_embedding</code></p>
+<hr />
+<h2 id="3-next-to-minimal-composite-higgs-so6so5">3. Next-to-Minimal Composite Higgs: SO(6)/SO(5)<a class="headerlink" href="#3-next-to-minimal-composite-higgs-so6so5" title="Permanent link">&para;</a></h2>
+<h3 id="31-coset-and-broken-generators">3.1 Coset and broken generators<a class="headerlink" href="#31-coset-and-broken-generators" title="Permanent link">&para;</a></h3>
+<p><span class="arithmatex">\(\mathrm{SO}(6)\)</span> acts on <span class="arithmatex">\(0,\dots,5\)</span>. The unbroken <span class="arithmatex">\(\mathrm{SO}(5)\)</span> acts on <span class="arithmatex">\(0,\dots,4\)</span>; the coset
+direction is index <span class="arithmatex">\(5\)</span>. The five broken generators split, under <span class="arithmatex">\(\mathrm{SO}(4)\subset\mathrm{SO}(5)\)</span>,
+into the Higgs bidoublet and a singlet:</p>
+<div class="arithmatex">\[X_B^{a}=T^{a5}\ (a=0,1,2,3)\ \ (\text{the doublet } h_1,\dots,h_4),\qquad X_S=T^{45}\ \ (\text{the singlet } s).\]</div>
+<p>This is the thesis decomposition (its 6th index is our index 5). The 15 generators close
+<span class="arithmatex">\(\mathfrak{so}(6)\)</span>; the ten <span class="arithmatex">\(T^{ab}\)</span> with <span class="arithmatex">\(a&lt;b\le4\)</span> are the unbroken <span class="arithmatex">\(\mathrm{SO}(5)\)</span>.</p>
+<p><strong>▶ Implemented in:</strong> <code>so6.gen_vector</code>, <code>so6.UNBROKEN/BROKEN</code> — <strong>Verified by:</strong> <code>test_so6_generators_close_the_algebra</code>, <code>test_coset_split_10_plus_5</code></p>
+<h3 id="32-the-five-pngb-goldstone-matrix-closed-form">3.2 The five-pNGB Goldstone matrix (closed form)<a class="headerlink" href="#32-the-five-pngb-goldstone-matrix-closed-form" title="Permanent link">&para;</a></h3>
+<p>In unitary gauge the Higgs points along <span class="arithmatex">\(\hat a=3\)</span> and the singlet along <span class="arithmatex">\(X_S\)</span>, so the vector
+Goldstone is generated by <span class="arithmatex">\(G=\theta_h L^{(3,5)}+\theta_s L^{(4,5)}\)</span> with <span class="arithmatex">\(\theta_h=h/f\)</span>,
+<span class="arithmatex">\(\theta_s=s/f\)</span>. <span class="arithmatex">\(G\)</span> is supported on <span class="arithmatex">\(\{3,4,5\}\)</span> and has rank 2, so <span class="arithmatex">\(G^3=-\Theta^2 G\)</span> with
+<span class="arithmatex">\(\Theta=\sqrt{\theta_h^2+\theta_s^2}\)</span>. <strong>Rodrigues' formula</strong> gives the closed form</p>
+<div class="arithmatex">\[U_6(\theta_h,\theta_s)=\mathbb 1+\frac{\sin\Theta}{\Theta}\,G+\frac{1-\cos\Theta}{\Theta^2}\,G^2.\]</div>
+<p>Acting on the vacuum <span class="arithmatex">\(e_5\)</span> reproduces the thesis Goldstone field (its eq. 474):</p>
+<div class="arithmatex">\[\Phi=U_6 e_5=\Big(0,0,0,\ \theta_h\tfrac{\sin\Theta}{\Theta},\ \theta_s\tfrac{\sin\Theta}{\Theta},\ \cos\Theta\Big)^{\top}=\frac{\sin\Theta}{\Theta}\big(h_1,\dots,h_4,s,\ \Theta\cot\Theta\big),\]</div>
+<p>with <span class="arithmatex">\(\Theta=\varphi/f\)</span>, <span class="arithmatex">\(\varphi=\sqrt{\sum h_i^2+s^2}\)</span>. Setting <span class="arithmatex">\(\theta_s=0\)</span> returns the MCHM
+planar rotation (coset index <span class="arithmatex">\(4\to5\)</span>).</p>
+<p><strong>▶ Implemented in:</strong> <code>so6.U6_vector</code>, <code>so6.U6_vector_sym</code>, <code>so6.goldstone_vacuum</code> — <strong>Verified by:</strong> <code>test_goldstone_vacuum_matches_thesis_eq474</code>, <code>test_U6_vector_orthogonal_identity_homomorphism</code></p>
+<h3 id="33-the-representation-tower">3.3 The representation tower<a class="headerlink" href="#33-the-representation-tower" title="Permanent link">&para;</a></h3>
+<p>The fermion-partner irreps of <span class="arithmatex">\(\mathrm{SO}(6)\cong\mathrm{SU}(4)\)</span> are built and dressed by the same
+machinery — tensors via <span class="arithmatex">\(n=6\)</span>, spinors via the Clifford algebra:</p>
+<table>
+<thead>
+<tr>
+<th>irrep</th>
+<th>construction</th>
+<th>dim</th>
+<th>SO(5) branching</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>6</strong></td>
+<td>vector</td>
+<td>6</td>
+<td><span class="arithmatex">\(\mathbf 5\oplus\mathbf 1\)</span></td>
+</tr>
+<tr>
+<td><strong>15</strong></td>
+<td>antisym. rank 2 (adjoint)</td>
+<td>15</td>
+<td><span class="arithmatex">\(\mathbf{10}\oplus\mathbf 5\)</span></td>
+</tr>
+<tr>
+<td><strong>20'</strong></td>
+<td>sym.-traceless rank 2</td>
+<td>20</td>
+<td><span class="arithmatex">\(\mathbf{14}\oplus\mathbf 5\oplus\mathbf 1\)</span></td>
+</tr>
+<tr>
+<td><strong>10</strong>, <strong>10̄</strong></td>
+<td>(anti)self-dual 3-form</td>
+<td>10</td>
+<td><span class="arithmatex">\(\mathbf{10}\)</span> (each)</td>
+</tr>
+<tr>
+<td><strong>4</strong>, <strong>4̄</strong></td>
+<td>Weyl spinor</td>
+<td>4</td>
+<td><span class="arithmatex">\(\mathbf 4\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The Casimir calibration <span class="arithmatex">\(C_5\in\{0,\tfrac52,4,6,10\}\leftrightarrow\{\mathbf 1,\mathbf 4,\mathbf 5,\mathbf{10},\mathbf{14}\}\)</span>
+identifies each sub-irrep with its multiplicity. The antisymmetric 3-form is 20-dimensional and
+splits, by the <span class="arithmatex">\(\pm i\)</span> eigenspaces of the Hodge dual
+<span class="arithmatex">\((\star T)_{ijk}=\tfrac{1}{3!}\epsilon_{ijklmn}T_{lmn}\)</span>, into the self-dual <strong>10</strong> and anti-self-dual
+<strong>10̄</strong> (the <span class="arithmatex">\(\mathrm{SU}(4)\)</span> <span class="arithmatex">\(\mathbf{10}+\overline{\mathbf{10}}\)</span>). The spinors come from six
+<span class="arithmatex">\(8\times8\)</span> Euclidean gammas <span class="arithmatex">\(\Gamma^A=(\sigma_1\otimes\gamma^a_{\mathrm{SO}(5)},\,\sigma_2\otimes\mathbb 1)\)</span>
+split by chirality <span class="arithmatex">\(\chi=\sigma_3\otimes\mathbb 1\)</span>; the <strong>4</strong> carries no <span class="arithmatex">\((\tfrac12,\tfrac12)\)</span>
+bidoublet — exactly the thesis reason the NM4DCHM uses the <strong>6</strong> (not the <strong>4</strong>) for <span class="arithmatex">\(q_L\)</span>.</p>
+<p><strong>▶ Implemented in:</strong> <code>so6.rep_basis</code>, <code>so6.U6_rep</code>, <code>so6.so5_content</code>, <code>so6_spinors.py</code> — <strong>Verified by:</strong> <code>test_so6.py</code>, <code>test_so6_spinors.py</code></p>
+<h3 id="34-two-field-dressing-and-the-singlet-pngb">3.4 Two-field dressing and the singlet pNGB<a class="headerlink" href="#34-two-field-dressing-and-the-singlet-pngb" title="Permanent link">&para;</a></h3>
+<p>The <strong>6</strong> Goldstone dresses overlaps with <em>both</em> angles. With <span class="arithmatex">\(E_{q_L}=(e_0+e_3)/\sqrt2\)</span> and
+<span class="arithmatex">\(E_{t_R}=e_5\)</span>, no embedding has support on index 4, so every overlap is even in <span class="arithmatex">\(\theta_s\)</span>: the
+potential is even in <span class="arithmatex">\(s\)</span>, the vacuum sits at <span class="arithmatex">\(\langle s\rangle=0\)</span>, and the singlet mass is the
+<span class="arithmatex">\(s\)</span>-curvature of the Coleman–Weinberg potential there. Because the <span class="arithmatex">\(q_L\)</span> bidoublet dressing carries
+explicit <span class="arithmatex">\(\theta_h\)</span>-dependence distinct from the radial <span class="arithmatex">\(\Theta\)</span> the <span class="arithmatex">\(t_R\)</span> feels, <span class="arithmatex">\(V(h,s)\)</span> is
+genuinely two-dimensional and the singlet acquires a finite, calculable mass — the defining NMCHM
+observable, absent in the MCHM. At <span class="arithmatex">\(\theta_s=0\)</span> the mass matrices reduce <strong>entry-for-entry</strong> to the
+<code>pypngb</code>-anchored 5-5-5 model.</p>
+<p><strong>▶ Implemented in:</strong> <code>nmchm6.py</code> (<code>spec</code>, <code>assemble</code>, <code>potential</code>, <code>singlet_mass2</code>) — <strong>Verified by:</strong> <code>test_nmchm6.py</code> (reduction, even-in-<span class="arithmatex">\(s\)</span>, singlet mass)</p>
+<hr />
+<h2 id="4-the-colemanweinberg-potential-and-observables">4. The Coleman–Weinberg potential and observables<a class="headerlink" href="#4-the-colemanweinberg-potential-and-observables" title="Permanent link">&para;</a></h2>
+<p>The one-loop pNGB potential is the supertraced kernel</p>
+<div class="arithmatex">\[V(s_h)=\sum_i\frac{c_i}{64\pi^2}\,m_i^2(s_h)^2\log m_i^2(s_h),\qquad c_i=\{+3,+6,-12\}\]</div>
+<p>for {neutral vector, charged vector, coloured Dirac}, with <span class="arithmatex">\(m_i(s_h)\)</span> the eigenvalues of the
+<span class="arithmatex">\(s_h\)</span>-dependent mass matrices. Writing <span class="arithmatex">\(V=-\gamma s_h^2+\beta s_h^4\)</span>,</p>
+<div class="arithmatex">\[\xi=\sin^2\frac{\langle h\rangle}{f}=\frac{\gamma}{2\beta},\qquad m_h^2=\frac{8\beta}{f^2}\xi(1-\xi),\qquad v_{\mathrm{EW}}=f\sqrt\xi,\]</div>
+<p>and the Barbieri–Giudice tuning is <span class="arithmatex">\(\Delta_{\mathrm{BG}}=\max_i|\partial\ln f/\partial\ln x_i|\)</span> over
+the fundamental Lagrangian masses. These relations are validated symbolically; the full mass
+matrices and the resulting <span class="arithmatex">\(\xi,m_t,m_h,\Delta_{\mathrm{BG}}\)</span> are anchored to <code>pypngb</code> to <span class="arithmatex">\(&lt;0.1\%\)</span>.</p>
+<p><strong>▶ Implemented in:</strong> <code>routes.py</code>, <code>potential.py</code>, <code>spectrum.py</code>, <code>tuning.py</code> — <strong>Verified by:</strong> <code>test_cw_kernel_and_coefficients</code>, <code>test_higgs_mass_scaling_closed_form</code>, <code>test_anchors.py</code></p>
+<hr />
+<h2 id="5-the-form-factor-route-and-the-oracle-boundary">5. The form-factor route and the oracle boundary<a class="headerlink" href="#5-the-form-factor-route-and-the-oracle-boundary" title="Permanent link">&para;</a></h2>
+<p>The thesis App. A7 form factors <span class="arithmatex">\(A_L,A_R,A_M,B\)</span> are <em>transcribed</em> in <code>mchm5</code>; transcription proves
+faithful copying, not physical correctness. They are confronted with the <code>pypngb</code>-anchored
+eigenvalue route by comparing the top mass two ways. With the <strong>custodial</strong> parametrisation the
+form-factor route requires (a single <span class="arithmatex">\(q_L\)</span> coupling, i.e. <span class="arithmatex">\(\Delta_{uL}=\Delta_{dL}\)</span>), the two
+coincide as <span class="arithmatex">\(s_h\to0\)</span>,</p>
+<div class="arithmatex">\[\frac{m_t^{\mathrm{ff}}(s_h)}{m_t^{\mathrm{eig}}(s_h)}=1-0.755\,s_h^2+\mathcal O(s_h^4)\ \xrightarrow{\ s_h\to0\ }\ 0.999997,\]</div>
+<p>the finite-<span class="arithmatex">\(s_h\)</span> gap being the form-factor route's leading-order-in-<span class="arithmatex">\(s_h^2\)</span> truncation of the exact
+(non-polynomial) eigenvalue mass. The App. A7 form factors are therefore the correct leading-order
+two-point functions of the <code>pypngb</code>-anchored mass matrix — <strong>validated, not merely transcribed.</strong></p>
+<p><strong>▶ Implemented in:</strong> <code>mchm5.formfactor_pieces</code>, <code>mchm5.fermion_mass</code> — <strong>Verified by:</strong> <code>test_formfactor_route.py</code></p>
+<hr />
+<h2 id="6-beyond-son-the-coset-abstraction-and-su4sp4">6. Beyond SO(N): the coset abstraction and SU(4)/Sp(4)<a class="headerlink" href="#6-beyond-son-the-coset-abstraction-and-su4sp4" title="Permanent link">&para;</a></h2>
+<p>Everything above is built from one group-agnostic engine (<code>pychm.groups</code>): a coset <span class="arithmatex">\(G/H\)</span> is a list of
+unbroken generators of <span class="arithmatex">\(H\)</span> and broken generators <span class="arithmatex">\(X^a\)</span> in some representation, and the Goldstone is
+<span class="arithmatex">\(U(\pi)=\exp(i\pi^a X^a)\)</span> — in unitary gauge a rank-≤2 rotation, so the closed Rodrigues form serves
+every case. MCHM and NMCHM are the instances SO(5)/SO(4) and SO(6)/SO(5); the <strong>same code</strong> builds
+SU(N)/Sp(N) cosets, with the SU(N) Gell-Mann generators and the USp(N) subalgebra from the Cartan
+involution <span class="arithmatex">\(\theta(X)=\Omega\bar X\Omega^{-1}\)</span> (usp = the <span class="arithmatex">\(\theta=-1\)</span> eigenspace, coset = <span class="arithmatex">\(\theta=+1\)</span>).</p>
+<p><strong>SU(4)/Sp(4) ≅ SO(6)/SO(5).</strong> The minimal pseudoreal Ferretti–Sannino coset has <span class="arithmatex">\(15-10=5\)</span> broken
+generators — the same five pNGBs as SO(6)/SO(5). Under SU(4)≅Spin(6), Sp(4)≅Spin(5) the
+fundamental <span class="arithmatex">\(\mathbf 4\)</span> = SO(6) spinor, the antisymmetric <span class="arithmatex">\(\mathbf 6=[\mathbf 4\otimes\mathbf 4]_A\)</span> =
+SO(6) vector, and <span class="arithmatex">\(\mathbf{15}\)</span> = SO(6) adjoint. The library builds SU(4)/Sp(4) <strong>independently</strong> and
+cross-checks it against the SO(6) code (an exact oracle): the <span class="arithmatex">\(\mathbf 4\)</span> branches to a single
+<span class="arithmatex">\(\mathbf 4\)</span> of Sp(4), the <span class="arithmatex">\(\mathbf 6\)</span> to <span class="arithmatex">\(\mathbf 1\oplus\mathbf 5\)</span>, matching the SO(6) spinor and
+vector; and — the strong statement of the isomorphism — the <span class="arithmatex">\(\mathbf 6\)</span> generators span the full
+15-dim so(6)≅su(4) algebra and act irreducibly (commutant = scalars, by Schur), so the SU(4)
+antisymmetric <span class="arithmatex">\(\mathbf 6\)</span> <em>is</em> the irreducible SO(6) vector. The new coset reproduces the NMCHM group
+theory while sharing all of its tooling.</p>
+<p><strong>▶ Implemented in:</strong> <code>groups/lie.py</code> (<code>su_generators</code>, <code>sp_subalgebra</code>), <code>groups/coset.py</code>, <code>groups/su4sp4.py</code> — <strong>Verified by:</strong> <code>test_su4sp4.py</code></p>
+<hr />
+<h2 id="7-su5so5-littlest-higgs-and-the-coset-landscape">7. SU(5)/SO(5) (littlest Higgs) and the coset landscape<a class="headerlink" href="#7-su5so5-littlest-higgs-and-the-coset-landscape" title="Permanent link">&para;</a></h2>
+<p>SU(5)/SO(5) is a type-AI symmetric space: the Cartan involution <code>θ(X)=conj(X)</code> splits su(5) into the
+unbroken so(5) (10 imaginary-antisymmetric generators, θ=−1) and the coset (14 real-symmetric, θ=+1)
+— the same engine (<code>lie.cartan_split</code>) that built SU(4)/Sp(4). The 14 pNGBs are the
+symmetric-traceless <strong>14</strong> of SO(5), branching under custodial SO(4) as</p>
+<div class="arithmatex">\[\mathbf{14}=(3,3)\oplus(2,2)\oplus(1,1)=\text{complex triplet }\phi\ \oplus\ \text{Higgs doublet }h\ \oplus\ \text{singlet }\eta,\]</div>
+<p>the littlest-Higgs content. The Goldstone in the <strong>5</strong> is <code>U=exp(i θᵃXᵃ)</code> (a complex unitary, unlike
+the real SO(N) rotation); along the Higgs axis the <code>(2,2)</code> overlap magnitude reduces to the MCHM
+<code>|⟨q_L|U|t_R⟩|²=sin²(h/f)/2</code>, so the top/Higgs match the 5-5-5 there. The symmetric <strong>15</strong> of SU(5)
+(the fuller partner rep) is built with the SU(N) tensor basis (no δ-trace removal,
+<code>tensor_basis(...,group='SU')</code>) and branches <code>15 = 14 ⊕ 1</code> under SO(5). The new observables are the
+singlet and triplet pNGB masses — curvatures of the multi-field CW potential at the vacuum (even in
+η,φ, so ⟨η⟩=⟨φ⟩=0).</p>
+<p><strong>▶ Implemented in:</strong> <code>groups/lie.py</code> (<code>cartan_split</code>), <code>groups/su5so5.py</code>, <code>su5so5.py</code> — <strong>Verified by:</strong> <code>test_su5so5.py</code></p>
+<p><strong>The landscape.</strong> A composite Higgs needs a custodial <code>SO(4)=SU(2)_L×SU(2)_R ⊂ H</code> and a <code>(2,2)</code>
+Higgs in <code>G/H</code>. Chala &amp; Fonseca (arXiv:2309.10635) enumerate all compact <code>G/H</code> with ≤13 pNGBs
+satisfying this — <strong>642 models, complete up to 13 NGBs</strong>. <code>groups.landscape</code> reproduces a slice from
+pyCHM's own <code>Coset</code>: branch each coset under the custodial <code>SO(4)</code>, flag the <code>(2,2)</code>, recovering MCHM
+<code>(2,2)</code>, NMCHM <code>(1,1)+(2,2)</code>, littlest-Higgs <code>(1,1)+(2,2)+(3,3)</code>, and discovering SO(7)/SO(6),
+SO(8)/SO(7) (see <a href="../COSET_LANDSCAPE/"><code>COSET_LANDSCAPE.md</code></a>).</p>
+<p><strong>▶ Implemented in:</strong> <code>groups/landscape.py</code> — <strong>Verified by:</strong> <code>test_landscape.py</code></p>
+<hr />
+<h2 id="provenance-derived-vs-input-vs-anchored">Provenance: derived vs. input vs. anchored<a class="headerlink" href="#provenance-derived-vs-input-vs-anchored" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Derived (this document):</strong> the Goldstone matrices <span class="arithmatex">\(U,U_6\)</span>; the rep lifts; the SO(4)/SO(5)
+  branchings; the 5-5-5 coefficients; the <strong>14</strong> channel weights and the <span class="arithmatex">\(4/5=|S_{44}|^2\)</span>
+  enhancement; the full SO(6) tower. Each closes symbolically (a named test asserts
+  <code>simplify(...) == 0</code>).</li>
+<li><strong>Input (model structure):</strong> the partner content — which composite multiplets exist, the
+  embeddings, the partner masses. Taken from the thesis / <code>pypngb</code>, not derived.</li>
+<li><strong>Anchored:</strong> the full mass matrices and the physical observables, validated against <code>pypngb</code>
+  (<span class="arithmatex">\(&lt;0.1\%\)</span>). The NMCHM has no public engine and is anchored indirectly by its exact reduction to
+  the 5-5-5 at <span class="arithmatex">\(\langle s\rangle=0\)</span>, with the new singlet observable cross-checked internally
+  (stencil independence + parabolic fit).</li>
+</ul>
+<p>After §2.7 and §5, <strong>no quantity that feeds an observable is a thesis read-off</strong>: correctness rests
+on <code>pypngb</code> + group theory.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
