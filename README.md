@@ -11,10 +11,14 @@ No private dependencies. The physics is the published two-site M4DCHM (SO(5)→S
 > There is no other public composite-Higgs potential-and-fine-tuning calculator — the analogue of
 > SoftSUSY/FeynHiggs for SUSY. pyCHM fills that gap.
 
+📖 **Documentation:** [murnanedaniel.github.io/pyCHM](https://murnanedaniel.github.io/pyCHM/) —
+tutorial, physics, derivations, and the auto-generated API reference.
+
 ## Install
 
 ```bash
-pip install -e ".[test]"
+pip install -e ".[test]"      # runtime + tests
+pip install -e ".[docs]"      # to build the docs site (mkdocs build --strict)
 ```
 
 ## Use
@@ -33,6 +37,10 @@ point = dict(
 
 m.spectrum(point)   # -> {xi, f, mt, mb, mh, mW, mZ, mtop_partner}  or None (no EWSB)
 m.tuning(point)     # -> {BG, HOT, I, KL, J}
+
+# is the point still allowed? map the spectrum onto current LHC/EWPT/SMEFT bounds
+import pychm
+print(pychm.constraints.report(m.spectrum(point)))   # pass/fail table with arXiv citations
 ```
 
 ## The two routes

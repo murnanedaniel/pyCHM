@@ -11,7 +11,9 @@ This file records the **debugging and validation methodology** that actually wor
 
 ## Project layout (what lives where)
 - `src/pychm/` — the models (`mchm5`, `mchm14`, `mchm14_1_10`, `nmchm6`), the representation-agnostic
-  downstream (`potential`, `spectrum`, `tuning`, `routes`), and the assembler (`assemble`).
+  downstream (`potential`, `spectrum`, `tuning`, `routes`), the assembler (`assemble`), and
+  `constraints` (the experimental-viability checker — maps a spectrum onto current LHC/EWPT/SMEFT
+  bounds; bounds live in one editable `BOUNDS` table with arXiv refs, never hard-code them elsewhere).
 - `src/pychm/groups/` — **one canonical group-theory package** (replaced the old duplicated
   `ccwz` + `symbolic/`). The shared *engine*: `lie` (SO/SU/Sp generators, `rodrigues_exp`),
   `coset` (the `Coset(G,H)` abstraction + Goldstone), `reps` (tensor lifts), `branch` (Casimir
@@ -161,6 +163,16 @@ wrong, its named test fails.
   run; it is the project's LaTeX engine — do not assume a system `pdflatex`).
 - **Commit all three** (`.md`, `.tex`, `.pdf`) together with the code + test that implement the
   derivation. A derivation is not "done" until it is in both formats, compiled, and test-backed.
+
+## The docs site (MkDocs → GitHub Pages)
+The prose docs are an MkDocs site (`mkdocs.yml`, material theme, mkdocstrings for the API). The
+canonical `docs/*.md` files ARE the site pages — they double as GitHub-readable docs and site nav, so
+keep them GitHub-flavored. New hand-written pages: `index`, `tutorial`, `models`, `engine`,
+`api/*.md` (mkdocstrings `::: pychm…` stubs). After editing docs or public API run
+`pip install -e ".[docs]" && mkdocs build --strict` — it must exit 0 (no broken links/anchors/nav).
+`.github/workflows/docs.yml` builds `--strict` on every push/PR and **deploys only from `main`**, so
+the live site updates when the branch merges. Math is `pymdownx.arithmatex` + MathJax (`\(...\)` /
+`\[...\]`), NOT `$...$`, on the new pages.
 
 ## Working principles
 - **No curve-fitting.** Every dressing factor must be a derived Goldstone matrix element with an
